@@ -6,7 +6,12 @@
       "Bash(git commit *)",
       "WebFetch(domain:www.turingcollege.com)",
       "Bash(git checkout *)",
-      "Bash(git merge *)"
+      "Bash(git merge *)",
+      "Bash(git branch *)",
+      "Bash(node --input-type=module)",
+      "Bash(node -e ' *)",
+      "Bash(which node *)",
+      "Read(//usr/local/bin/**)"
     ]
   }
 }
