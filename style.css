@@ -815,6 +815,94 @@ body {
 .status-active { background: #fef3c7; color: var(--amber);      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 .status-closed { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 
+/* ===================== Delivery Dashboard ===================== */
+
+/* KPI sub-text */
+.kpi-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: -0.1rem;
+}
+
+/* KPI card alert variant (BIL decisions needed) */
+.kpi-card--alert {
+  border-left: 3px solid var(--amber);
+  background: #fffbeb;
+}
+.kpi-card--active-alert {
+  border-left: 3px solid var(--red);
+  background: #fff5f5;
+}
+.kpi-card--active-alert .kpi-value { color: var(--red); }
+
+/* Panel count chip (top-right of panel header) */
+.panel-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #f1f5f9;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  padding: 0.15rem 0.65rem;
+  white-space: nowrap;
+}
+
+/* Panel title sub-text */
+.panel-title-sub {
+  font-weight: 400;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+}
+
+/* Portfolio RAG summary bar */
+.rag-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.8rem;
+  box-shadow: var(--shadow);
+  flex-wrap: wrap;
+}
+.rag-summary-label {
+  font-weight: 600;
+  color: var(--text-main);
+  margin-right: 0.25rem;
+}
+.rag-count-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.7rem;
+  border-radius: 99px;
+}
+.rag-count--green { background: #dcfce7; color: var(--green-dark); }
+.rag-count--amber { background: #fef3c7; color: #92400e; }
+.rag-count--red   { background: #fee2e2; color: var(--red); }
+
+/* In-table portfolio RAG badge */
+.rag-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+}
+.rag-badge--green { background: #dcfce7; color: var(--green-dark); }
+.rag-badge--amber { background: #fef3c7; color: #92400e; }
+.rag-badge--red   { background: #fee2e2; color: var(--red); }
+
+/* OOF / Quarter status pills */
+.dd-status-current   { background: #eff6ff; color: #1d4ed8;       font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+.dd-status-gateway   { background: #f0fdf4; color: var(--green-dark); font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+.dd-status-withdrawn { background: #fee2e2; color: var(--red);     font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+.dd-status-bil       { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+
 /* ===================== Responsive ===================== */
 @media (max-width: 1200px) {
   .aaf-grid { grid-template-columns: repeat(2, 1fr); }

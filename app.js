@@ -179,6 +179,85 @@ const WELFARE_DUE_DATA = [
   { name: 'Imani Adeyemi',  lsc: 'Hannah Clarke', reason: 'Safeguarding check (fortnightly)',          lastCheckin: '2026-05-20', daysSince: 7  },
 ];
 
+// ─── Delivery Dashboard Data ───────────────────────────────────────────
+
+// Learners who have exceeded their original planned end date (Out of Funding)
+const OOF_DATA = [
+  { employer: 'TechCore UK',            name: 'Quinn Andrews',  standard: 'Applied AI & Automation',            plannedGateway: '2026-01-15', lsc: 'James Okafor',   status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: '2026-07-12', portfolioRag: 'amber', notes: 'EPA registration resolved; gateway confirmed for June' },
+  { employer: 'Pinnacle Finance Group', name: 'Harry Singh',    standard: 'Data Technician',                    plannedGateway: '2026-02-01', lsc: 'Tom Bradley',    status: 'Current',    monthExpected: 'Jul 2026', gwToEpa: '2026-08-05', portfolioRag: 'red',   notes: 'Progress reviews overdue; employer engagement low — urgent action required' },
+  { employer: 'Sterling Accounts',      name: 'Rachel Kim',     standard: 'Professional Accounting Technician', plannedGateway: '2026-01-20', lsc: 'Tom Bradley',    status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-20', portfolioRag: 'green', notes: 'Gateway meeting held 30 Apr; EPA booked 20 Jun' },
+  { employer: 'Meridian Consulting',    name: 'Felix Huang',    standard: 'Data Analyst',                       plannedGateway: '2026-02-14', lsc: 'Sarah Mitchell', status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: '2026-07-15', portfolioRag: 'amber', notes: 'FS maths resit passed; gateway prep in progress' },
+  { employer: 'Clarity Finance Ltd',    name: 'Leo Okafor',     standard: 'Data Analyst',                       plannedGateway: '2026-03-01', lsc: 'James Okafor',   status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-25', portfolioRag: 'green', notes: 'All evidence complete; EPA booked' },
+  { employer: 'DataSphere Analytics',   name: 'Grace Adeniran', standard: 'Data Technician',                    plannedGateway: '2026-01-10', lsc: 'James Okafor',   status: 'BIL',        monthExpected: 'Sep 2026', gwToEpa: null,         portfolioRag: 'amber', notes: 'BIL commenced 15 May 2026; RTL planned Aug — gateway Sep' },
+  { employer: 'Nova Solutions',         name: 'Ellie Forsyth',  standard: 'Professional Accounting Technician', plannedGateway: '2026-02-28', lsc: 'Priya Sharma',   status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: '2026-07-18', portfolioRag: 'amber', notes: 'Portfolio 85% complete; FS maths now passed' },
+  { employer: 'Horizon Analytics',      name: 'Noah Williams',  standard: 'Data Analyst',                       plannedGateway: '2026-02-20', lsc: 'Hannah Clarke',  status: 'Withdrawn',  monthExpected: null,       gwToEpa: null,         portfolioRag: 'red',   notes: 'Formal withdrawal agreed 10 May 2026' },
+];
+
+// Learners on an agreed break in learning
+const BIL_DATA = [
+  { employer: 'DataSphere Analytics',  name: 'Grace Adeniran', standard: 'Data Technician',         plannedGateway: '2026-09-15', lsc: 'James Okafor',   status: 'BIL Ongoing',         ldol: '2026-05-15', expectedRtl: '2026-08-15', notes: 'Medical — awaiting GP clearance for return to learning' },
+  { employer: 'Greenfield Consulting', name: 'Imani Adeyemi',  standard: 'Multi-Channel Marketer',  plannedGateway: '2026-08-10', lsc: 'Hannah Clarke',  status: 'BIL Decision Needed', ldol: '2026-03-01', expectedRtl: null,          notes: 'BIL has exceeded 12 weeks; employer yet to confirm RTL date — action required' },
+  { employer: 'Bright Digital Agency', name: 'Destiny Osei',   standard: 'Multi-Channel Marketer',  plannedGateway: null,         lsc: 'Hannah Clarke',  status: 'BIL Decision Needed', ldol: '2026-04-20', expectedRtl: null,          notes: 'Employer ceased trading; withdrawal or employer transfer being explored' },
+  { employer: 'Future Tech Services',  name: 'Kira Patel',     standard: 'Applied AI & Automation', plannedGateway: '2026-10-01', lsc: 'Sarah Mitchell', status: 'RTL Confirmed',       ldol: '2026-03-10', expectedRtl: '2026-06-09', notes: 'RTL confirmed 9 Jun 2026; employer briefed and ready' },
+  { employer: 'Bloom Marketing Co.',   name: 'Uma Sharma',     standard: 'Assistant Accountant',    plannedGateway: '2026-11-01', lsc: 'Priya Sharma',   status: 'BIL Ongoing',         ldol: '2026-04-28', expectedRtl: '2026-07-28', notes: 'Maternity leave — planned RTL late July 2026' },
+  { employer: 'Nova Solutions',        name: 'Xander Brooks',  standard: 'Multi-Channel Marketer',  plannedGateway: '2026-09-20', lsc: 'Sarah Mitchell', status: 'RTL Confirmed',       ldol: '2026-02-17', expectedRtl: '2026-06-01', notes: 'RTL confirmed 1 Jun 2026; restarted programme materials' },
+];
+
+// Gateway learners by quarter
+const GW_Q2_DATA = [
+  { employer: 'Bright Digital Agency',      name: 'Aisha Nwosu',   standard: 'Data Analyst',                       plannedGateway: '2026-04-20', lsc: 'Sarah Mitchell', status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-15', portfolioRag: 'green' },
+  { employer: 'Pinnacle Finance Group',     name: 'Harry Singh',   standard: 'Data Technician',                    plannedGateway: '2026-04-14', lsc: 'Tom Bradley',    status: 'At Gateway', monthExpected: 'Apr 2026', gwToEpa: '2026-05-28', portfolioRag: 'green' },
+  { employer: 'Urban Digital Ltd',          name: 'Maya Thompson', standard: 'Digital Support Technician',         plannedGateway: '2026-04-21', lsc: 'Tom Bradley',    status: 'At Gateway', monthExpected: 'Apr 2026', gwToEpa: '2026-05-30', portfolioRag: 'green' },
+  { employer: 'Sterling Accounts',          name: 'Rachel Kim',    standard: 'Professional Accounting Technician', plannedGateway: '2026-04-30', lsc: 'Tom Bradley',    status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-20', portfolioRag: 'amber' },
+  { employer: 'DataSphere Analytics',       name: 'Grace Adeniran',standard: 'Data Technician',                    plannedGateway: '2026-05-01', lsc: 'James Okafor',   status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-18', portfolioRag: 'green' },
+  { employer: 'Clarity Finance Ltd',        name: 'Leo Okafor',    standard: 'Data Analyst',                       plannedGateway: '2026-04-28', lsc: 'James Okafor',   status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-25', portfolioRag: 'green' },
+  { employer: 'Bloom Marketing Co.',        name: 'Jack Morrison', standard: 'Multi-Channel Marketer',             plannedGateway: '2026-04-16', lsc: 'Priya Sharma',   status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-12', portfolioRag: 'amber' },
+  { employer: 'Horizon Analytics',          name: 'Noah Williams', standard: 'Data Analyst',                       plannedGateway: '2026-04-17', lsc: 'Hannah Clarke',  status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-22', portfolioRag: 'amber' },
+  { employer: 'Peak Performance Ltd',       name: 'Olivia Chen',   standard: 'Assistant Accountant',               plannedGateway: '2026-04-10', lsc: 'Priya Sharma',   status: 'At Gateway', monthExpected: 'May 2026', gwToEpa: '2026-06-15', portfolioRag: 'green' },
+  { employer: 'Sterling Accounts',          name: 'Callum Fraser', standard: 'Assistant Accountant',               plannedGateway: '2026-06-01', lsc: 'Sarah Mitchell', status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'amber' },
+  { employer: 'Nova Solutions',             name: 'Ellie Forsyth', standard: 'Professional Accounting Technician', plannedGateway: '2026-06-05', lsc: 'Priya Sharma',   status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'amber' },
+  { employer: 'TechCore UK',                name: 'Quinn Andrews', standard: 'Applied AI & Automation',            plannedGateway: '2026-06-10', lsc: 'James Okafor',   status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'amber' },
+  { employer: 'Meridian Consulting',        name: 'Felix Huang',   standard: 'Data Analyst',                       plannedGateway: '2026-06-01', lsc: 'Sarah Mitchell', status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'green' },
+  { employer: 'Greenfield Consulting',      name: 'Destiny Marsh', standard: 'Digital Support Technician',         plannedGateway: '2026-06-15', lsc: 'Hannah Clarke',  status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'green' },
+  { employer: 'TechCore UK',                name: 'Sam Okwu',      standard: 'Data Technician',                    plannedGateway: '2026-06-20', lsc: 'James Okafor',   status: 'Current',    monthExpected: 'Jun 2026', gwToEpa: null,         portfolioRag: 'green' },
+  { employer: 'Apex Digital Ltd',           name: 'Callum Nash',   standard: 'Applied AI & Automation',            plannedGateway: '2026-04-09', lsc: 'Tom Bradley',    status: 'Withdrawn',  monthExpected: null,       gwToEpa: null,         portfolioRag: 'red'   },
+  { employer: 'Sterling Accounts',          name: 'Willow James',  standard: 'Assistant Accountant',               plannedGateway: null,         lsc: 'Hannah Clarke',  status: 'Withdrawn',  monthExpected: null,       gwToEpa: null,         portfolioRag: 'red'   },
+];
+
+const GW_Q3_DATA = [
+  { employer: 'Bloom Marketing Co.',    name: 'Maya Patel',       standard: 'Applied AI & Automation',            plannedGateway: '2026-07-01', lsc: 'Priya Sharma',   status: 'Current', monthExpected: 'Jul 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Greenfield Consulting',  name: 'Victor Marsh',     standard: 'Data Technician',                    plannedGateway: '2026-07-18', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Jul 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Clarity Finance Ltd',    name: 'Yasmin Al-Hassan', standard: 'Applied AI & Automation',            plannedGateway: '2026-07-14', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Jul 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Sterling Accounts',      name: 'Tara Collins',     standard: 'Multi-Channel Marketer',             plannedGateway: '2026-07-22', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Jul 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'DataSphere Analytics',   name: 'Ethan Brooks',     standard: 'Data Analyst',                       plannedGateway: '2026-07-28', lsc: 'James Okafor',   status: 'Current', monthExpected: 'Aug 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Horizon Analytics',      name: 'Ben Cartwright',   standard: 'Digital Support Technician',         plannedGateway: '2026-08-05', lsc: 'James Okafor',   status: 'Current', monthExpected: 'Aug 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'TechCore UK',            name: 'Isla Thomson',     standard: 'Data Technician',                    plannedGateway: '2026-08-12', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Aug 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'NovaTech Solutions',     name: 'Luca Ferretti',    standard: 'Data Analyst',                       plannedGateway: '2026-08-20', lsc: 'Priya Sharma',   status: 'Current', monthExpected: 'Aug 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Urban Digital Ltd',      name: 'Jordan Ellis',     standard: 'Data Analyst',                       plannedGateway: '2026-08-28', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Aug 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'DataSphere Analytics',   name: 'Grace Adeniran',   standard: 'Data Technician',                    plannedGateway: '2026-09-15', lsc: 'James Okafor',   status: 'BIL',     monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Greenfield Consulting',  name: 'Imani Adeyemi',    standard: 'Multi-Channel Marketer',             plannedGateway: '2026-09-10', lsc: 'Hannah Clarke',  status: 'BIL',     monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Pinnacle Finance Group', name: 'Freddie Marsh',    standard: 'Professional Accounting Technician', plannedGateway: '2026-09-01', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Peak Performance Ltd',   name: 'Chloe Davies',     standard: 'Assistant Accountant',               plannedGateway: '2026-09-15', lsc: 'Priya Sharma',   status: 'Current', monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Apex Digital Ltd',       name: 'Sophie Grant',     standard: 'Applied AI & Automation',            plannedGateway: '2026-09-22', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Bloom Marketing Co.',    name: 'Reuben Adeyemi',   standard: 'Digital Support Technician',         plannedGateway: '2026-09-28', lsc: 'Hannah Clarke',  status: 'Current', monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Nova Solutions',         name: 'Xander Brooks',    standard: 'Multi-Channel Marketer',             plannedGateway: '2026-09-20', lsc: 'Sarah Mitchell', status: 'BIL',     monthExpected: 'Sep 2026', gwToEpa: null, portfolioRag: 'amber' },
+];
+
+const GW_Q4_DATA = [
+  { employer: 'Meridian Consulting',    name: 'Patrick Doherty', standard: 'Data Analyst',                       plannedGateway: '2026-10-10', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Oct 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'TechCore UK',            name: 'Reuben Adeyemi',  standard: 'Digital Support Technician',         plannedGateway: '2026-10-22', lsc: 'Hannah Clarke',  status: 'Current', monthExpected: 'Oct 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Future Tech Services',   name: 'Kira Patel',      standard: 'Applied AI & Automation',            plannedGateway: '2026-10-01', lsc: 'Sarah Mitchell', status: 'BIL',     monthExpected: 'Oct 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Pinnacle Finance Group', name: 'Harry Singh',     standard: 'Data Technician',                    plannedGateway: '2026-10-15', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Oct 2026', gwToEpa: null, portfolioRag: 'red'   },
+  { employer: 'DataSphere Analytics',   name: 'Amara Osei',      standard: 'Multi-Channel Marketer',             plannedGateway: '2026-11-05', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Nov 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Sterling Accounts',      name: 'George Baker',    standard: 'Digital Support Technician',         plannedGateway: '2026-11-18', lsc: 'Tom Bradley',    status: 'Current', monthExpected: 'Nov 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Apex Digital Ltd',       name: 'Holly Nguyen',    standard: 'Data Technician',                    plannedGateway: '2026-11-25', lsc: 'Hannah Clarke',  status: 'Current', monthExpected: 'Nov 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Bloom Marketing Co.',    name: 'Uma Sharma',      standard: 'Assistant Accountant',               plannedGateway: '2026-11-01', lsc: 'Priya Sharma',   status: 'BIL',     monthExpected: 'Nov 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Greenfield Consulting',  name: 'Isaac Rivera',    standard: 'Data Analyst',                       plannedGateway: '2026-12-01', lsc: 'Sarah Mitchell', status: 'Current', monthExpected: 'Dec 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'Clarity Finance Ltd',    name: 'Jade Thompson',   standard: 'Data Technician',                    plannedGateway: '2026-12-10', lsc: 'James Okafor',   status: 'Current', monthExpected: 'Dec 2026', gwToEpa: null, portfolioRag: 'green' },
+  { employer: 'Bloom Marketing Co.',    name: 'Kyle Patterson',  standard: 'Multi-Channel Marketer',             plannedGateway: '2026-12-15', lsc: 'Priya Sharma',   status: 'Current', monthExpected: 'Dec 2026', gwToEpa: null, portfolioRag: 'amber' },
+  { employer: 'NovaTech Solutions',     name: 'Olivia Chen',     standard: 'Assistant Accountant',               plannedGateway: '2026-12-20', lsc: 'Priya Sharma',   status: 'Current', monthExpected: 'Dec 2026', gwToEpa: null, portfolioRag: 'green' },
+];
+
 // ─── Gateway Pipeline Data ─────────────────────────────────────────────
 // Keyed by 'YYYY-MM'. Base month (offset 0) = June 2026.
 const GATEWAY_MONTHS_DATA = {
@@ -275,11 +354,12 @@ const GATEWAY_MONTHS_DATA = {
 };
 
 // ─── State ─────────────────────────────────────────────────────────────
-let currentSize       = 200;
-let pipelineOffset    = 0;
-let gatewayOffset     = 0; // 0 = June 2026
-let deliveryLSCFilter = 'All';
-let lscPageCoach      = 'James Okafor';
+let currentSize        = 200;
+let pipelineOffset     = 0;
+let gatewayOffset      = 0; // 0 = June 2026
+let deliveryLSCFilter  = 'All';
+let deliveryDashFilter = 'All';
+let lscPageCoach       = 'James Okafor';
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -346,6 +426,12 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
 document.getElementById('delivery-lsc')?.addEventListener('change', function () {
   deliveryLSCFilter = this.value;
   renderDeliveryTables();
+});
+
+// ─── Delivery dash LSC filter ─────────────────────────────────────────
+document.getElementById('delivery-dash-lsc')?.addEventListener('change', function () {
+  deliveryDashFilter = this.value;
+  renderDeliveryDash();
 });
 
 // ─── LSC page coach selector ───────────────────────────────────────────
@@ -718,6 +804,166 @@ function renderWelfareDueTable() {
   }).join('');
 }
 
+// ─── Delivery Dashboard ────────────────────────────────────────────────
+
+function portfolioRagBadge(rag) {
+  const labels = { green: 'Green', amber: 'Amber', red: 'Red' };
+  return `<span class="rag-badge rag-badge--${rag}">${labels[rag] || rag}</span>`;
+}
+
+function oofStatusPill(status) {
+  const map = {
+    'Current':    'dd-status-current',
+    'At Gateway': 'dd-status-gateway',
+    'Withdrawn':  'dd-status-withdrawn',
+    'BIL':        'dd-status-bil',
+  };
+  return `<span class="${map[status] || 'dd-status-current'}">${status}</span>`;
+}
+
+function bilStatusPill(status) {
+  const map = {
+    'BIL Ongoing':         'dd-status-bil',
+    'BIL Decision Needed': 'dd-status-withdrawn',
+    'RTL Confirmed':       'dd-status-gateway',
+  };
+  return `<span class="${map[status] || 'dd-status-bil'}">${status}</span>`;
+}
+
+function renderDeliveryDash() {
+  const f = deliveryDashFilter === 'All' ? null : deliveryDashFilter;
+  renderDeliveryDashKPIs(f);
+  renderOOFTable(f);
+  renderBILTable(f);
+  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
+  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
+  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
+}
+
+function renderDeliveryDashKPIs(lscFilter) {
+  const filterFn = r => !lscFilter || r.lsc === lscFilter;
+
+  const oofRows    = OOF_DATA.filter(filterFn);
+  const bilRows    = BIL_DATA.filter(filterFn);
+  const q2Rows     = GW_Q2_DATA.filter(filterFn);
+  const q3Rows     = GW_Q3_DATA.filter(filterFn);
+  const q4Rows     = GW_Q4_DATA.filter(filterFn);
+
+  const oofRed     = oofRows.filter(r => r.portfolioRag === 'red').length;
+  const bilNeeded  = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
+  const q2AtGw     = q2Rows.filter(r => r.status === 'At Gateway').length;
+
+  setText('dd-oof-total',  oofRows.length);
+  setText('dd-oof-sub',    oofRed > 0 ? `${oofRed} red portfolio` : 'No red portfolios');
+  setText('dd-bil-total',  bilRows.length);
+  setText('dd-bil-sub',    `${bilNeeded} decision${bilNeeded !== 1 ? 's' : ''} needed`);
+  setText('dd-bil-action', bilNeeded);
+  setText('dd-q2-total',   q2Rows.length);
+  setText('dd-q2-sub',     `${q2AtGw} at gateway`);
+  setText('dd-q3-total',   q3Rows.length);
+  setText('dd-q3-sub',     `${q3Rows.filter(r => r.status === 'Current').length} current`);
+  setText('dd-q4-total',   q4Rows.length);
+  setText('dd-q4-sub',     `${q4Rows.filter(r => r.status === 'Current').length} current`);
+
+  // Portfolio RAG across all quarters
+  const allQRows   = [...q2Rows, ...q3Rows, ...q4Rows];
+  const ragGreen   = allQRows.filter(r => r.portfolioRag === 'green').length;
+  const ragAmber   = allQRows.filter(r => r.portfolioRag === 'amber').length;
+  const ragRed     = allQRows.filter(r => r.portfolioRag === 'red').length;
+  setText('dd-rag-green', `${ragGreen} Green`);
+  setText('dd-rag-amber', `${ragAmber} Amber`);
+  setText('dd-rag-red',   `${ragRed} Red`);
+
+  // Highlight BIL action card if decisions needed
+  const card = document.getElementById('dd-bil-action-card');
+  if (card) card.classList.toggle('kpi-card--active-alert', bilNeeded > 0);
+}
+
+function renderOOFTable(lscFilter) {
+  const tbody = document.getElementById('oof-tbody');
+  if (!tbody) return;
+  const rows = lscFilter ? OOF_DATA.filter(r => r.lsc === lscFilter) : OOF_DATA;
+  const countEl = document.getElementById('oof-panel-count');
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No OOF learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => {
+    const isWithdrawn = r.status === 'Withdrawn';
+    const isRed       = r.portfolioRag === 'red';
+    const rowClass    = isWithdrawn ? 'row-withdrawn' : isRed ? 'row-alert' : '';
+    const prepCell    = r.gwToEpa ? fmtDate(r.gwToEpa) : '<span style="color:var(--text-muted);font-style:italic;">TBC</span>';
+    const monthCell   = r.monthExpected || '<span style="color:var(--text-muted)">—</span>';
+    return `
+      <tr class="${rowClass}">
+        <td title="${r.employer}">${r.employer}</td>
+        <td title="${r.name}">${r.name}</td>
+        <td title="${r.standard}">${r.standard}</td>
+        <td>${fmtDate(r.plannedGateway)}</td>
+        <td>${r.lsc}</td>
+        <td>${oofStatusPill(r.status)}</td>
+        <td>${monthCell}</td>
+        <td>${prepCell}</td>
+        <td style="text-align:center;">${portfolioRagBadge(r.portfolioRag)}</td>
+        <td style="font-size:0.78rem;" title="${r.notes}">${r.notes}</td>
+      </tr>`;
+  }).join('');
+}
+
+function renderBILTable(lscFilter) {
+  const tbody = document.getElementById('bil-tbody');
+  if (!tbody) return;
+  const rows = lscFilter ? BIL_DATA.filter(r => r.lsc === lscFilter) : BIL_DATA;
+  const countEl = document.getElementById('bil-panel-count');
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No BIL learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => {
+    const isNeeded = r.status === 'BIL Decision Needed';
+    const rowClass = isNeeded ? 'row-alert' : '';
+    const rtlCell  = r.expectedRtl ? fmtDate(r.expectedRtl) : '<span class="cell-alert">Not confirmed</span>';
+    const gwCell   = r.plannedGateway ? fmtDate(r.plannedGateway) : '<span style="color:var(--text-muted)">—</span>';
+    return `
+      <tr class="${rowClass}">
+        <td title="${r.employer}">${r.employer}</td>
+        <td title="${r.name}">${r.name}</td>
+        <td title="${r.standard}">${r.standard}</td>
+        <td>${gwCell}</td>
+        <td>${r.lsc}</td>
+        <td>${bilStatusPill(r.status)}</td>
+        <td>${fmtDate(r.ldol)}</td>
+        <td>${rtlCell}</td>
+        <td style="font-size:0.78rem;" title="${r.notes}">${r.notes}</td>
+      </tr>`;
+  }).join('');
+}
+
+function renderGWQuarterTable(tbodyId, panelCountId, data, lscFilter) {
+  const tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
+  const rows = lscFilter ? data.filter(r => r.lsc === lscFilter) : data;
+  const countEl = document.getElementById(panelCountId);
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No gateway learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => {
+    const isWithdrawn = r.status === 'Withdrawn';
+    const isRed       = r.portfolioRag === 'red';
+    const rowClass    = isWithdrawn ? 'row-withdrawn' : isRed ? 'row-alert' : '';
+    const epaCell     = r.gwToEpa ? fmtDate(r.gwToEpa) : '<span style="color:var(--text-muted);font-style:italic;">TBC</span>';
+    const monthCell   = r.monthExpected || '<span style="color:var(--text-muted)">—</span>';
+    const gwCell      = r.plannedGateway ? fmtDate(r.plannedGateway) : '<span style="color:var(--text-muted)">—</span>';
+    return `
+      <tr class="${rowClass}">
+        <td title="${r.employer}">${r.employer}</td>
+        <td title="${r.name}">${r.name}</td>
+        <td title="${r.standard}">${r.standard}</td>
+        <td>${gwCell}</td>
+        <td>${r.lsc}</td>
+        <td>${oofStatusPill(r.status)}</td>
+        <td>${monthCell}</td>
+        <td>${epaCell}</td>
+        <td style="text-align:center;">${portfolioRagBadge(r.portfolioRag)}</td>
+      </tr>`;
+  }).join('');
+}
+
 // ─── Gateway Pipeline ──────────────────────────────────────────────────
 function getGatewayMonthKey() {
   const base = new Date(2026, 5, 1); // June 2026 = offset 0
@@ -846,5 +1092,6 @@ renderAll();
 renderPipeline();
 renderGateway();
 renderWelfare();
+renderDeliveryDash();
 
 console.log('Boom Training Dashboard loaded ✅');
