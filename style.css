@@ -509,7 +509,7 @@ body {
 .prob-medium { background: #fef3c7; color: var(--amber); }
 .prob-low    { background: #fee2e2; color: var(--red); }
 
-/* Status pill */
+/* Status pill (generic) */
 .status-pill {
   display: inline-block;
   font-size: 0.72rem;
@@ -519,6 +519,56 @@ body {
   background: #e0f2fe;
   color: #0369a1;
 }
+
+/* ─── Sales pipeline status pills ──────────────────────────── */
+.sp-pill { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; white-space: nowrap; }
+.sp-cold-lead       { background: #f1f5f9; color: var(--text-muted); }
+.sp-in-scope        { background: #eff6ff; color: #1d4ed8; }
+.sp-proposal-sent   { background: #f5f3ff; color: #6d28d9; }
+.sp-contract-issued { background: #fffbeb; color: #92400e; }
+.sp-contract-signed { background: #f0fdfa; color: #0f766e; }
+.sp-enrolment       { background: #f0fdf4; color: var(--green-dark); }
+
+/* ─── Pipeline RAG breakdown cards ─────────────────────────── */
+.bd-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.bd-card {
+  border: 1px solid var(--border);
+  border-top: 3px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.875rem 1rem;
+  box-shadow: var(--shadow);
+}
+.bd-high   { background: #f0fdf4; border-top-color: var(--green-dark); }
+.bd-medium { background: #fffbeb; border-top-color: var(--amber); }
+.bd-low    { background: #fef2f2; border-top-color: var(--red); }
+.bd-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+.bd-label { font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+.bd-sub   { font-size: 0.7rem;  color: var(--text-muted); flex: 1; }
+.bd-count { font-size: 1.4rem;  font-weight: 800; line-height: 1; }
+.bd-high   .bd-count { color: var(--green-dark); }
+.bd-medium .bd-count { color: var(--amber); }
+.bd-low    .bd-count { color: var(--red); }
+.bd-stds  { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.bd-std-pill {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid var(--border);
+  font-size: 0.69rem;
+  font-weight: 600;
+  color: var(--text-main);
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+}
+.bd-empty { font-size: 0.72rem; color: var(--text-muted); font-style: italic; }
 
 /* ===================== Learner Voice — eNPS ===================== */
 .enps-hero {

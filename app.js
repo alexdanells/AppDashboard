@@ -129,19 +129,46 @@ const STARTER_DATA = [
 
 // ─── Sales Pipeline Data ───────────────────────────────────────────────
 const PIPELINE_ENTRIES = [
-  { name: 'Isla Thomson',     employer: 'DataSphere Analytics',   standard: 'Data Technician',                    prob: 95, start: '2026-07-01', status: 'Offer Accepted'  },
-  { name: 'Jordan Ellis',     employer: 'Apex Digital Ltd',       standard: 'Data Analyst',                       prob: 90, start: '2026-07-01', status: 'Offer Accepted'  },
-  { name: 'Chloe Davies',     employer: 'Sterling Accounts',      standard: 'Assistant Accountant',               prob: 85, start: '2026-07-01', status: 'Offer Accepted'  },
-  { name: 'Luca Ferretti',    employer: 'NovaTech Solutions',     standard: 'Data Analyst',                       prob: 80, start: '2026-07-14', status: 'Contract Sent'   },
-  { name: 'Maya Patel',       employer: 'Greenfield Consulting',  standard: 'Applied AI & Automation',            prob: 75, start: '2026-07-01', status: 'Contract Sent'   },
-  { name: 'Freddie Marsh',    employer: 'Pinnacle Finance Group', standard: 'Professional Accounting Technician', prob: 70, start: '2026-07-14', status: 'Contract Sent'   },
-  { name: 'Ollie Richardson', employer: 'Bloom Marketing Co.',    standard: 'Multi-Channel Marketer',             prob: 60, start: '2026-07-14', status: 'In Discussion'   },
-  { name: 'Sophie Grant',     employer: 'Meridian Consulting',    standard: 'Applied AI & Automation',            prob: 55, start: '2026-08-01', status: 'In Discussion'   },
-  { name: 'Reuben Adeyemi',   employer: 'TechCore UK',            standard: 'Digital Support Technician',         prob: 40, start: '2026-08-01', status: 'Initial Meeting' },
-  { name: 'Amara Osei',       employer: 'Bright Digital Agency',  standard: 'Multi-Channel Marketer',             prob: 30, start: '2026-08-01', status: 'Cold Lead'       },
+  // ── May 2026 ──────────────────────────────────────────────────────────
+  { name: 'Isla Thomson',   employer: 'DataSphere Analytics',   am: 'Rachel Thornton', standard: 'Data Technician',                    prob: 90, start: '2026-05-12', status: 'Contract Signed' },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  am: 'Rachel Thornton', standard: 'Multi-Channel Marketer',             prob: 90, start: '2026-05-12', status: 'Enrolment'       },
+  { name: 'Jordan Ellis',   employer: 'Apex Digital Ltd',       am: 'Marcus Webb',     standard: 'Data Analyst',                       prob: 80, start: '2026-05-19', status: 'Contract Signed' },
+  { name: 'Chloe Davies',   employer: 'Sterling Accounts',      am: 'Rachel Thornton', standard: 'Assistant Accountant',               prob: 70, start: '2026-05-12', status: 'Contract Issued' },
+  { name: 'Fatima Malik',   employer: 'DataSphere Analytics',   am: 'Sophie Lawson',   standard: 'Data Analyst',                       prob: 60, start: '2026-05-26', status: 'Proposal Sent'   },
+  { name: 'Luca Ferretti',  employer: 'NovaTech Solutions',     am: 'Marcus Webb',     standard: 'Data Analyst',                       prob: 60, start: '2026-05-26', status: 'Proposal Sent'   },
+  { name: 'George Baker',   employer: 'Urban Digital Ltd',      am: 'Dan Kirby',       standard: 'Digital Support Technician',         prob: 50, start: '2026-05-19', status: 'In Scope'        },
+  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       am: 'Marcus Webb',     standard: 'Data Technician',                    prob: 40, start: '2026-05-26', status: 'In Scope'        },
+  { name: 'Isaac Rivera',   employer: 'Clarity Finance Ltd',    am: 'Sophie Lawson',   standard: 'Data Analyst',                       prob: 30, start: '2026-05-19', status: 'Cold Lead'       },
+  { name: 'Jade Thompson',  employer: 'Nova Solutions',         am: 'Dan Kirby',       standard: 'Multi-Channel Marketer',             prob: 20, start: '2026-05-26', status: 'Cold Lead'       },
+  // ── June 2026 ─────────────────────────────────────────────────────────
+  { name: 'Tasha Morris',   employer: 'Apex Digital Ltd',       am: 'Marcus Webb',     standard: 'Digital Support Technician',         prob: 90, start: '2026-06-09', status: 'Enrolment'       },
+  { name: 'Maya Patel',     employer: 'Greenfield Consulting',  am: 'Rachel Thornton', standard: 'Applied AI & Automation',            prob: 80, start: '2026-06-09', status: 'Contract Signed' },
+  { name: 'Nathan Brooks',  employer: 'TechCore UK',            am: 'Dan Kirby',       standard: 'Data Technician',                    prob: 70, start: '2026-06-09', status: 'Contract Issued' },
+  { name: 'Olivia Fraser',  employer: 'Meridian Consulting',    am: 'Sophie Lawson',   standard: 'Data Analyst',                       prob: 60, start: '2026-06-16', status: 'Proposal Sent'   },
+  { name: 'Patrick Marsh',  employer: 'Pinnacle Finance Group', am: 'Marcus Webb',     standard: 'Professional Accounting Technician', prob: 50, start: '2026-06-16', status: 'In Scope'        },
+  { name: 'Quinn Sullivan', employer: 'Bright Digital Agency',  am: 'Rachel Thornton', standard: 'Multi-Channel Marketer',             prob: 40, start: '2026-06-23', status: 'In Scope'        },
+  { name: 'Riya Sharma',    employer: 'DataSphere Analytics',   am: 'Dan Kirby',       standard: 'Data Analyst',                       prob: 30, start: '2026-06-23', status: 'Cold Lead'       },
+  { name: 'Sam Davies',     employer: 'Sterling Accounts',      am: 'Sophie Lawson',   standard: 'Assistant Accountant',               prob: 20, start: '2026-06-30', status: 'Cold Lead'       },
+  // ── July 2026 ─────────────────────────────────────────────────────────
+  { name: 'Umar Al-Rashid', employer: 'TechCore UK',            am: 'Rachel Thornton', standard: 'Data Analyst',                       prob: 70, start: '2026-07-07', status: 'Contract Issued' },
+  { name: 'Vera Okafor',    employer: 'Nova Solutions',         am: 'Dan Kirby',       standard: 'Multi-Channel Marketer',             prob: 60, start: '2026-07-07', status: 'Proposal Sent'   },
+  { name: 'Will Thornton',  employer: 'Clarity Finance Ltd',    am: 'Sophie Lawson',   standard: 'Data Technician',                    prob: 50, start: '2026-07-14', status: 'In Scope'        },
+  { name: 'Xena Park',      employer: 'Urban Digital Ltd',      am: 'Marcus Webb',     standard: 'Applied AI & Automation',            prob: 40, start: '2026-07-14', status: 'In Scope'        },
+  { name: 'Yusuf Hassan',   employer: 'Greenfield Consulting',  am: 'Rachel Thornton', standard: 'Data Analyst',                       prob: 30, start: '2026-07-21', status: 'Cold Lead'       },
+  { name: 'Zara Mitchell',  employer: 'Bright Digital Agency',  am: 'Dan Kirby',       standard: 'Digital Support Technician',         prob: 20, start: '2026-07-21', status: 'Cold Lead'       },
+  // ── August 2026 ───────────────────────────────────────────────────────
+  { name: 'Aaron Clarke',   employer: 'DataSphere Analytics',   am: 'Sophie Lawson',   standard: 'Data Technician',                    prob: 60, start: '2026-08-04', status: 'Proposal Sent'   },
+  { name: 'Bella Santos',   employer: 'Sterling Accounts',      am: 'Marcus Webb',     standard: 'Professional Accounting Technician', prob: 40, start: '2026-08-04', status: 'In Scope'        },
+  { name: 'Connor Walsh',   employer: 'NovaTech Solutions',     am: 'Rachel Thornton', standard: 'Data Analyst',                       prob: 30, start: '2026-08-11', status: 'Cold Lead'       },
+  { name: 'Diana Ford',     employer: 'Pinnacle Finance Group', am: 'Dan Kirby',       standard: 'Data Technician',                    prob: 20, start: '2026-08-11', status: 'Cold Lead'       },
 ];
 
-const PIPELINE_MONTH_TARGET = 8;
+const PIPELINE_TARGETS = {
+  '2026-05': 8,
+  '2026-06': 7,
+  '2026-07': 6,
+  '2026-08': 5,
+};
 
 // ─── Learner Welfare Data ─────────────────────────────────────────────
 
@@ -654,60 +681,142 @@ function renderLSCTables() {
 }
 
 // ─── Sales Pipeline ────────────────────────────────────────────────────
-function renderPipeline() {
-  const base = new Date(2026, 5, 1);
+
+function getPipelineMonthEntries() {
+  const base = new Date(2026, 4, 1); // May 2026 = offset 0
   base.setMonth(base.getMonth() + pipelineOffset);
+  const yr = base.getFullYear();
+  const mo = base.getMonth();
+  return PIPELINE_ENTRIES.filter(e => {
+    const d = new Date(e.start);
+    return d.getFullYear() === yr && d.getMonth() === mo;
+  });
+}
+
+function renderPipeline() {
+  const base = new Date(2026, 4, 1); // May 2026 = offset 0
+  base.setMonth(base.getMonth() + pipelineOffset);
+  const yr  = base.getFullYear();
+  const mo  = base.getMonth();
   const label = base.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   setText('pipeline-month', label);
 
-  const confirmed = PIPELINE_ENTRIES.filter(e => e.prob >= 75).length;
-  const pct       = Math.min(100, Math.round((confirmed / PIPELINE_MONTH_TARGET) * 100));
+  const monthKey   = `${yr}-${String(mo + 1).padStart(2, '0')}`;
+  const entries    = getPipelineMonthEntries();
+  const target     = PIPELINE_TARGETS[monthKey] || 6;
+  const confirmed  = entries.filter(e => e.prob >= 70).length;
+  const pct        = Math.min(100, Math.round((confirmed / target) * 100));
+
   setText('pipeline-confirmed', `${confirmed} confirmed starts`);
-  setText('pipeline-target',    `${PIPELINE_MONTH_TARGET} starts`);
+  setText('pipeline-target',    `${target} starts`);
   setText('pipeline-pct',       `${pct}%`);
   const bar = document.getElementById('pipeline-bar');
   if (bar) bar.style.width = pct + '%';
 
-  renderSalesTable(PIPELINE_ENTRIES);
+  // Reset filters when month changes
+  ['filter-standard','filter-am','filter-status','filter-probability'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  renderPipelineBreakdown(entries);
+  renderSalesTable(entries);
+}
+
+function renderPipelineBreakdown(entries) {
+  const container = document.getElementById('pipeline-breakdown');
+  if (!container) return;
+  if (!entries.length) {
+    container.innerHTML = '';
+    return;
+  }
+
+  const groups = [
+    { label: 'High',   sub: '≥70%',  cls: 'bd-high',   fn: e => e.prob >= 70 },
+    { label: 'Medium', sub: '40–60%', cls: 'bd-medium', fn: e => e.prob >= 40 && e.prob < 70 },
+    { label: 'Low',    sub: '≤30%',   cls: 'bd-low',    fn: e => e.prob < 40 },
+  ];
+
+  container.innerHTML = `<div class="bd-grid">${
+    groups.map(g => {
+      const items = entries.filter(g.fn);
+      const stdCounts = {};
+      items.forEach(e => { stdCounts[e.standard] = (stdCounts[e.standard] || 0) + 1; });
+      const pills = Object.entries(stdCounts)
+        .map(([std, n]) => `<span class="bd-std-pill">${std}${n > 1 ? ` ×${n}` : ''}</span>`)
+        .join('');
+      return `
+        <div class="bd-card ${g.cls}">
+          <div class="bd-card-header">
+            <span class="bd-label">${g.label}</span>
+            <span class="bd-sub">${g.sub}</span>
+            <span class="bd-count">${items.length}</span>
+          </div>
+          <div class="bd-stds">
+            ${items.length ? pills : '<span class="bd-empty">None this month</span>'}
+          </div>
+        </div>`;
+    }).join('')
+  }</div>`;
+}
+
+function salesStatusPill(status) {
+  const map = {
+    'Cold Lead':       'sp-cold-lead',
+    'In Scope':        'sp-in-scope',
+    'Proposal Sent':   'sp-proposal-sent',
+    'Contract Issued': 'sp-contract-issued',
+    'Contract Signed': 'sp-contract-signed',
+    'Enrolment':       'sp-enrolment',
+  };
+  return `<span class="sp-pill ${map[status] || ''}">${status}</span>`;
 }
 
 function renderSalesTable(entries) {
   const tbody = document.getElementById('sales-tbody');
   if (!tbody) return;
   if (!entries.length) {
-    tbody.innerHTML = emptyRow(6, 'No entries match the selected filters.');
+    tbody.innerHTML = emptyRow(7, 'No entries match the selected filters.');
     return;
   }
   tbody.innerHTML = entries.map(e => {
-    const pClass = e.prob >= 75 ? 'prob-high' : e.prob >= 40 ? 'prob-medium' : 'prob-low';
-    const pLabel = e.prob >= 75 ? 'High'      : e.prob >= 40 ? 'Medium'      : 'Low';
+    const pClass = e.prob >= 70 ? 'prob-high' : e.prob >= 40 ? 'prob-medium' : 'prob-low';
     return `
       <tr>
         <td>${e.name}</td>
         <td>${e.employer}</td>
+        <td>${e.am}</td>
         <td>${e.standard}</td>
-        <td><span class="prob-pill ${pClass}">${pLabel} (${e.prob}%)</span></td>
+        <td><span class="prob-pill ${pClass}">${e.prob}%</span></td>
         <td>${fmtDate(e.start)}</td>
-        <td><span class="status-pill">${e.status}</span></td>
-      </tr>
-    `;
+        <td>${salesStatusPill(e.status)}</td>
+      </tr>`;
   }).join('');
 }
 
 document.getElementById('filter-standard')?.addEventListener('change',   applyPipelineFilters);
+document.getElementById('filter-am')?.addEventListener('change',         applyPipelineFilters);
+document.getElementById('filter-status')?.addEventListener('change',     applyPipelineFilters);
 document.getElementById('filter-probability')?.addEventListener('change', applyPipelineFilters);
 
 function applyPipelineFilters() {
-  const std  = document.getElementById('filter-standard')?.value   || '';
-  const prob = document.getElementById('filter-probability')?.value || '';
-  const filtered = PIPELINE_ENTRIES.filter(e => {
-    const stdOk  = !std || e.standard === std;
-    let   probOk = true;
-    if (prob === 'High (≥75%)')     probOk = e.prob >= 75;
-    if (prob === 'Medium (40–74%)') probOk = e.prob >= 40 && e.prob < 75;
-    if (prob.startsWith('Low'))     probOk = e.prob < 40;
-    return stdOk && probOk;
+  const std    = document.getElementById('filter-standard')?.value    || '';
+  const am     = document.getElementById('filter-am')?.value          || '';
+  const status = document.getElementById('filter-status')?.value      || '';
+  const prob   = document.getElementById('filter-probability')?.value || '';
+
+  const entries = getPipelineMonthEntries();
+  const filtered = entries.filter(e => {
+    const stdOk    = !std    || e.standard === std;
+    const amOk     = !am     || e.am === am;
+    const statusOk = !status || e.status === status;
+    let probOk = true;
+    if (prob === 'High (≥70%)')     probOk = e.prob >= 70;
+    if (prob === 'Medium (40–60%)') probOk = e.prob >= 40 && e.prob < 70;
+    if (prob === 'Low (≤30%)')      probOk = e.prob < 40;
+    return stdOk && amOk && statusOk && probOk;
   });
+  renderPipelineBreakdown(filtered);
   renderSalesTable(filtered);
 }
 

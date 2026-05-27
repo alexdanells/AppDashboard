@@ -164,8 +164,11 @@
         </div>
       </div>
 
+      <!-- RAG breakdown visual -->
+      <div id="pipeline-breakdown"></div>
+
       <!-- Filters + table -->
-      <div class="panel" style="margin-top: 1.25rem;">
+      <div class="panel">
         <div class="panel-header" style="flex-wrap: wrap; gap: 0.75rem;">
           <h2 class="panel-title">Pipeline Entries</h2>
           <div class="filter-row">
@@ -179,11 +182,27 @@
               <option>Professional Accounting Technician</option>
               <option>Digital Support Technician</option>
             </select>
+            <select class="filter-select" id="filter-am">
+              <option value="">All AMs</option>
+              <option>Rachel Thornton</option>
+              <option>Marcus Webb</option>
+              <option>Sophie Lawson</option>
+              <option>Dan Kirby</option>
+            </select>
+            <select class="filter-select" id="filter-status">
+              <option value="">All Statuses</option>
+              <option>Cold Lead</option>
+              <option>In Scope</option>
+              <option>Proposal Sent</option>
+              <option>Contract Issued</option>
+              <option>Contract Signed</option>
+              <option>Enrolment</option>
+            </select>
             <select class="filter-select" id="filter-probability">
               <option value="">All Probabilities</option>
-              <option>High (≥75%)</option>
-              <option>Medium (40–74%)</option>
-              <option>Low (&lt;40%)</option>
+              <option>High (≥70%)</option>
+              <option>Medium (40–60%)</option>
+              <option>Low (≤30%)</option>
             </select>
           </div>
         </div>
@@ -191,17 +210,16 @@
           <table class="data-table" id="sales-table">
             <thead>
               <tr>
-                <th>Learner Name</th>
+                <th>Learner</th>
                 <th>Employer</th>
+                <th>AM</th>
                 <th>Standard</th>
                 <th>Probability</th>
                 <th>Expected Start</th>
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody id="sales-tbody">
-              <!-- Populated by app.js -->
-            </tbody>
+            <tbody id="sales-tbody"></tbody>
           </table>
         </div>
       </div>
