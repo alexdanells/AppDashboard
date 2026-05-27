@@ -817,6 +817,10 @@ body {
 
 /* ===================== Delivery Dashboard ===================== */
 
+/* Delivery dash tables — full width, auto column sizing (no overflow:hidden clipping) */
+.dd-table { width: 100%; }
+.dd-table th, .dd-table td { white-space: nowrap; }
+
 /* KPI sub-text */
 .kpi-sub {
   font-size: 0.72rem;
