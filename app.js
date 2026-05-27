@@ -468,9 +468,19 @@ document.getElementById('lsc-coach')?.addEventListener('change', function () {
   renderLSCTables();
 });
 
+// ─── Overview "View →" navigation buttons ─────────────────────────────
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('[data-goto-page]');
+  if (!btn) return;
+  const pageId = btn.dataset.gotoPage;
+  const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+  if (navLink) navLink.click();
+});
+
 // ─── Master render ─────────────────────────────────────────────────────
 function renderAll() {
   renderOverviewKPIs();
+  renderOverviewSummary();
   renderSMTKPIs();
   renderDeliveryKPIs();
   renderLSCKPIs();
@@ -492,6 +502,78 @@ function renderOverviewKPIs() {
   setText('kpi-achievement', d.achievement);
   setText('actions-count',   d.actionsToday + ' actions');
   setText('risk-count',      d.atRisk + ' learners');
+}
+
+// ─── Overview Summary Cards ────────────────────────────────────────────
+function renderOverviewSummary() {
+
+  // — Compliance —
+  setText('ov-touchpoints', TOUCHPOINT_DATA.length);
+  setText('ov-sla',         SLA_DATA.length);
+  setText('ov-otj',         OTJ_DATA.length);
+  setText('ov-starters',    STARTER_DATA.length);
+
+  // — Learner Welfare —
+  const alsOverdue         = ALS_DATA.filter(r => alsReviewRag(r.nextReview).cls === 'urgent').length;
+  const alsSoon            = ALS_DATA.filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
+  const safeguardingActive = SAFEGUARDING_DATA.filter(r => r.status === 'active').length;
+  const welfareDue         = WELFARE_DUE_DATA.filter(r => r.daysSince > 14).length;
+  setText('ov-als-overdue',  alsOverdue);
+  setText('ov-als-soon',     alsSoon);
+  setText('ov-safeguarding', safeguardingActive);
+  setText('ov-welfare-due',  welfareDue);
+
+  // — Delivery —
+  const oofActive   = OOF_DATA.filter(r => r.status !== 'Withdrawn').length;
+  const oofRed      = OOF_DATA.filter(r => r.portfolioRag === 'red' && r.status !== 'Withdrawn').length;
+  const bilDecision = BIL_DATA.filter(r => r.status === 'BIL Decision Needed').length;
+  const bilTotal    = BIL_DATA.length;
+  setText('ov-oof',          oofActive);
+  setText('ov-oof-red',      oofRed);
+  setText('ov-bil-decision', bilDecision);
+  setText('ov-bil-total',    bilTotal);
+
+  // — Gateway Pipeline (May 2026 snapshot) —
+  const gwData      = GATEWAY_MONTHS_DATA['2026-05'];
+  const gwLearners  = gwData ? gwData.groups.flatMap(g => g.learners) : [];
+  const gwAt        = gwLearners.filter(l => l.atGateway).length;
+  const gwExpected  = gwData ? gwData.expected : 0;
+  const gwCarry     = gwLearners.filter(l => l.carryOverNext).length;
+  const gwWithdrawn = gwLearners.filter(l => l.withdrawn).length;
+  setText('ov-gw-at',        gwAt);
+  setText('ov-gw-expected',  gwExpected);
+  setText('ov-gw-carry',     gwCarry);
+  setText('ov-gw-withdrawn', gwWithdrawn);
+
+  // — Sales Pipeline (May 2026) —
+  const mayEntries     = PIPELINE_ENTRIES.filter(e => {
+    const d = new Date(e.start);
+    return d.getFullYear() === 2026 && d.getMonth() === 4;
+  });
+  const salesConfirmed = mayEntries.filter(e => e.prob >= 70).length;
+  const salesTarget    = PIPELINE_TARGETS['2026-05'] || 0;
+  const salesInScope   = mayEntries.filter(e => e.status !== 'Cold Lead').length;
+  const salesCold      = mayEntries.filter(e => e.status === 'Cold Lead').length;
+  setText('ov-sales-confirmed', salesConfirmed);
+  setText('ov-sales-target',    salesTarget);
+  setText('ov-sales-inscope',   salesInScope);
+  setText('ov-sales-cold',      salesCold);
+
+  // — DfE AAF (size-dependent) —
+  const aafMetrics = AAF_METRICS[currentSize];
+  const aafGreen   = aafMetrics.filter(m => m.rag === 'green').length;
+  const aafAmber   = aafMetrics.filter(m => m.rag === 'amber').length;
+  const aafRed     = aafMetrics.filter(m => m.rag === 'red').length;
+  const redNames   = aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ');
+  setText('ov-aaf-green', aafGreen);
+  setText('ov-aaf-amber', aafAmber);
+  setText('ov-aaf-red',   aafRed);
+  const redNamesEl = document.getElementById('ov-aaf-red-names');
+  if (redNamesEl) redNamesEl.textContent = aafRed > 0 ? `Red metrics: ${redNames}` : 'No red metrics';
+
+  // — Urgent banner (items needing immediate action) —
+  const urgentTotal = SLA_DATA.length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
+  setText('ov-total-actions', urgentTotal);
 }
 
 // ─── SMT KPIs ──────────────────────────────────────────────────────────
