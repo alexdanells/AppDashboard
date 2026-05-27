@@ -46,12 +46,12 @@
       <div class="page-heading">
         <div>
           <h1 class="page-title">Overview</h1>
-          <p class="page-subtitle">Actionable summary for Senior Management</p>
+          <p class="page-subtitle">One-stop summary of all key actionable outputs across the business</p>
         </div>
       </div>
 
       <!-- KPI bar -->
-      <div class="kpi-bar" id="overview-kpis">
+      <div class="kpi-bar">
         <div class="kpi-card">
           <span class="kpi-label">Active Learners</span>
           <span class="kpi-value" id="kpi-learners">—</span>
@@ -78,44 +78,168 @@
         </div>
       </div>
 
-      <div class="dashboard-grid">
-        <div class="panel panel--wide">
-          <div class="panel-header">
-            <h2 class="panel-title">Actions Required Today</h2>
-            <span class="panel-badge red-badge" id="actions-count">—</span>
+      <!-- Urgent actions banner -->
+      <div class="ov-banner">
+        <span class="ov-banner-icon">⚡</span>
+        <span><strong id="ov-total-actions">—</strong> items flagged as urgent across all dashboards</span>
+      </div>
+
+      <!-- Summary grid: one card per dashboard area -->
+      <div class="ov-grid">
+
+        <!-- Compliance -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Compliance</span>
+            <button class="ov-nav-btn" data-goto-page="page-compliance">View →</button>
           </div>
-          <div class="panel-body placeholder-body">
-            Flagged actions driven by data — overdue reviews, missed OTJ, at-risk learners, lapsed employer contact.
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">Outstanding touchpoints</span>
+              <span class="ov-value ov-amber" id="ov-touchpoints">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Beyond 10-week SLA</span>
+              <span class="ov-value ov-red" id="ov-sla">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">No OTJ evidence this month</span>
+              <span class="ov-value ov-amber" id="ov-otj">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Awaiting first LSC meeting</span>
+              <span class="ov-value" id="ov-starters">—</span>
+            </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-header">
-            <h2 class="panel-title">At-Risk Learners</h2>
-            <span class="panel-badge amber-badge" id="risk-count">—</span>
+        <!-- Learner Welfare -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Learner Welfare</span>
+            <button class="ov-nav-btn" data-goto-page="page-welfare">View →</button>
           </div>
-          <div class="panel-body placeholder-body">
-            Learners flagged as at risk with reason codes and assigned coach.
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">ALS reviews overdue</span>
+              <span class="ov-value ov-red" id="ov-als-overdue">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">ALS reviews due soon</span>
+              <span class="ov-value ov-amber" id="ov-als-soon">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Active safeguarding cases</span>
+              <span class="ov-value ov-red" id="ov-safeguarding">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Welfare check-ins overdue</span>
+              <span class="ov-value ov-amber" id="ov-welfare-due">—</span>
+            </div>
           </div>
         </div>
 
-        <div class="panel">
-          <div class="panel-header">
-            <h2 class="panel-title">Upcoming Reviews (14 days)</h2>
+        <!-- Delivery -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Delivery</span>
+            <button class="ov-nav-btn" data-goto-page="page-delivery">View →</button>
           </div>
-          <div class="panel-body placeholder-body">
-            Progress reviews due in the next two weeks — learner, coach, employer.
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">Out of Funding (OOF)</span>
+              <span class="ov-value ov-amber" id="ov-oof">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">OOF — red portfolio</span>
+              <span class="ov-value ov-red" id="ov-oof-red">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">BIL — decision needed</span>
+              <span class="ov-value" id="ov-bil-decision">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Learners on BIL</span>
+              <span class="ov-value" id="ov-bil-total">—</span>
+            </div>
           </div>
         </div>
 
-        <div class="panel panel--wide">
-          <div class="panel-header">
-            <h2 class="panel-title">Programme Health by Standard</h2>
+        <!-- Gateway Pipeline -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Gateway Pipeline <span class="ov-card-period">(May 2026)</span></span>
+            <button class="ov-nav-btn" data-goto-page="page-gateway">View →</button>
           </div>
-          <div class="panel-body placeholder-body">
-            RAG status per apprenticeship standard — Data Technician, Data Analyst, Applied AI &amp; Automation, Multi-Channel Marketer, Assistant Accountant, Professional Accounting Technician, Digital Support Technician.
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">At gateway</span>
+              <span class="ov-value ov-green" id="ov-gw-at">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Expected this month</span>
+              <span class="ov-value" id="ov-gw-expected">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Carry over to next month</span>
+              <span class="ov-value ov-amber" id="ov-gw-carry">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Withdrawn this month</span>
+              <span class="ov-value ov-red" id="ov-gw-withdrawn">—</span>
+            </div>
           </div>
         </div>
+
+        <!-- Sales Pipeline -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Sales Pipeline <span class="ov-card-period">(May 2026)</span></span>
+            <button class="ov-nav-btn" data-goto-page="page-sales">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">Confirmed starts (≥70%)</span>
+              <span class="ov-value" id="ov-sales-confirmed">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Monthly target</span>
+              <span class="ov-value" id="ov-sales-target">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">In Scope or above</span>
+              <span class="ov-value ov-green" id="ov-sales-inscope">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Cold leads only</span>
+              <span class="ov-value ov-amber" id="ov-sales-cold">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DfE AAF -->
+        <div class="ov-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">DfE AAF</span>
+            <button class="ov-nav-btn" data-goto-page="page-aaf">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row">
+              <span class="ov-label">Green metrics</span>
+              <span class="ov-value ov-green" id="ov-aaf-green">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Amber metrics</span>
+              <span class="ov-value ov-amber" id="ov-aaf-amber">—</span>
+            </div>
+            <div class="ov-row">
+              <span class="ov-label">Red metrics</span>
+              <span class="ov-value ov-red" id="ov-aaf-red">—</span>
+            </div>
+            <div class="ov-row ov-row--note" id="ov-aaf-red-names">—</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
