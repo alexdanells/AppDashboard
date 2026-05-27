@@ -3,18 +3,511 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Apprenticeship Dashboard</title>
+  <title>Boom Training — Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <!-- ===================== HEADER ===================== -->
   <header class="app-header">
-    <h1>Apprenticeship Dashboard</h1>
-    <p class="subtitle">Training Provider — Demo</p>
+    <div class="header-top">
+      <div class="header-left">
+        <img src="btlogo.png" alt="Boom Training" class="logo" />
+      </div>
+      <div class="header-right">
+        <div class="size-toggle" title="Switch between provision sizes">
+          <button class="toggle-btn active" data-size="200">200 learners</button>
+          <button class="toggle-btn" data-size="1000">1,000 learners</button>
+        </div>
+        <span class="date-badge" id="today-date"></span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="#" class="nav-link active" data-page="page-overview">Overview</a>
+      <a href="#" class="nav-link" data-page="page-aaf">DfE AAF</a>
+      <a href="#" class="nav-link" data-page="page-sales">Sales Pipeline</a>
+      <a href="#" class="nav-link" data-page="page-smt">SMT</a>
+      <a href="#" class="nav-link" data-page="page-learner-voice">Learner Voice</a>
+      <a href="#" class="nav-link" data-page="page-delivery">Delivery</a>
+      <a href="#" class="nav-link" data-page="page-lsc">LSC</a>
+    </nav>
   </header>
 
+  <!-- ===================== PAGES ===================== -->
   <main class="app-main">
-    <p class="placeholder">Dashboard modules coming soon...</p>
+
+    <!-- ==================== OVERVIEW ==================== -->
+    <section id="page-overview" class="page active">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Overview</h1>
+          <p class="page-subtitle">Actionable summary for Senior Management</p>
+        </div>
+      </div>
+
+      <!-- KPI bar -->
+      <div class="kpi-bar" id="overview-kpis">
+        <div class="kpi-card">
+          <span class="kpi-label">Active Learners</span>
+          <span class="kpi-value" id="kpi-learners">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">On Track</span>
+          <span class="kpi-value green" id="kpi-on-track">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">At Risk</span>
+          <span class="kpi-value amber" id="kpi-at-risk">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Overdue Reviews</span>
+          <span class="kpi-value red" id="kpi-overdue">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Employers</span>
+          <span class="kpi-value" id="kpi-employers">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Achievement Rate</span>
+          <span class="kpi-value green" id="kpi-achievement">—</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Actions Required Today</h2>
+            <span class="panel-badge red-badge" id="actions-count">—</span>
+          </div>
+          <div class="panel-body placeholder-body">
+            Flagged actions driven by data — overdue reviews, missed OTJ, at-risk learners, lapsed employer contact.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">At-Risk Learners</h2>
+            <span class="panel-badge amber-badge" id="risk-count">—</span>
+          </div>
+          <div class="panel-body placeholder-body">
+            Learners flagged as at risk with reason codes and assigned coach.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Upcoming Reviews (14 days)</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Progress reviews due in the next two weeks — learner, coach, employer.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Programme Health by Standard</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            RAG status per apprenticeship standard — Data Technician, Data Analyst, Applied AI &amp; Automation, Multi-Channel Marketer, Assistant Accountant, Professional Accounting Technician, Digital Support Technician.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== DfE AAF ==================== -->
+    <section id="page-aaf" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">DfE Apprenticeship Accountability Framework</h1>
+          <p class="page-subtitle">RAG-rated performance against national benchmarks</p>
+        </div>
+        <button class="btn-export">⬇ Export</button>
+      </div>
+
+      <div class="aaf-grid" id="aaf-grid">
+        <!-- Populated by app.js -->
+      </div>
+    </section>
+
+    <!-- ==================== SALES PIPELINE ==================== -->
+    <section id="page-sales" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Sales Pipeline</h1>
+          <p class="page-subtitle">Prospective starts and conversion tracking</p>
+        </div>
+        <button class="btn-export">⬇ Export</button>
+      </div>
+
+      <!-- Monthly progress bar -->
+      <div class="pipeline-progress-card">
+        <div class="pipeline-progress-header">
+          <span class="pipeline-progress-label">Monthly Target Progress</span>
+          <div class="month-nav">
+            <button class="month-btn" id="month-prev">&#8249;</button>
+            <span class="month-label" id="pipeline-month">—</span>
+            <button class="month-btn" id="month-next">&#8250;</button>
+          </div>
+          <span class="pipeline-progress-pct" id="pipeline-pct">—%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="pipeline-bar" style="width: 0%"></div>
+        </div>
+        <div class="pipeline-progress-sub">
+          <span id="pipeline-confirmed">— confirmed starts</span>
+          <span>Target: <strong id="pipeline-target">— starts</strong></span>
+        </div>
+      </div>
+
+      <!-- Filters + table -->
+      <div class="panel" style="margin-top: 1.25rem;">
+        <div class="panel-header" style="flex-wrap: wrap; gap: 0.75rem;">
+          <h2 class="panel-title">Pipeline Entries</h2>
+          <div class="filter-row">
+            <select class="filter-select" id="filter-standard">
+              <option value="">All Standards</option>
+              <option>Data Technician</option>
+              <option>Data Analyst</option>
+              <option>Applied AI &amp; Automation</option>
+              <option>Multi-Channel Marketer</option>
+              <option>Assistant Accountant</option>
+              <option>Professional Accounting Technician</option>
+              <option>Digital Support Technician</option>
+            </select>
+            <select class="filter-select" id="filter-probability">
+              <option value="">All Probabilities</option>
+              <option>High (≥75%)</option>
+              <option>Medium (40–74%)</option>
+              <option>Low (&lt;40%)</option>
+            </select>
+          </div>
+        </div>
+        <div class="panel-body" style="padding: 0; overflow-x: auto;">
+          <table class="data-table" id="sales-table">
+            <thead>
+              <tr>
+                <th>Learner Name</th>
+                <th>Employer</th>
+                <th>Standard</th>
+                <th>Probability</th>
+                <th>Expected Start</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="sales-tbody">
+              <!-- Populated by app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SMT ==================== -->
+    <section id="page-smt" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Senior Management</h1>
+          <p class="page-subtitle">Strategic and financial performance overview</p>
+        </div>
+        <button class="btn-export">⬇ Export</button>
+      </div>
+
+      <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="kpi-card">
+          <span class="kpi-label">Projected Revenue (Year)</span>
+          <span class="kpi-value green" id="smt-revenue">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">New Starts (Month)</span>
+          <span class="kpi-value" id="smt-starts">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Planned Gateway</span>
+          <span class="kpi-value" id="smt-gateway">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Withdrawals (YTD)</span>
+          <span class="kpi-value red" id="smt-withdrawals">—</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Revenue Forecast</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Projected revenue from confirmed and pipeline starts by standard and month.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Gateway Pipeline</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Learners approaching and entered planned gateway — readiness status.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Headcount by Standard</h2>
+            <button class="btn-export">⬇ Export</button>
+          </div>
+          <div class="panel-body placeholder-body">
+            Breakdown of active learners by standard, with starts, leavers, and completions YTD.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Employer Retention</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Employer re-sign rate, new accounts opened, and accounts at risk of churn.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Ofsted Readiness</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Self-assessment score, last inspection date, key evidence flags.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== LEARNER VOICE ==================== -->
+    <section id="page-learner-voice" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Learner Voice</h1>
+          <p class="page-subtitle">eNPS, sentiment and feedback from learners and employers</p>
+        </div>
+        <button class="btn-export">⬇ Export</button>
+      </div>
+
+      <!-- eNPS hero -->
+      <div class="enps-hero" id="enps-hero">
+        <div class="enps-score-block">
+          <span class="enps-label">Learner eNPS</span>
+          <span class="enps-score" id="enps-score">—</span>
+          <span class="enps-sub">Out of 100</span>
+        </div>
+        <div class="enps-breakdown">
+          <div class="enps-band promoters">
+            <span class="enps-band-pct" id="enps-promoters">—%</span>
+            <span class="enps-band-label">Promoters</span>
+          </div>
+          <div class="enps-band passives">
+            <span class="enps-band-pct" id="enps-passives">—%</span>
+            <span class="enps-band-label">Passives</span>
+          </div>
+          <div class="enps-band detractors">
+            <span class="enps-band-pct" id="enps-detractors">—%</span>
+            <span class="enps-band-label">Detractors</span>
+          </div>
+        </div>
+        <div class="enps-score-block">
+          <span class="enps-label">Employer eNPS</span>
+          <span class="enps-score" id="employer-enps-score">—</span>
+          <span class="enps-sub">Out of 100</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Recent Learner Comments</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Verbatim feedback from progress reviews — sentiment-tagged positive / neutral / negative.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Recent Employer Comments</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Employer feedback from review sign-offs — flagged concerns and praise.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Exit Review Summary</h2>
+            <button class="btn-export">⬇ Export</button>
+          </div>
+          <div class="panel-body placeholder-body">
+            Themes from exit reviews — reason for leaving, satisfaction score, NPS at exit.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Survey Results by Standard</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Aggregated survey scores per apprenticeship standard — satisfaction, teaching quality, relevance.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== DELIVERY ==================== -->
+    <section id="page-delivery" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Delivery</h1>
+          <p class="page-subtitle">Operational delivery metrics across all programmes</p>
+        </div>
+        <button class="btn-export">⬇ Export</button>
+      </div>
+
+      <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="kpi-card">
+          <span class="kpi-label">Reviews Completed (Month)</span>
+          <span class="kpi-value green" id="del-reviews">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">OTJ Compliance</span>
+          <span class="kpi-value" id="del-otj">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Functional Skills On Track</span>
+          <span class="kpi-value amber" id="del-fs">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">EPA Ready</span>
+          <span class="kpi-value" id="del-epa">—</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">OTJ Hours Compliance</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            % of learners meeting minimum OTJ hours threshold — breakdown by standard and coach.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Review Completion Rate</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Progress reviews completed on time vs overdue — by coach and standard.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Functional Skills Tracker</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            English and Maths status — exempt, in progress, achieved — by learner cohort.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">EPA Readiness</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Learners within 3 months of gateway — readiness checklist status.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">Learner Progress by Standard</h2>
+            <button class="btn-export">⬇ Export</button>
+          </div>
+          <div class="panel-body placeholder-body">
+            Progress tracker — % through programme, months remaining, predicted end date vs planned.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== LSC ==================== -->
+    <section id="page-lsc" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Learner Success Coach</h1>
+          <p class="page-subtitle">Filtered delivery metrics by coach</p>
+        </div>
+      </div>
+
+      <!-- Coach selector -->
+      <div class="lsc-selector-bar">
+        <label class="lsc-selector-label" for="lsc-coach">Viewing coach:</label>
+        <select class="filter-select" id="lsc-coach">
+          <option>All Coaches</option>
+          <option>Sarah Mitchell</option>
+          <option>James Okafor</option>
+          <option>Priya Sharma</option>
+          <option>Tom Bradley</option>
+          <option>Hannah Clarke</option>
+        </select>
+      </div>
+
+      <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+        <div class="kpi-card">
+          <span class="kpi-label">My Learners</span>
+          <span class="kpi-value" id="lsc-learners">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Reviews Due (14 days)</span>
+          <span class="kpi-value amber" id="lsc-reviews-due">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">At Risk</span>
+          <span class="kpi-value red" id="lsc-at-risk">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">OTJ Compliance</span>
+          <span class="kpi-value green" id="lsc-otj">—</span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">My At-Risk Learners</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Learners flagged at risk — reason code, days since last contact, action required.
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Upcoming Reviews</h2>
+          </div>
+          <div class="panel-body placeholder-body">
+            Reviews due in the next 14 days — learner name, employer, review type, due date.
+          </div>
+        </div>
+
+        <div class="panel panel--wide">
+          <div class="panel-header">
+            <h2 class="panel-title">My Caseload</h2>
+            <button class="btn-export">⬇ Export</button>
+          </div>
+          <div class="panel-body placeholder-body">
+            Full learner list — standard, progress %, OTJ status, last review date, RAG.
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <script src="app.js"></script>
