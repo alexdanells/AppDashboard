@@ -702,6 +702,119 @@ body {
   border-color: var(--navy);
 }
 
+/* ===================== Gateway — metric cards ===================== */
+.gateway-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.gw-metric {
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border: 1px solid transparent;
+}
+
+.gw-blue  { background: #eff6ff; border-color: #bfdbfe; }
+.gw-amber { background: #fffbeb; border-color: #fde68a; }
+.gw-green { background: #f0fdf4; border-color: #bbf7d0; }
+.gw-red   { background: #fef2f2; border-color: #fecaca; }
+
+.gw-metric-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.gw-blue  .gw-metric-label { color: #1d4ed8; }
+.gw-amber .gw-metric-label { color: var(--amber); }
+.gw-green .gw-metric-label { color: var(--green-dark); }
+.gw-red   .gw-metric-label { color: var(--red); }
+
+.gw-metric-value {
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gw-blue  .gw-metric-value { color: #2563eb; }
+.gw-amber .gw-metric-value { color: var(--amber); }
+.gw-green .gw-metric-value { color: var(--green-dark); }
+.gw-red   .gw-metric-value { color: var(--red); }
+
+/* ===================== Gateway — LSC sections ====================== */
+.lsc-table-section {
+  margin-bottom: 0;
+}
+
+.lsc-table-heading {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.55rem 0.875rem;
+}
+
+/* ===================== Gateway — grouped table ===================== */
+.gateway-table .lsc-group-row td {
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 0.45rem 1rem;
+  border-bottom: none;
+  letter-spacing: 0.02em;
+}
+
+.gateway-table .lsc-summary-row td {
+  background: #f1f5f9;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  border-top: 2px solid var(--border);
+  padding-top: 0.45rem;
+  padding-bottom: 0.45rem;
+}
+
+.gateway-table .rate-cell {
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.rate-good   { color: var(--green-dark); }
+.rate-medium { color: var(--amber); }
+.rate-low    { color: var(--red); }
+
+.gateway-table tbody tr.row-carry    { background: #fffbeb; }
+.gateway-table tbody tr.row-withdrawn { background: #fef2f2; opacity: 0.9; }
+
+.months-carried-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fee2e2;
+  color: var(--red);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ===================== Learner Welfare ===================== */
+.weeks-pill.ok    { background: #dcfce7; color: var(--green-dark); }
+
+.status-active { background: #fef3c7; color: var(--amber);      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+.status-closed { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
+
 /* ===================== Responsive ===================== */
 @media (max-width: 1200px) {
   .aaf-grid { grid-template-columns: repeat(2, 1fr); }

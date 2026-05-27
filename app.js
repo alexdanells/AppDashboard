@@ -21,6 +21,7 @@ const DATA = {
     revenue: '£1.2M', starts: 12, gateway: 18, withdrawals: 11,
     outstanding: 18, overdueReviews: 9, noOtj: 12, awaitingFirst: 8,
     learnerENPS: 62, promoters: '68%', passives: '26%', detractors: '6%', employerENPS: 54,
+    alsTotal: 10, alsActive: 8, safeguardingActive: 5, welfareChecksDue: 6,
   },
   1000: {
     learners: 1000, onTrack: 820, atRisk: 130, overdue: 50,
@@ -28,6 +29,7 @@ const DATA = {
     revenue: '£6.1M', starts: 58, gateway: 91, withdrawals: 63,
     outstanding: 87, overdueReviews: 43, noOtj: 58, awaitingFirst: 31,
     learnerENPS: 58, promoters: '65%', passives: '27%', detractors: '8%', employerENPS: 51,
+    alsTotal: 49, alsActive: 41, safeguardingActive: 24, welfareChecksDue: 29,
   },
 };
 
@@ -141,9 +143,141 @@ const PIPELINE_ENTRIES = [
 
 const PIPELINE_MONTH_TARGET = 8;
 
+// ─── Learner Welfare Data ─────────────────────────────────────────────
+
+// ALS Register — sorted by nextReview ascending (most urgent at top)
+const ALS_DATA = [
+  { name: 'Callum Fraser',  standard: 'Assistant Accountant',               lsc: 'Tom Bradley',    need: 'Dyspraxia',               adjustments: 'Alternative format submissions, extended time in assessments', lastReview: '2026-01-10', nextReview: '2026-04-10' },
+  { name: 'Maya Thompson',  standard: 'Digital Support Technician',         lsc: 'Tom Bradley',    need: 'ADHD',                    adjustments: 'Chunked learning materials, regular breaks, visual planners',   lastReview: '2026-02-20', nextReview: '2026-05-20' },
+  { name: 'Noah Williams',  standard: 'Data Analyst',                       lsc: 'Hannah Clarke',  need: 'Anxiety / Mental Health', adjustments: 'Regular welfare check-ins, phased return support',              lastReview: '2026-03-05', nextReview: '2026-06-05' },
+  { name: 'Quinn Andrews',  standard: 'Applied AI & Automation',            lsc: 'James Okafor',   need: 'Dyslexia',                adjustments: 'Extended assessment time, dyslexia-friendly materials',          lastReview: '2026-03-15', nextReview: '2026-06-15' },
+  { name: 'Ben Cartwright', standard: 'Digital Support Technician',         lsc: 'James Okafor',   need: 'Visual Impairment',       adjustments: 'Large print, screen reader software, accessible formats',        lastReview: '2026-03-25', nextReview: '2026-06-25' },
+  { name: 'Grace Adeniran', standard: 'Data Technician',                    lsc: 'James Okafor',   need: 'Hearing Impairment',      adjustments: 'Written communication preferred, transcripts provided',           lastReview: '2026-04-05', nextReview: '2026-07-05' },
+  { name: 'Aisha Nwosu',   standard: 'Data Analyst',                        lsc: 'Sarah Mitchell', need: 'Autism Spectrum (ASC)',   adjustments: 'Structured routine, written instructions, quiet space for EPA',  lastReview: '2026-04-10', nextReview: '2026-07-10' },
+  { name: 'Ellie Forsyth', standard: 'Professional Accounting Technician',  lsc: 'Priya Sharma',   need: 'Dyscalculia',             adjustments: 'Calculator permitted, formulae sheet provided in assessments',   lastReview: '2026-04-18', nextReview: '2026-07-18' },
+  { name: 'Harry Singh',   standard: 'Data Technician',                     lsc: 'Tom Bradley',    need: 'ADHD',                    adjustments: 'Chunked tasks, visual planners, frequent progress check-ins',    lastReview: '2026-04-22', nextReview: '2026-07-22' },
+  { name: 'Imani Adeyemi', standard: 'Multi-Channel Marketer',              lsc: 'Hannah Clarke',  need: 'Anxiety / Mental Health', adjustments: 'Welfare check-ins every 2 weeks, flexible submission deadlines', lastReview: '2026-04-01', nextReview: '2026-07-01' },
+];
+
+// Safeguarding & Welfare Concerns — active cases first, then closed
+const SAFEGUARDING_DATA = [
+  { name: 'Noah Williams', lsc: 'Hannah Clarke', dateRaised: '2026-02-28', category: 'Mental Health & Wellbeing', status: 'active', lastAction: '2026-05-10', notes: 'Referred to counselling service; bi-weekly welfare check-ins in place' },
+  { name: 'Imani Adeyemi', lsc: 'Hannah Clarke', dateRaised: '2026-02-28', category: 'Mental Health & Wellbeing', status: 'active', lastAction: '2026-05-20', notes: 'Ongoing anxiety support; employer informed and supportive' },
+  { name: 'Jack Morrison', lsc: 'Priya Sharma',  dateRaised: '2026-04-02', category: 'Workplace Concern',         status: 'active', lastAction: '2026-05-15', notes: 'Employer meeting arranged — concerns raised regarding workload' },
+  { name: 'Victor Marsh',  lsc: 'Tom Bradley',   dateRaised: '2026-04-19', category: 'Workplace Concern',         status: 'active', lastAction: '2026-05-12', notes: 'Employer review meeting scheduled for 3 June 2026' },
+  { name: 'Destiny Osei',  lsc: 'Hannah Clarke', dateRaised: '2026-05-03', category: 'Personal Welfare',          status: 'active', lastAction: '2026-05-20', notes: 'Learner withdrawal in progress; welfare support and signposting offered' },
+  { name: 'Callum Fraser', lsc: 'Tom Bradley',   dateRaised: '2026-01-22', category: 'Financial Hardship',        status: 'closed', lastAction: '2026-03-18', notes: 'Signposted to Citizens Advice; resolved satisfactorily' },
+];
+
+// Welfare Check-ins Due — sorted by daysSince descending (most overdue first)
+const WELFARE_DUE_DATA = [
+  { name: 'Callum Fraser',  lsc: 'Tom Bradley',   reason: 'ALS review overdue (Dyspraxia)',            lastCheckin: '2026-04-10', daysSince: 47 },
+  { name: 'Maya Thompson',  lsc: 'Tom Bradley',   reason: 'ALS review overdue (ADHD)',                 lastCheckin: '2026-04-20', daysSince: 37 },
+  { name: 'Quinn Andrews',  lsc: 'James Okafor',  reason: 'ALS review due (Dyslexia)',                 lastCheckin: '2026-04-27', daysSince: 30 },
+  { name: 'Noah Williams',  lsc: 'Hannah Clarke', reason: 'Mental health monitoring (bi-weekly)',      lastCheckin: '2026-05-10', daysSince: 17 },
+  { name: 'Jack Morrison',  lsc: 'Priya Sharma',  reason: 'Safeguarding welfare follow-up',            lastCheckin: '2026-05-15', daysSince: 12 },
+  { name: 'Imani Adeyemi',  lsc: 'Hannah Clarke', reason: 'Safeguarding check (fortnightly)',          lastCheckin: '2026-05-20', daysSince: 7  },
+];
+
+// ─── Gateway Pipeline Data ─────────────────────────────────────────────
+// Keyed by 'YYYY-MM'. Base month (offset 0) = June 2026.
+const GATEWAY_MONTHS_DATA = {
+  '2026-05': {
+    forecast: 22, expected: 18,
+    groups: [
+      { lsc: 'Sarah Mitchell', learners: [
+        { name: 'Aisha Nwosu',    standard: 'Data Analyst',                       prepDate: '2026-04-20', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Ben Cartwright', standard: 'Digital Support Technician',         prepDate: '2026-04-18', atGateway: true,  monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Callum Fraser',  standard: 'Assistant Accountant',               prepDate: '2026-04-25', atGateway: false, monthsCarried: 0, carryOverNext: true,  withdrawn: false, notes: 'OTJ hours not yet met — moved to June' },
+        { name: 'Destiny Osei',   standard: 'Multi-Channel Marketer',             prepDate: null,         atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: true,  notes: 'Employer ceased trading' },
+      ]},
+      { lsc: 'James Okafor', learners: [
+        { name: 'Grace Adeniran', standard: 'Data Technician',                    prepDate: '2026-04-22', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Quinn Andrews',  standard: 'Applied AI & Automation',            prepDate: '2026-04-15', atGateway: false, monthsCarried: 1, carryOverNext: true,  withdrawn: false, notes: 'EPA registration delayed — moved to June' },
+        { name: 'Leo Okafor',     standard: 'Data Analyst',                       prepDate: '2026-04-28', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Priya Sharma', learners: [
+        { name: 'Jack Morrison',  standard: 'Multi-Channel Marketer',             prepDate: '2026-04-16', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Ellie Forsyth',  standard: 'Professional Accounting Technician', prepDate: '2026-04-24', atGateway: false, monthsCarried: 0, carryOverNext: true,  withdrawn: false, notes: 'Functional Skills maths pending — moved to June' },
+        { name: 'Olivia Chen',    standard: 'Assistant Accountant',               prepDate: '2026-04-10', atGateway: true,  monthsCarried: 2, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Tom Bradley', learners: [
+        { name: 'Harry Singh',    standard: 'Data Technician',                    prepDate: '2026-04-14', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Maya Thompson',  standard: 'Digital Support Technician',         prepDate: '2026-04-21', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Callum Nash',    standard: 'Applied AI & Automation',            prepDate: '2026-04-09', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: true,  notes: 'Personal reasons — formal withdrawal agreed' },
+        { name: 'Rachel Kim',     standard: 'Professional Accounting Technician', prepDate: '2026-04-30', atGateway: true,  monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Hannah Clarke', learners: [
+        { name: 'Noah Williams',  standard: 'Data Analyst',                       prepDate: '2026-04-17', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Imani Adeyemi',  standard: 'Multi-Channel Marketer',             prepDate: '2026-04-23', atGateway: true,  monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Destiny Marsh',  standard: 'Digital Support Technician',         prepDate: '2026-04-11', atGateway: false, monthsCarried: 0, carryOverNext: true,  withdrawn: false, notes: 'Employer unavailable for EPA — moved to June' },
+        { name: 'Willow James',   standard: 'Assistant Accountant',               prepDate: null,         atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: true,  notes: 'Change of employment' },
+      ]},
+    ],
+  },
+  '2026-06': {
+    forecast: 20, expected: 16,
+    groups: [
+      { lsc: 'Sarah Mitchell', learners: [
+        { name: 'Callum Fraser',  standard: 'Assistant Accountant',               prepDate: '2026-05-22', atGateway: false, monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: 'Carry over from May — OTJ now met' },
+        { name: 'Felix Huang',    standard: 'Data Analyst',                       prepDate: '2026-05-20', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Kira Patel',     standard: 'Applied AI & Automation',            prepDate: '2026-05-27', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'James Okafor', learners: [
+        { name: 'Quinn Andrews',  standard: 'Applied AI & Automation',            prepDate: '2026-05-14', atGateway: false, monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: 'Carry over from May' },
+        { name: 'Sam Okwu',       standard: 'Data Technician',                    prepDate: '2026-05-26', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Ben Cartwright', standard: 'Digital Support Technician',         prepDate: '2026-05-19', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Priya Sharma', learners: [
+        { name: 'Ellie Forsyth',  standard: 'Professional Accounting Technician', prepDate: '2026-05-21', atGateway: false, monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: 'Carry over from May — FS maths now achieved' },
+        { name: 'Uma Sharma',     standard: 'Assistant Accountant',               prepDate: null,         atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Jack Morrison',  standard: 'Multi-Channel Marketer',             prepDate: '2026-05-15', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Tom Bradley', learners: [
+        { name: 'Victor Marsh',   standard: 'Data Technician',                    prepDate: '2026-05-18', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Maya Thompson',  standard: 'Digital Support Technician',         prepDate: '2026-05-25', atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Hannah Clarke', learners: [
+        { name: 'Destiny Marsh',  standard: 'Digital Support Technician',         prepDate: '2026-05-20', atGateway: false, monthsCarried: 1, carryOverNext: false, withdrawn: false, notes: 'Carry over from May' },
+        { name: 'Noah Williams',  standard: 'Data Analyst',                       prepDate: null,         atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Tara Collins',   standard: 'Multi-Channel Marketer',             prepDate: null,         atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+    ],
+  },
+  '2026-07': {
+    forecast: 18, expected: 14,
+    groups: [
+      { lsc: 'Sarah Mitchell', learners: [
+        { name: 'Patrick Doherty',  standard: 'Data Analyst',                       prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Yasmin Al-Hassan', standard: 'Applied AI & Automation',            prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Aisha Nwosu',      standard: 'Digital Support Technician',         prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'James Okafor', learners: [
+        { name: 'Leo Okafor',       standard: 'Data Technician',                    prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Grace Adeniran',   standard: 'Professional Accounting Technician', prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Priya Sharma', learners: [
+        { name: 'Xander Brooks',    standard: 'Multi-Channel Marketer',             prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Uma Sharma',       standard: 'Assistant Accountant',               prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Olivia Chen',      standard: 'Data Analyst',                       prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Tom Bradley', learners: [
+        { name: 'Harry Singh',      standard: 'Data Technician',                    prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Victor Marsh',     standard: 'Data Analyst',                       prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+      { lsc: 'Hannah Clarke', learners: [
+        { name: 'Imani Adeyemi',    standard: 'Multi-Channel Marketer',             prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Tara Collins',     standard: 'Assistant Accountant',               prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+        { name: 'Noah Williams',    standard: 'Data Analyst',                       prepDate: null, atGateway: false, monthsCarried: 0, carryOverNext: false, withdrawn: false, notes: '' },
+      ]},
+    ],
+  },
+};
+
 // ─── State ─────────────────────────────────────────────────────────────
 let currentSize       = 200;
 let pipelineOffset    = 0;
+let gatewayOffset     = 0; // 0 = June 2026
 let deliveryLSCFilter = 'All';
 let lscPageCoach      = 'James Okafor';
 
@@ -227,6 +361,7 @@ function renderAll() {
   renderSMTKPIs();
   renderDeliveryKPIs();
   renderLSCKPIs();
+  renderWelfareKPIs();
   renderAAF();
   renderENPS();
   renderDeliveryTables();
@@ -493,8 +628,223 @@ function applyPipelineFilters() {
 document.getElementById('month-prev')?.addEventListener('click', () => { pipelineOffset--; renderPipeline(); });
 document.getElementById('month-next')?.addEventListener('click', () => { pipelineOffset++; renderPipeline(); });
 
+document.getElementById('gw-month-prev')?.addEventListener('click', () => { gatewayOffset--; renderGateway(); });
+document.getElementById('gw-month-next')?.addEventListener('click', () => { gatewayOffset++; renderGateway(); });
+
+// ─── Welfare KPIs ──────────────────────────────────────────────────────
+function renderWelfareKPIs() {
+  const d = DATA[currentSize];
+  setText('kpi-als-total',      d.alsTotal);
+  setText('kpi-als-active',     d.alsActive);
+  setText('kpi-safeguarding',   d.safeguardingActive);
+  setText('kpi-welfare-due',    d.welfareChecksDue);
+}
+
+// ─── Welfare Tables ────────────────────────────────────────────────────
+function renderWelfare() {
+  renderALSTable();
+  renderSafeguardingTable();
+  renderWelfareDueTable();
+}
+
+function alsReviewRag(nextReviewStr) {
+  const today = new Date('2026-05-27');
+  const next  = new Date(nextReviewStr);
+  const days  = Math.floor((next - today) / (1000 * 60 * 60 * 24));
+  if (days < 0)   return { label: 'Overdue',   cls: 'urgent' };
+  if (days <= 28) return { label: 'Due soon',  cls: 'warning' };
+  return               { label: 'On track',  cls: 'ok' };
+}
+
+function renderALSTable() {
+  const tbody = document.getElementById('als-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = ALS_DATA.map(r => {
+    const rag = alsReviewRag(r.nextReview);
+    return `
+      <tr class="${rag.cls === 'urgent' ? 'row-alert' : ''}">
+        <td>${r.name}</td>
+        <td>${r.standard}</td>
+        <td>${r.lsc}</td>
+        <td><strong>${r.need}</strong></td>
+        <td style="font-size:0.78rem;">${r.adjustments}</td>
+        <td>${fmtDate(r.lastReview)}</td>
+        <td class="${rag.cls === 'urgent' ? 'cell-alert' : ''}">${fmtDate(r.nextReview)}</td>
+        <td style="text-align:center;"><span class="weeks-pill ${rag.cls}">${rag.label}</span></td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderSafeguardingTable() {
+  const tbody = document.getElementById('safeguarding-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = SAFEGUARDING_DATA.map(r => {
+    const isActive  = r.status === 'active';
+    const rowClass  = isActive ? 'row-carry' : '';
+    const statusEl  = isActive
+      ? '<span class="status-active">Active</span>'
+      : '<span class="status-closed">Closed</span>';
+    return `
+      <tr class="${rowClass}">
+        <td><strong>${r.name}</strong></td>
+        <td>${r.lsc}</td>
+        <td>${fmtDate(r.dateRaised)}</td>
+        <td>${r.category}</td>
+        <td>${statusEl}</td>
+        <td>${fmtDate(r.lastAction)}</td>
+        <td style="font-size:0.78rem;">${r.notes}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderWelfareDueTable() {
+  const tbody = document.getElementById('welfare-due-tbody');
+  if (!tbody) return;
+  tbody.innerHTML = WELFARE_DUE_DATA.map(r => {
+    const isAlert = r.daysSince > 14;
+    return `
+      <tr class="${isAlert ? 'row-alert' : ''}">
+        <td>${r.name}</td>
+        <td>${r.lsc}</td>
+        <td>${r.reason}</td>
+        <td>${fmtDate(r.lastCheckin)}</td>
+        <td class="${isAlert ? 'cell-alert' : ''}">
+          <span class="weeks-pill ${isAlert ? 'urgent' : 'warning'}">${r.daysSince}d ago</span>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// ─── Gateway Pipeline ──────────────────────────────────────────────────
+function getGatewayMonthKey() {
+  const base = new Date(2026, 5, 1); // June 2026 = offset 0
+  base.setMonth(base.getMonth() + gatewayOffset);
+  return `${base.getFullYear()}-${String(base.getMonth() + 1).padStart(2, '0')}`;
+}
+
+
+function renderGateway() {
+  const key       = getGatewayMonthKey();
+  const monthData = GATEWAY_MONTHS_DATA[key];
+  const container = document.getElementById('gateway-container');
+
+  // Month label
+  const [yr, mo]  = key.split('-').map(Number);
+  const label     = new Date(yr, mo - 1, 1).toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+  setText('gw-month-label', label);
+
+  if (!monthData) {
+    setText('gw-forecast',   '—'); setText('gw-expected', '—');
+    setText('gw-at-gateway', '—'); setText('gw-carry-over', '—');
+    setText('gw-pct', '—%');       setText('gw-bar-sub', 'No data for this month');
+    const bar = document.getElementById('gw-bar');
+    if (bar) bar.style.width = '0%';
+    if (container) container.innerHTML = '<p style="text-align:center;padding:2rem;color:var(--text-muted);font-style:italic;">No gateway data available for this month.</p>';
+    return;
+  }
+
+  // Totals
+  const allLearners = monthData.groups.flatMap(g => g.learners);
+  const atGateway   = allLearners.filter(l => l.atGateway).length;
+  const carryOver   = allLearners.filter(l => l.carryOverNext).length;
+  const pct         = monthData.expected > 0
+    ? Math.min(100, Math.round((atGateway / monthData.expected) * 100))
+    : 0;
+
+  // Progress bar + metrics
+  setText('gw-forecast',    monthData.forecast);
+  setText('gw-expected',    monthData.expected);
+  setText('gw-at-gateway',  atGateway);
+  setText('gw-carry-over',  carryOver);
+  setText('gw-pct',         pct + '%');
+  setText('gw-bar-sub',     `${atGateway} at gateway of ${monthData.expected} expected`);
+  const bar = document.getElementById('gw-bar');
+  if (bar) bar.style.width = pct + '%';
+
+  if (!container) return;
+
+  const tick = val => val
+    ? '<span class="check-yes">✓</span>'
+    : '<span class="check-no">–</span>';
+
+  const theadHtml = `
+    <thead>
+      <tr>
+        <th>Learner</th>
+        <th>Standard</th>
+        <th>Prep Meeting</th>
+        <th style="text-align:center;">At Gateway</th>
+        <th style="text-align:center;">Months Carried</th>
+        <th style="text-align:center;">Carry Over</th>
+        <th style="text-align:center;">Withdrawn</th>
+        <th>Notes</th>
+        <th style="text-align:center;">Rate</th>
+      </tr>
+    </thead>`;
+
+  let html = '';
+
+  monthData.groups.forEach(group => {
+    const active    = group.learners.filter(l => !l.withdrawn);
+    const groupAt   = group.learners.filter(l => l.atGateway).length;
+    const groupExp  = active.length;
+    const groupRate = groupExp > 0 ? Math.round((groupAt / groupExp) * 100) : 0;
+    const rateClass = groupRate >= 75 ? 'rate-good' : groupRate >= 50 ? 'rate-medium' : 'rate-low';
+
+    let rowsHtml = '';
+
+    group.learners.forEach(l => {
+      const rowClass = l.withdrawn ? 'row-withdrawn' : l.carryOverNext ? 'row-carry' : '';
+      const prepCell = l.prepDate
+        ? fmtDate(l.prepDate)
+        : '<span style="color:var(--text-muted);font-style:italic;">TBC</span>';
+      const carriedCell = l.monthsCarried > 0
+        ? `<span class="months-carried-badge">${l.monthsCarried}</span>`
+        : '<span class="check-no">–</span>';
+
+      rowsHtml += `
+        <tr class="${rowClass}">
+          <td>${l.name}</td>
+          <td>${l.standard}</td>
+          <td>${prepCell}</td>
+          <td style="text-align:center;">${tick(l.atGateway)}</td>
+          <td style="text-align:center;">${carriedCell}</td>
+          <td style="text-align:center;">${tick(l.carryOverNext)}</td>
+          <td style="text-align:center;">${tick(l.withdrawn)}</td>
+          <td>${l.notes || '<span style="color:var(--text-muted)">—</span>'}</td>
+          <td></td>
+        </tr>`;
+    });
+
+    // Summary row
+    rowsHtml += `
+      <tr class="lsc-summary-row">
+        <td colspan="8" style="text-align:right;padding-right:1.25rem;font-style:italic;">
+          ${group.lsc} &mdash; ${groupAt} of ${groupExp} at gateway
+        </td>
+        <td class="rate-cell ${rateClass}">${groupRate}%</td>
+      </tr>`;
+
+    html += `
+      <div class="lsc-table-section">
+        <div class="lsc-table-heading">${group.lsc}</div>
+        <table class="data-table gateway-table">
+          ${theadHtml}
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
 // ─── Init ──────────────────────────────────────────────────────────────
 renderAll();
 renderPipeline();
+renderGateway();
+renderWelfare();
 
 console.log('Boom Training Dashboard loaded ✅');
