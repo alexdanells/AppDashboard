@@ -2858,18 +2858,22 @@ function syncCoachDropdowns() {
   });
 }
 
-document.querySelectorAll('.report-preset-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
-    if (!preset) return;
-    document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const areaEl = document.getElementById('rf-area');
-    if (areaEl) areaEl.value = preset.area;
-    if (preset.extra.portfolioRag) { const el = document.getElementById('rf-rag');    if (el) el.value = preset.extra.portfolioRag; }
-    if (preset.extra.status)       { const el = document.getElementById('rf-status'); if (el) el.value = preset.extra.status; }
-    runReport(preset.area, preset.extra);
-  });
+// Use event delegation so all preset pills work regardless of load order
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.report-preset-pill');
+  if (!btn) return;
+  const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
+  if (!preset) return;
+  document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const areaEl = document.getElementById('rf-area');
+  if (areaEl) areaEl.value = preset.area;
+  // Reset extra filters first, then apply preset's extras
+  const rRag = document.getElementById('rf-rag');    if (rRag) rRag.value = '';
+  const rStt = document.getElementById('rf-status'); if (rStt) rStt.value = '';
+  if (preset.extra.portfolioRag && rRag) rRag.value = preset.extra.portfolioRag;
+  if (preset.extra.status && rStt)       rStt.value = preset.extra.status;
+  runReport(preset.area, preset.extra);
 });
 
 document.getElementById('report-run-btn')?.addEventListener('click', () => {
