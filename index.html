@@ -628,45 +628,46 @@
         </div>
 
         <div class="kpi-bar">
-          <div class="kpi-card"><span class="kpi-label">Outstanding Touchpoints</span><span class="kpi-value amber" id="kpi-outstanding">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">Overdue Reviews (10+ wks)</span><span class="kpi-value red" id="kpi-overdue-reviews">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">No OTJ This Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Awaiting First Meeting</span><span class="kpi-value" id="kpi-awaiting-first">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Outstanding Touchpoints</span><span class="kpi-value amber" id="kpi-outstanding">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Progress Reviews (8+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">No OTJ This Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Out of Funding</span><span class="kpi-value" id="comp-oof-total">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
           <div class="kpi-card" id="comp-reviews-due-card"><span class="kpi-label">Reviews Due (14 days)</span><span class="kpi-value amber" id="lsc-reviews-due">—</span></div>
           <div class="kpi-card" id="comp-otj-card"><span class="kpi-label">OTJ Compliance</span><span class="kpi-value green" id="lsc-otj">—</span></div>
         </div>
 
         <div class="panel-stack">
+
+          <div class="panel panel--span">
+            <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div></div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Planned Start</th><th>30-Day Window</th><th>FDOL Entry</th><th>Starter Checklist</th></tr></thead>
+                <tbody id="starter-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="panel">
             <div class="panel-header"><div><h2 class="panel-title">Outstanding Monthly Touchpoints</h2><p class="panel-desc">Learners with no 1-2-1 or progress review recorded this calendar month</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Date of Last Meeting</th><th>Type of Last Meeting</th></tr></thead><tbody id="touchpoint-tbody"></tbody></table>
             </div>
           </div>
+
           <div class="panel">
-            <div class="panel-header"><div><h2 class="panel-title">Beyond 10-Week Progress Review SLA</h2><p class="panel-desc">Most overdue at top — flagged red beyond 12 weeks</p></div><button class="btn-export">⬇ Export</button></div>
+            <div class="panel-header"><div><h2 class="panel-title">Progress Reviews</h2><p class="panel-desc">Amber — approaching 10 weeks &nbsp;|&nbsp; Red — exceeded 10-week review threshold</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Review Deadline</th><th>Weeks Since Last Review</th></tr></thead><tbody id="sla-tbody"></tbody></table>
+              <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Review Due By</th><th>Weeks Since Last Review</th></tr></thead><tbody id="sla-tbody"></tbody></table>
             </div>
           </div>
+
           <div class="panel">
             <div class="panel-header"><div><h2 class="panel-title">No OTJ Evidence Recorded This Month</h2><p class="panel-desc">Longest since last entry at top — flagged red beyond 4 weeks</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>OTJ Completed</th><th>OTJ Expected</th><th>Last Entry Date</th></tr></thead><tbody id="otj-tbody"></tbody></table>
-            </div>
-          </div>
-          <div class="panel panel--span">
-            <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div></div>
-            <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Learner</th><th>Employer</th><th>LSC</th><th>Planned Start</th>
-                    <th>30-Day Window</th><th>FDOL Entry</th><th>Starter Checklist</th>
-                  </tr>
-                </thead>
-                <tbody id="starter-tbody"></tbody>
-              </table>
             </div>
           </div>
 
