@@ -415,8 +415,8 @@
         <div class="panel-stack">
           <div class="panel panel--span">
             <div class="panel-header">
-              <h2 class="panel-title">Learner Comments</h2>
-              <span class="panel-count" id="learner-comments-count">—</span>
+              <div style="display:flex;align-items:center;gap:0.75rem;"><h2 class="panel-title">Learner Comments</h2><span class="panel-count" id="learner-comments-count">—</span></div>
+              <button class="btn-export">⬇ Export</button>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
@@ -432,8 +432,8 @@
 
           <div class="panel panel--span">
             <div class="panel-header">
-              <h2 class="panel-title">Employer Comments</h2>
-              <span class="panel-count" id="employer-comments-count">—</span>
+              <div style="display:flex;align-items:center;gap:0.75rem;"><h2 class="panel-title">Employer Comments</h2><span class="panel-count" id="employer-comments-count">—</span></div>
+              <button class="btn-export">⬇ Export</button>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
@@ -449,8 +449,8 @@
 
           <div class="panel panel--span">
             <div class="panel-header">
-              <h2 class="panel-title">Exit Review Summary</h2>
-              <span class="panel-count" id="exit-review-count">—</span>
+              <div style="display:flex;align-items:center;gap:0.75rem;"><h2 class="panel-title">Exit Review Summary</h2><span class="panel-count" id="exit-review-count">—</span></div>
+              <button class="btn-export">⬇ Export</button>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
@@ -523,6 +523,7 @@
                 <h2 class="panel-title">Safeguarding &amp; Welfare Concerns</h2>
                 <p class="panel-desc">Active safeguarding cases and overdue welfare check-ins — handled in confidence</p>
               </div>
+              <button class="btn-export">⬇ Export</button>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
@@ -730,7 +731,7 @@
         <div class="panel-stack">
 
           <div class="panel panel--span">
-            <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div></div>
+            <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
                 <thead><tr><th>Learner</th><th>Employer</th><th>Standard</th><th>LSC</th><th>Planned Start</th><th>30-Day Window</th><th>FDOL Entry</th><th>Starter Checklist</th></tr></thead>
@@ -753,7 +754,7 @@
             </div>
           </div>
 
-          <div class="panel">
+          <div class="panel panel--span">
             <div class="panel-header"><div><h2 class="panel-title">OTJ Compliance in Month</h2><p class="panel-desc">Learners with no OTJ evidence recorded this month — longest since last entry at top</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>OTJ Completed</th><th>OTJ Expected</th><th>Last Entry Date</th></tr></thead><tbody id="otj-tbody"></tbody></table>
@@ -761,7 +762,7 @@
           </div>
 
           <div class="panel panel--span">
-            <div class="panel-header"><h2 class="panel-title">Out of Funding (OOF)</h2><span class="panel-count" id="oof-panel-count">—</span></div>
+            <div class="panel-header"><div><h2 class="panel-title">Out of Funding (OOF)</h2></div><span class="panel-count" id="oof-panel-count">—</span><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
                 <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th><th>Notes</th></tr></thead>
@@ -771,7 +772,7 @@
           </div>
 
           <div class="panel panel--span">
-            <div class="panel-header"><h2 class="panel-title">Break in Learning (BIL)</h2><span class="panel-count" id="bil-panel-count">—</span></div>
+            <div class="panel-header"><div><h2 class="panel-title">Break in Learning (BIL)</h2></div><span class="panel-count" id="bil-panel-count">—</span><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
                 <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>LSC</th><th>Status</th><th>LDOL</th><th>Expected RTL</th><th>Notes</th></tr></thead>

@@ -543,6 +543,7 @@ const _LN = ['Smith','Jones','Williams','Taylor','Brown','Davies','Evans','Wilso
   'Ferreira','Silva','Santos','Costa','Chen','Zhang','Liu','Wang',
   'Murphy','Kelly','Walsh','Ryan','Byrne','Doyle','McCarthy','Burke',
   'Park','Kim','Choi','Andersen','Berg','Johansson','Nielsen','Hansen'];
+// 120 employers — realistic spread for 1,000 learners (~8 per employer on average)
 const _EMP = [
   'TechCore UK','DataSphere Analytics','Apex Digital Ltd','Bright Digital Agency',
   'Greenfield Consulting','Sterling Accounts','Meridian Consulting','Nova Solutions',
@@ -554,7 +555,36 @@ const _EMP = [
   'Tidal Marketing','Upland Data Services','Kestrel Tech','Falcon Finance',
   'Osprey Analytics','Hawk Digital','Eagle Consulting','Harrier Solutions',
   'Swift Data','Merlin Marketing','Robin Finance','Wren Technologies',
+  'Bridgewater Consulting','Clover Analytics','Dawnlight Digital','Eastgate Finance',
+  'Fernwood Solutions','Goldcrest Data','Highfield Marketing','Ironbridge Tech',
+  'Juniper Finance','Kingsley Analytics','Lakeview Digital','Maple Consulting',
+  'Northgate Systems','Oakwood Finance','Pinewood Data','Queensbury Digital',
+  'Riverside Analytics','Sandstone Solutions','Thornton Finance','Underhill Tech',
+  'Vivid Marketing','Westbrook Consulting','Yardley Finance','Zenith Analytics',
+  'Alder Digital','Birch Consulting','Cedar Finance','Dover Analytics',
+  'Elm Data Services','Foxhall Digital','Greenbank Finance','Heather Tech',
+  'Inkwell Marketing','Jasper Consulting','Kelvin Analytics','Larkspur Digital',
+  'Meadow Finance','Nettle Data','Orion Consulting','Primrose Analytics',
+  'Quartz Finance','Reed Digital','Sequoia Solutions','Teakwood Finance',
+  'Underwood Analytics','Vervain Digital','Willow Consulting','Yarrow Finance',
+  'Amber Solutions','Bronze Consulting','Cobalt Data','Dusk Digital',
+  'Emerald Finance','Fern Analytics','Garnet Consulting','Hazel Data',
+  'Ivory Digital','Jade Finance','Kaolin Analytics','Lapis Consulting',
+  'Malachite Data','Nimbus Digital','Opal Finance','Pearl Analytics',
+  'Ruby Consulting','Sapphire Data','Topaz Digital','Umber Finance',
+  'Alcott Solutions','Barrett Finance','Carver Digital','Dunbar Analytics',
+  'Elliot Consulting','Fletcher Data','Grayson Finance','Harlow Digital',
+  'Ingram Analytics','Jennings Consulting','Kimura Finance','Langley Data',
+  'Marsh Digital','Neville Analytics','Osborn Finance','Paxton Consulting',
 ];
+
+// Per-coach caseload capacities (total = 1,000)
+const COACH_CAPACITIES_1000 = {
+  'Sarah Mitchell': 60, 'James Okafor': 60, 'Priya Sharma': 55, 'Tom Bradley': 60, 'Hannah Clarke': 52,
+  'Natasha Reynolds': 55, 'Daniel Osei': 52, 'Emma Whitfield': 60, 'Marcus Chen': 50, 'Lorna MacPherson': 45,
+  'Aidan Walsh': 58, 'Fatima Begum': 60, 'Ryan Saunders': 25, 'Charlotte Patel': 48, 'Leon Adeyemi': 60,
+  "Niamh O'Brien": 52, 'Josh Carpenter': 30, 'Amara Diallo': 52, 'Steven Park': 40, 'Rosa Ferreira': 26,
+};
 const _NEEDS = ['Dyslexia','ADHD','Anxiety / Mental Health','Dyspraxia','Dyscalculia',
   'Autism Spectrum (ASC)','Visual Impairment','Hearing Impairment','Physical Disability'];
 const _ADJ = [
@@ -595,7 +625,7 @@ const SCALE_1000 = (function () {
   const pr   = p => rng() < p;
   const TODAY = '2026-06-04';
 
-  // --- Master learner list: 50 per coach = 1000 ---
+  // --- Master learner list: varied caseloads per coach = 1,000 total ---
   const used = new Set();
   const genName = () => {
     let n, t = 0;
@@ -605,19 +635,33 @@ const SCALE_1000 = (function () {
 
   const masters = [];
   COACHES_1000.forEach(coach => {
-    for (let i = 0; i < 50; i++) {
+    const count = COACH_CAPACITIES_1000[coach] || 50;
+    for (let i = 0; i < count; i++) {
       masters.push({ name: genName(), employer: pick(_EMP), standard: pick(STANDARDS), lsc: coach });
     }
   });
 
   // Shuffle then assign statuses: 10% Gateway, 5% OOF, 5% BIL, 80% Live
   for (let i = masters.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [masters[i], masters[j]] = [masters[j], masters[i]]; }
+  const total = masters.length;
   masters.forEach((m, i) => {
-    m.status = i < 100 ? 'Gateway' : i < 150 ? 'OOF' : i < 200 ? 'BIL' : 'Live';
-    if (m.status === 'Gateway') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(0, 90));   }
-    else if (m.status === 'OOF') { m.startDate = _isoAdd(TODAY, -ri(548, 730)); m.plannedGateway = _isoAdd(TODAY, -ri(30, 150)); }
-    else if (m.status === 'BIL') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(90, 270));  }
-    else                         { m.startDate = _isoAdd(TODAY, -ri(30, 182));  m.plannedGateway = _isoAdd(TODAY, ri(365, 548)); }
+    const pct = i / total;
+    m.status = pct < 0.10 ? 'Gateway' : pct < 0.15 ? 'OOF' : pct < 0.20 ? 'BIL' : 'Live';
+    if (m.status === 'Gateway') {
+      m.startDate      = _isoAdd(TODAY, -ri(365, 548));
+      m.plannedGateway = _isoAdd(TODAY, ri(0, 90));
+    } else if (m.status === 'OOF') {
+      m.startDate      = _isoAdd(TODAY, -ri(548, 730));
+      m.plannedGateway = _isoAdd(TODAY, -ri(30, 150));
+    } else if (m.status === 'BIL') {
+      m.startDate      = _isoAdd(TODAY, -ri(365, 548));
+      m.plannedGateway = _isoAdd(TODAY, ri(90, 270));
+    } else {
+      // Spread over last 15 months for realistic cohort distribution
+      m.startDate = _isoAdd(TODAY, -ri(30, 455));
+      const progLen = ri(365, 548); // 12–18 month programme
+      m.plannedGateway = _isoAdd(m.startDate, progLen);
+    }
   });
 
   // ── Compliance ──────────────────────────────────────────────────────
@@ -657,11 +701,23 @@ const SCALE_1000 = (function () {
     notes: 'Agreed break in learning — return date being confirmed.',
   }));
 
-  // ── KSB ─────────────────────────────────────────────────────────────
+  // ── KSB — completion correlates with programme progress ─────────────
   const ksbStds = Object.keys(KSB_STANDARDS);
+  const todayMs = new Date(TODAY).getTime();
   const ksb = masters.filter(m => m.status !== 'Withdrawn' && ksbStds.includes(m.standard)).map(m => {
-    const near = new Date(m.plannedGateway) < new Date('2026-12-04');
-    const base = m.status === 'Gateway' ? ri(70, 95) : m.status === 'OOF' ? ri(30, 65) : m.status === 'BIL' ? ri(20, 55) : near ? ri(40, 80) : ri(5, 40);
+    let base;
+    if (m.status === 'Gateway') { base = ri(75, 95); }
+    else if (m.status === 'OOF') { base = ri(35, 65); }
+    else if (m.status === 'BIL') { base = ri(20, 55); }
+    else {
+      // Scale completion to proportion of programme elapsed
+      const startMs   = new Date(m.startDate).getTime();
+      const gwMs      = new Date(m.plannedGateway).getTime();
+      const progLen   = Math.max(1, gwMs - startMs);
+      const elapsed   = Math.min(progLen, todayMs - startMs);
+      const progress  = elapsed / progLen; // 0–1
+      base = Math.round(progress * 85) + ri(0, 15); // 0–100 range
+    }
     return {
       employer: m.employer, name: m.name, standard: m.standard, lsc: m.lsc,
       startDate: m.startDate, plannedGateway: m.plannedGateway,
@@ -699,15 +755,21 @@ const SCALE_1000 = (function () {
       })),
     })).filter(g => g.learners.length > 0),
   });
+  // Seasonal pattern: spring peak (Apr-Jun), summer flat (Jul-Aug), autumn peak (Sep-Nov), winter flat (Dec-Jan)
+  const sl = gwMonthLearners;
   const gatewayMonths = {
-    '2026-05': GATEWAY_MONTHS_DATA['2026-05'], // keep original for 200
-    '2026-06': mkGwMonth('2026-06', 55, 45, gwMonthLearners.slice(0, 50)),
-    '2026-07': mkGwMonth('2026-07', 48, 40, gwMonthLearners.slice(25, 75)),
-    '2026-08': mkGwMonth('2026-08', 42, 35, gwMonthLearners.slice(50, 100)),
+    '2026-05': GATEWAY_MONTHS_DATA['2026-05'], // keep hand-crafted 200-learner data
+    '2026-06': mkGwMonth('2026-06', 62, 52, sl.slice(0,  52)), // spring peak
+    '2026-07': mkGwMonth('2026-07', 32, 26, sl.slice(20, 46)), // summer flat
+    '2026-08': mkGwMonth('2026-08', 28, 22, sl.slice(40, 62)), // summer flat
+    '2026-09': mkGwMonth('2026-09', 58, 48, sl.slice(30, 78)), // autumn peak starts
+    '2026-10': mkGwMonth('2026-10', 68, 56, sl.slice(20, 76)), // autumn peak
+    '2026-11': mkGwMonth('2026-11', 60, 50, sl.slice(10, 60)), // autumn peak
+    '2026-12': mkGwMonth('2026-12', 18, 14, sl.slice(50, 64)), // winter flat
   };
 
   // ── Welfare ─────────────────────────────────────────────────────────
-  const als = masters.filter((m, i) => i % 12 === 0).map(m => ({
+  const als = masters.filter((m, i) => i % 9 === 0).map(m => ({
     name: m.name, standard: m.standard, lsc: m.lsc,
     need: pick(_NEEDS), adjustments: pick(_ADJ),
     lastReview: _isoAdd(TODAY, -ri(30, 180)),
@@ -1392,9 +1454,6 @@ function renderOTJTable(tbodyId, lscFilter) {
 function renderStarterTable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-
-  // Apply fit class to the parent table
-  if (tbody.closest('table')) tbody.closest('table').classList.add('table--fit');
 
   const rows = lscFilter
     ? AD.starters.filter(r => r.lsc === lscFilter)
