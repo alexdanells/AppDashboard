@@ -957,13 +957,17 @@
       <div class="report-presets-bar">
         <span class="report-presets-label">Quick reports</span>
         <div class="report-preset-pills">
-          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
-          <button class="report-preset-pill" data-preset="sla">SLA Breaches</button>
           <button class="report-preset-pill" data-preset="touchpoints">Outstanding Touchpoints</button>
+          <button class="report-preset-pill" data-preset="sla">Progress Reviews</button>
+          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
           <button class="report-preset-pill" data-preset="oof-red">Red Portfolio (OOF)</button>
           <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
-          <button class="report-preset-pill" data-preset="welfare">Active Welfare Concerns</button>
-          <button class="report-preset-pill" data-preset="gateway">Gateway Pipeline</button>
+          <button class="report-preset-pill" data-preset="ksb-atrisk">KSB At-Risk</button>
+          <button class="report-preset-pill" data-preset="curriculum-behind">Curriculum Off-Track</button>
+          <button class="report-preset-pill" data-preset="gateway-red">Gateway Red Portfolio</button>
+          <button class="report-preset-pill" data-preset="welfare-active">Active Safeguarding</button>
+          <button class="report-preset-pill" data-preset="welfare-checkins">Welfare Check-ins Due</button>
+          <button class="report-preset-pill" data-preset="learner-list">Full Learner List</button>
           <button class="report-preset-pill" data-preset="pipeline">Sales Pipeline</button>
         </div>
       </div>
@@ -977,17 +981,33 @@
           <div class="filter-group">
             <label class="filter-label" for="rf-area">Data area</label>
             <select class="filter-select" id="rf-area">
-              <option value="all">All areas</option>
-              <option value="touchpoints">Outstanding Touchpoints</option>
-              <option value="sla">SLA Breaches</option>
-              <option value="otj">OTJ Compliance</option>
-              <option value="starters">Awaiting First Meeting</option>
-              <option value="oof">Out of Funding (OOF)</option>
-              <option value="bil">Break in Learning (BIL)</option>
-              <option value="gateway">Gateway Pipeline</option>
-              <option value="welfare_als">ALS Register</option>
-              <option value="welfare_safeguarding">Safeguarding &amp; Welfare</option>
-              <option value="pipeline">Sales Pipeline</option>
+              <option value="all">All Areas</option>
+              <optgroup label="Compliance">
+                <option value="touchpoints">Outstanding Touchpoints</option>
+                <option value="sla">Progress Reviews (8+ weeks)</option>
+                <option value="otj">OTJ Compliance in Month</option>
+                <option value="starters">Awaiting First LSC Meeting</option>
+                <option value="oof">Out of Funding (OOF)</option>
+                <option value="bil">Break in Learning (BIL)</option>
+              </optgroup>
+              <optgroup label="Delivery / KSB">
+                <option value="ksb_tracker">KSB Tracker</option>
+                <option value="learner_list">Full Learner List</option>
+              </optgroup>
+              <optgroup label="Gateway">
+                <option value="gateway">Gateway Forecast (All Quarters)</option>
+              </optgroup>
+              <optgroup label="Curriculum">
+                <option value="curriculum">Curriculum Progress</option>
+              </optgroup>
+              <optgroup label="Welfare">
+                <option value="welfare_als">ALS Register</option>
+                <option value="welfare_safeguarding">Safeguarding &amp; Welfare Concerns</option>
+                <option value="welfare_due">Welfare Check-ins Due</option>
+              </optgroup>
+              <optgroup label="Sales">
+                <option value="pipeline">Sales Pipeline</option>
+              </optgroup>
             </select>
           </div>
           <div class="filter-group">
@@ -1047,6 +1067,11 @@
         </div>
       </div>
 
+      <!-- Sales Manager restriction notice -->
+      <div id="report-role-notice" class="ksb-notice" style="display:none;">
+        ⓘ Your account only has access to the Sales Pipeline report. Select <strong>Sales Pipeline</strong> from the Data Area dropdown or use the preset button above.
+      </div>
+
       <div class="panel" id="report-results-panel" style="display:none;">
         <div class="panel-header">
           <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -1054,6 +1079,8 @@
             <span class="panel-count" id="report-results-count">0 records</span>
           </div>
         </div>
+        <!-- Row limit notice -->
+        <div id="report-limit-notice" class="ksb-notice" style="display:none;margin:0.75rem 1.25rem 0;"></div>
         <div style="overflow-x:auto;">
           <table class="data-table dd-table" id="report-table">
             <thead id="report-thead"></thead>

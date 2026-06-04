@@ -1136,6 +1136,12 @@ function applyRolePermissions() {
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
 
+    // Sales Manager: default to pipeline area in Reporting
+    if (role === 'sales') {
+      const rfArea = document.getElementById('rf-area');
+      if (rfArea) rfArea.value = 'pipeline';
+    }
+
     const ddLscEl = document.getElementById('delivery-dash-lsc');
     if (ddLscEl) ddLscEl.value = 'All';
     const dLscEl = document.getElementById('delivery-lsc');
@@ -2410,109 +2416,154 @@ function statusPill(status) {
   return `<span class="${map[status] || 'dd-status-current'}">${status}</span>`;
 }
 
+// Helper: area badge for cross-provision view
+const _ab = t => `<span class="area-badge area-${t}">${{compliance:'Compliance',delivery:'Delivery',welfare:'Welfare',curriculum:'Curriculum',gateway:'Gateway'}[t]||t}</span>`;
+
 const REPORT_CONFIGS = {
+
+  // ── All Areas (cross-provision) ──────────────────────────────────────
   all: {
     label: 'All Areas — Cross-Provision View',
     columns: ['Area', 'Learner', 'Employer', 'LSC', 'Issue / Status', 'Detail'],
     getData(f) {
       const rows = [];
       reportFilterBy(AD.touchpoints, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
-        'Outstanding touchpoint', `Last: ${fmtDate(r.lastMeeting)}`
+        _ab('compliance'), r.name, r.employer, r.lsc, 'Outstanding touchpoint', `Last: ${fmtDate(r.lastMeeting)}`
       ]}));
       reportFilterBy(AD.sla, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
-        'SLA breach', `${r.weeksSince} weeks since last review`
+        _ab('compliance'), r.name, r.employer, r.lsc, 'Progress review overdue', `${r.weeksSince} weeks`
       ]}));
       reportFilterBy(AD.otj, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
-        'No OTJ evidence', `${r.otjPct}% / ${r.otjExpected}% expected`
+        _ab('compliance'), r.name, r.employer, r.lsc, 'No OTJ evidence', `${r.otjPct}% / ${r.otjExpected}% expected`
+      ]}));
+      reportFilterBy(AD.starters, f).filter(r => !(r.firstDayDone && r.checklistDone)).forEach(r => rows.push({ _cols: [
+        _ab('compliance'), r.name, r.employer, r.lsc, 'Awaiting first meeting', `Started: ${fmtDate(r.plannedStart)}`
       ]}));
       reportFilterBy(AD.oof, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
-        statusPill(r.status), portfolioRagBadge(r.portfolioRag)
+        _ab('delivery'), r.name, r.employer, r.lsc, statusPill(r.status), portfolioRagBadge(r.portfolioRag)
       ], _rowClass: r.portfolioRag === 'red' ? 'row-alert' : '' }));
       reportFilterBy(AD.bil, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
-        statusPill(r.status), r.expectedRtl ? `RTL: ${fmtDate(r.expectedRtl)}` : 'RTL TBC'
+        _ab('delivery'), r.name, r.employer, r.lsc, statusPill(r.status), r.expectedRtl ? `RTL: ${fmtDate(r.expectedRtl)}` : 'RTL TBC'
+      ]}));
+      reportFilterBy(AD.ksb, f).filter(r => ksbRag(r) !== 'green').forEach(r => rows.push({ _cols: [
+        _ab('delivery'), r.name, r.employer, r.lsc, `KSB: ${ksbRag(r).replace('-',' ')}`, ksbRagBadge(ksbRag(r))
+      ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' }));
+      reportFilterBy(AD.curriculum, f).filter(r => curriculumStatus(r) !== 'On Track').forEach(r => rows.push({ _cols: [
+        _ab('curriculum'), r.name, r.employer, r.lsc, `Curriculum: ${curriculumStatus(r)}`, r.sprint
+      ], _rowClass: ['Behind','No Activity'].includes(curriculumStatus(r)) ? 'row-alert' : '' }));
+      reportFilterBy(AD.als, f).forEach(r => rows.push({ _cols: [
+        _ab('welfare'), r.name, r.standard || '—', r.lsc, 'ALS support', r.need
       ]}));
       reportFilterBy(AD.safeguarding, f).forEach(r => rows.push({ _cols: [
-        '<span class="area-badge area-welfare">Welfare</span>', r.name, '—', r.lsc,
-        `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
-        r.category
+        _ab('welfare'), r.name, '—', r.lsc, `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`, r.category
       ]}));
+      reportFilterBy(AD.welfareDue, f).forEach(r => rows.push({ _cols: [
+        _ab('welfare'), r.name, '—', r.lsc, 'Welfare check-in due', `${r.daysSince}d ago`
+      ], _rowClass: r.daysSince > 14 ? 'row-alert' : '' }));
       return rows;
     }
   },
+
+  // ── Compliance ────────────────────────────────────────────────────────
   touchpoints: {
     label: 'Outstanding Touchpoints',
     columns: ['Learner', 'Employer', 'LSC', 'Last Meeting', 'Meeting Type', 'Days Since'],
     getData(f) {
-      return reportFilterBy(AD.touchpoints, f).map(r => ({ _cols: [
-        r.name, r.employer, r.lsc, fmtDate(r.lastMeeting), r.meetingType,
-        Math.floor((new Date('2026-06-04') - new Date(r.lastMeeting)) / 86400000) + ' days'
-      ]}));
+      return reportFilterBy(AD.touchpoints, f)
+        .sort((a,b) => new Date(a.lastMeeting) - new Date(b.lastMeeting))
+        .map(r => ({ _cols: [
+          r.name, r.employer, r.lsc, fmtDate(r.lastMeeting), r.meetingType,
+          Math.floor((new Date('2026-06-04') - new Date(r.lastMeeting)) / 86400000) + ' days'
+        ]}));
     }
   },
   sla: {
-    label: 'SLA Breaches — Progress Reviews >10 Weeks',
-    columns: ['Learner', 'Employer', 'LSC', 'Last Review', 'Weeks Since'],
+    label: 'Progress Reviews — 8+ Weeks Since Last Review',
+    columns: ['Learner', 'Employer', 'LSC', 'Last Review', 'Weeks Since', 'Status'],
     getData(f) {
-      return reportFilterBy(AD.sla, f).map(r => ({ _cols: [
-        r.name, r.employer, r.lsc, fmtDate(r.lastReview), r.weeksSince + ' weeks'
-      ]}));
+      return reportFilterBy(AD.sla, f)
+        .sort((a,b) => b.weeksSince - a.weeksSince)
+        .map(r => {
+          const over = r.weeksSince >= 10;
+          return { _cols: [
+            r.name, r.employer, r.lsc, fmtDate(r.lastReview), r.weeksSince + ' weeks',
+            over ? `<span class="weeks-pill urgent">${r.weeksSince} wks overdue</span>` : `<span class="weeks-pill warning">Approaching</span>`
+          ], _rowClass: over ? 'row-alert' : '' };
+        });
     }
   },
   otj: {
-    label: 'OTJ Compliance',
+    label: 'OTJ Compliance in Month',
     columns: ['Learner', 'Employer', 'LSC', 'OTJ %', 'Expected %', 'Gap', 'Last Entry'],
     getData(f) {
-      return reportFilterBy(AD.otj, f).map(r => {
-        const gap = r.otjExpected - r.otjPct;
-        return { _cols: [
-          r.name, r.employer, r.lsc,
-          r.otjPct + '%', r.otjExpected + '%',
-          gap > 0 ? `−${gap}%` : '✓',
-          fmtDate(r.lastEntry)
-        ], _rowClass: gap > 15 ? 'row-alert' : '' };
-      });
+      return reportFilterBy(AD.otj, f)
+        .sort((a,b) => new Date(a.lastEntry) - new Date(b.lastEntry))
+        .map(r => {
+          const gap = r.otjExpected - r.otjPct;
+          return { _cols: [
+            r.name, r.employer, r.lsc, r.otjPct + '%', r.otjExpected + '%',
+            gap > 0 ? `−${gap}%` : '✓', fmtDate(r.lastEntry)
+          ], _rowClass: gap > 15 ? 'row-alert' : '' };
+        });
     }
   },
   starters: {
     label: 'Awaiting First LSC Meeting',
-    columns: ['Learner', 'Employer', 'LSC', 'Planned Start', 'FDOL Entry', 'Starter Checklist'],
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Planned Start', 'FDOL Entry'],
     getData(f) {
-      return reportFilterBy(AD.starters, f).map(r => ({ _cols: [
-        r.name, r.employer, r.lsc, fmtDate(r.plannedStart),
-        r.firstDayDone  ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
-        r.checklistDone ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
-      ]}));
+      return reportFilterBy(AD.starters, f)
+        .filter(r => !(r.firstDayDone && r.checklistDone))
+        .sort((a,b) => new Date(a.plannedStart) - new Date(b.plannedStart))
+        .map(r => ({ _cols: [
+          r.name, r.employer, r.standard || '—', r.lsc, fmtDate(r.plannedStart),
+          r.firstDayDone ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
+        ]}));
     }
   },
   oof: {
     label: 'Out of Funding (OOF)',
     columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'Portfolio RAG', 'Month Expected', 'Notes'],
     getData(f) {
-      return reportFilterBy(AD.oof, f).map(r => ({ _cols: [
-        r.name, r.employer, r.standard, r.lsc,
-        statusPill(r.status), portfolioRagBadge(r.portfolioRag),
-        r.monthExpected || '—', r.notes
-      ], _wideCol: 7 }));
+      return reportFilterBy(AD.oof, f)
+        .sort((a,b) => new Date(a.plannedGateway) - new Date(b.plannedGateway))
+        .map(r => ({ _cols: [
+          r.name, r.employer, r.standard, r.lsc,
+          statusPill(r.status), portfolioRagBadge(r.portfolioRag),
+          r.monthExpected || '—', r.notes
+        ], _wideCol: 7 }));
     }
   },
   bil: {
     label: 'Break in Learning (BIL)',
     columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'LDOL', 'Expected RTL', 'Notes'],
     getData(f) {
-      return reportFilterBy(AD.bil, f).map(r => ({ _cols: [
+      const def = (a,b) => { if (!a.expectedRtl) return -1; if (!b.expectedRtl) return 1; return new Date(a.expectedRtl) - new Date(b.expectedRtl); };
+      return reportFilterBy(AD.bil, f).sort(def).map(r => ({ _cols: [
         r.name, r.employer, r.standard, r.lsc,
         statusPill(r.status), fmtDate(r.ldol),
-        r.expectedRtl ? fmtDate(r.expectedRtl) : '—', r.notes
+        r.expectedRtl ? fmtDate(r.expectedRtl) : '<span class="cell-alert">Not confirmed</span>', r.notes
       ], _wideCol: 7 }));
     }
   },
+
+  // ── Delivery / KSB ───────────────────────────────────────────────────
+  ksb_tracker: {
+    label: 'KSB Tracker — All Learners',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Start Date', 'Planned Gateway', 'Status', 'Knowledge', 'Skills', 'Behaviours', 'RAG'],
+    getData(f) {
+      return reportFilterBy(AD.ksb, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.lsc,
+        fmtDate(r.startDate), fmtDate(r.plannedGateway),
+        ksbStatusPill(r.status),
+        ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct),
+        ksbRagBadge(ksbRag(r))
+      ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' }));
+    }
+  },
+
+  // ── Gateway ───────────────────────────────────────────────────────────
   gateway: {
-    label: 'Gateway Pipeline — All Quarters',
+    label: 'Gateway Forecast — All Quarters',
     columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Quarter', 'Status', 'Planned Gateway', 'Month Expected', 'Portfolio RAG'],
     getData(f) {
       const q = (src, label) => reportFilterBy(src, f).map(r => ({ _cols: [
@@ -2523,31 +2574,81 @@ const REPORT_CONFIGS = {
       return [...q(AD.gwQ2, 'Q2 2026'), ...q(AD.gwQ3, 'Q3 2026'), ...q(AD.gwQ4, 'Q4 2026')];
     }
   },
+
+  // ── Curriculum ────────────────────────────────────────────────────────
+  curriculum: {
+    label: 'Curriculum Progress',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Current Sprint', 'Parts Complete', 'Last Activity', 'Status'],
+    getData(f) {
+      const so = {'No Activity':0,'Behind':1,'Off Track':2,'On Track':3};
+      return reportFilterBy(AD.curriculum, f)
+        .sort((a,b) => (so[curriculumStatus(a)]??3) - (so[curriculumStatus(b)]??3))
+        .map(r => {
+          const st = curriculumStatus(r);
+          return { _cols: [
+            r.name, r.employer, r.standard, r.lsc, r.sprint,
+            `${r.partsComplete} / 8`, fmtDate(r.lastActivity), curriculumStatusPill(st)
+          ], _rowClass: ['Behind','No Activity'].includes(st) ? 'row-alert' : '' };
+        });
+    }
+  },
+
+  // ── Welfare ───────────────────────────────────────────────────────────
   welfare_als: {
     label: 'ALS Register',
-    columns: ['Learner', 'Standard', 'LSC', 'Need', 'Last Review', 'Next Review', 'Status'],
+    columns: ['Learner', 'Standard', 'LSC', 'Declared Need', 'Adjustments'],
     getData(f) {
-      return reportFilterBy(AD.als, f).map(r => {
-        const rag = alsReviewRag(r.nextReview);
-        return { _cols: [
-          r.name, r.standard, r.lsc, r.need,
-          fmtDate(r.lastReview), fmtDate(r.nextReview),
-          `<span class="weeks-pill ${rag.cls}">${rag.label}</span>`
-        ], _rowClass: rag.cls === 'urgent' ? 'row-alert' : '' };
-      });
+      return reportFilterBy(AD.als, f).map(r => ({ _cols: [
+        r.name, r.standard, r.lsc, r.need, r.adjustments
+      ], _wideCol: 4 }));
     }
   },
   welfare_safeguarding: {
     label: 'Safeguarding & Welfare Concerns',
-    columns: ['Learner', 'LSC', 'Category', 'Status', 'Date Raised', 'Last Action', 'Notes'],
+    columns: ['Learner', 'LSC', 'Type', 'Category / Reason', 'Status / Days Since', 'Last Action / Check-in', 'Notes'],
     getData(f) {
-      return reportFilterBy(AD.safeguarding, f).map(r => ({ _cols: [
-        r.name, r.lsc, r.category,
+      const sg = reportFilterBy(AD.safeguarding, f).map(r => ({ _cols: [
+        r.name, r.lsc, '<span class="welfare-type-sg">Safeguarding</span>', r.category,
         `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
-        fmtDate(r.dateRaised), fmtDate(r.lastAction), r.notes
+        fmtDate(r.lastAction), r.notes
       ], _wideCol: 6 }));
+      const wd = reportFilterBy(AD.welfareDue, f).map(r => ({ _cols: [
+        r.name, r.lsc, '<span class="welfare-type-check">Welfare Check-in</span>', r.reason,
+        `<span class="weeks-pill ${r.daysSince > 14 ? 'urgent' : 'warning'}">${r.daysSince}d ago</span>`,
+        fmtDate(r.lastCheckin), '—'
+      ], _rowClass: r.daysSince > 14 ? 'row-alert' : '' }));
+      return [...sg, ...wd];
     }
   },
+  welfare_due: {
+    label: 'Welfare Check-ins Due',
+    columns: ['Learner', 'LSC', 'Reason for Monitoring', 'Last Check-in', 'Days Since'],
+    getData(f) {
+      return reportFilterBy(AD.welfareDue, f)
+        .sort((a,b) => b.daysSince - a.daysSince)
+        .map(r => ({ _cols: [
+          r.name, r.lsc, r.reason, fmtDate(r.lastCheckin),
+          `<span class="weeks-pill ${r.daysSince > 14 ? 'urgent' : 'warning'}">${r.daysSince}d ago</span>`
+        ], _rowClass: r.daysSince > 14 ? 'row-alert' : '' }));
+    }
+  },
+
+  // ── Full Learner List ─────────────────────────────────────────────────
+  learner_list: {
+    label: 'Full Learner List (KSB Standards)',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Start Date', 'Planned Gateway', 'Status', 'KSB RAG'],
+    getData(f) {
+      return reportFilterBy(AD.ksb, f)
+        .sort((a,b) => a.lsc.localeCompare(b.lsc) || a.name.localeCompare(b.name))
+        .map(r => ({ _cols: [
+          r.name, r.employer, r.standard, r.lsc,
+          fmtDate(r.startDate), fmtDate(r.plannedGateway),
+          ksbStatusPill(r.status), ksbRagBadge(ksbRag(r))
+        ]}));
+    }
+  },
+
+  // ── Sales ─────────────────────────────────────────────────────────────
   pipeline: {
     label: 'Sales Pipeline',
     columns: ['Learner', 'Employer', 'Standard', 'AM', 'Probability', 'Expected Start', 'Status'],
@@ -2561,14 +2662,23 @@ const REPORT_CONFIGS = {
 };
 
 const REPORT_PRESETS = [
-  { id: 'otj',          area: 'otj',                  extra: {} },
-  { id: 'sla',          area: 'sla',                  extra: {} },
-  { id: 'touchpoints',  area: 'touchpoints',          extra: {} },
-  { id: 'oof-red',      area: 'oof',                  extra: { portfolioRag: 'red' } },
-  { id: 'bil-decision', area: 'bil',                  extra: { status: 'BIL Decision Needed' } },
-  { id: 'welfare',      area: 'welfare_safeguarding',  extra: { status: 'active' } },
-  { id: 'gateway',      area: 'gateway',              extra: {} },
-  { id: 'pipeline',     area: 'pipeline',             extra: {} },
+  // Compliance
+  { id: 'touchpoints',       area: 'touchpoints',       extra: {} },
+  { id: 'sla',               area: 'sla',               extra: {} },
+  { id: 'otj',               area: 'otj',               extra: {} },
+  { id: 'oof-red',           area: 'oof',               extra: { portfolioRag: 'red' } },
+  { id: 'bil-decision',      area: 'bil',               extra: { status: 'BIL Decision Needed' } },
+  // KSB / Curriculum
+  { id: 'ksb-atrisk',        area: 'ksb_tracker',       extra: {} },
+  { id: 'curriculum-behind', area: 'curriculum',        extra: {} },
+  // Gateway
+  { id: 'gateway-red',       area: 'gateway',           extra: { portfolioRag: 'red' } },
+  // Welfare
+  { id: 'welfare-active',    area: 'welfare_safeguarding', extra: { status: 'active' } },
+  { id: 'welfare-checkins',  area: 'welfare_due',       extra: {} },
+  // Full lists
+  { id: 'learner-list',      area: 'learner_list',      extra: {} },
+  { id: 'pipeline',          area: 'pipeline',          extra: {} },
 ];
 
 let activeReportConfig = null;
@@ -2584,19 +2694,41 @@ function getReportFilters() {
   };
 }
 
+const REPORT_MAX_ROWS = 500;
+
 function runReport(areaOverride, extraFilters) {
-  const area   = areaOverride || document.getElementById('rf-area')?.value || 'all';
+  const area    = areaOverride || document.getElementById('rf-area')?.value || 'all';
   const filters = { ...getReportFilters(), ...(extraFilters || {}) };
-  const config  = REPORT_CONFIGS[area];
+
+  // Sales Manager can only access the sales pipeline
+  if (currentUser.role === 'sales' && area !== 'pipeline') {
+    const notice = document.getElementById('report-role-notice');
+    if (notice) { notice.style.display = ''; return; }
+    return;
+  }
+  const notice = document.getElementById('report-role-notice');
+  if (notice) notice.style.display = 'none';
+
+  const config = REPORT_CONFIGS[area];
   if (!config) return;
 
-  const rows = config.getData(filters);
+  const allRows = config.getData(filters);
+  const truncated = allRows.length > REPORT_MAX_ROWS;
+  const rows = truncated ? allRows.slice(0, REPORT_MAX_ROWS) : allRows;
+
   activeReportConfig = config;
-  activeReportRows   = rows;
+  activeReportRows   = allRows; // export always uses full set
 
   setText('report-results-title', config.label);
   const countEl = document.getElementById('report-results-count');
-  if (countEl) countEl.textContent = rows.length + ' record' + (rows.length !== 1 ? 's' : '');
+  if (countEl) countEl.textContent = allRows.length + ' record' + (allRows.length !== 1 ? 's' : '');
+
+  // Row limit notice
+  const limitEl = document.getElementById('report-limit-notice');
+  if (limitEl) {
+    limitEl.style.display = truncated ? '' : 'none';
+    if (truncated) limitEl.textContent = `Showing first ${REPORT_MAX_ROWS} of ${allRows.length} records. Export CSV to see all.`;
+  }
 
   const thead = document.getElementById('report-thead');
   if (thead) thead.innerHTML = `<tr>${config.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
