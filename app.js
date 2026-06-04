@@ -895,10 +895,14 @@ function renderOverviewSummary() {
   const alsSoon            = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
   const safeguardingActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
   const welfareDue         = lscF(WELFARE_DUE_DATA).filter(r => r.daysSince > 14).length;
-  setText('ov-als-overdue',  alsOverdue);
-  setText('ov-als-soon',     alsSoon);
-  setText('ov-safeguarding', safeguardingActive);
-  setText('ov-welfare-due',  welfareDue);
+  const setOvColour = (id, value, cls) => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = value; el.className = 'ov-value' + (value > 0 ? ' ' + cls : ''); }
+  };
+  setOvColour('ov-als-overdue',  alsOverdue,         'ov-red');
+  setOvColour('ov-als-soon',     alsSoon,            'ov-amber');
+  setOvColour('ov-safeguarding', safeguardingActive, 'ov-red');
+  setOvColour('ov-welfare-due',  welfareDue,         'ov-amber');
 
   // — Delivery —
   const oofActive   = lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length;
