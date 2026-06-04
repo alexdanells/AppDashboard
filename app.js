@@ -964,6 +964,35 @@ document.addEventListener('click', e => {
   })[tid]?.();
 });
 
+// ─── Generic table CSV export (all .btn-export buttons) ───────────────
+function exportTableCSV(table, filename) {
+  const headers = [...table.querySelectorAll('thead th')]
+    .map(th => th.textContent.trim().replace(/[↑↓⇅]/g, '').trim());
+  const rows = [...table.querySelectorAll('tbody tr')]
+    .filter(tr => !tr.querySelector('[class*="empty"]') && tr.querySelectorAll('td').length)
+    .map(tr => [...tr.querySelectorAll('td')].map(td => td.textContent.trim()));
+  if (!rows.length) return;
+  const esc = s => `"${s.replace(/"/g, '""')}"`;
+  const csv = [headers.map(esc).join(','), ...rows.map(r => r.map(esc).join(','))].join('\n');
+  const safe = (filename || 'export').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+    download: `boom-${safe}.csv`,
+  });
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-export');
+  if (!btn || btn.id === 'report-export-btn') return; // Reporting has its own handler
+  const panel = btn.closest('.panel');
+  const table = panel?.querySelector('table');
+  if (!table) return;
+  const title = panel.querySelector('.panel-title')?.textContent?.trim() || 'table';
+  exportTableCSV(table, title);
+});
+
 // ─── Collapsible AAF section ───────────────────────────────────────────
 function toggleAAFSection() {
   const grid = document.getElementById('aaf-grid');
@@ -2829,18 +2858,22 @@ function syncCoachDropdowns() {
   });
 }
 
-document.querySelectorAll('.report-preset-pill').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
-    if (!preset) return;
-    document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const areaEl = document.getElementById('rf-area');
-    if (areaEl) areaEl.value = preset.area;
-    if (preset.extra.portfolioRag) { const el = document.getElementById('rf-rag');    if (el) el.value = preset.extra.portfolioRag; }
-    if (preset.extra.status)       { const el = document.getElementById('rf-status'); if (el) el.value = preset.extra.status; }
-    runReport(preset.area, preset.extra);
-  });
+// Use event delegation so all preset pills work regardless of load order
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.report-preset-pill');
+  if (!btn) return;
+  const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
+  if (!preset) return;
+  document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const areaEl = document.getElementById('rf-area');
+  if (areaEl) areaEl.value = preset.area;
+  // Reset extra filters first, then apply preset's extras
+  const rRag = document.getElementById('rf-rag');    if (rRag) rRag.value = '';
+  const rStt = document.getElementById('rf-status'); if (rStt) rStt.value = '';
+  if (preset.extra.portfolioRag && rRag) rRag.value = preset.extra.portfolioRag;
+  if (preset.extra.status && rStt)       rStt.value = preset.extra.status;
+  runReport(preset.area, preset.extra);
 });
 
 document.getElementById('report-run-btn')?.addEventListener('click', () => {
