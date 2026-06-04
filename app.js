@@ -811,25 +811,172 @@ const SCALE_1000 = (function () {
   return { touchpoints, sla, otj, starters, oof, bil, ksb, gwQ2, gwQ3, gwQ4, gatewayMonths, als, safeguarding, welfareDue, curriculum, masters };
 })();
 
+// ─── 200-Learner Scale Generator ──────────────────────────────────────
+const SCALE_200 = (function () {
+  const rng  = _mkRng(99); // different seed → different names from SCALE_1000
+  const pick = arr => arr[Math.floor(rng() * arr.length)];
+  const ri   = (lo, hi) => lo + Math.floor(rng() * (hi - lo + 1));
+  const pr   = p => rng() < p;
+  const TODAY = '2026-06-04';
+  const COACHES_200 = COACHES_1000.slice(0, 5);
+  const CAPS_200 = { 'Sarah Mitchell': 42, 'James Okafor': 40, 'Priya Sharma': 38, 'Tom Bradley': 45, 'Hannah Clarke': 35 };
+
+  const used = new Set();
+  const genName = () => {
+    let n, t = 0;
+    do { n = `${pick(_FN)} ${pick(_LN)}`; t++; } while (used.has(n) && t < 300);
+    used.add(n); return n;
+  };
+
+  const masters = [];
+  COACHES_200.forEach(coach => {
+    const count = CAPS_200[coach] || 40;
+    for (let i = 0; i < count; i++) {
+      masters.push({ name: genName(), employer: pick(_EMP), standard: pick(STANDARDS), lsc: coach });
+    }
+  });
+
+  for (let i = masters.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [masters[i], masters[j]] = [masters[j], masters[i]]; }
+  const total = masters.length;
+  masters.forEach((m, i) => {
+    const pct = i / total;
+    m.status = pct < 0.10 ? 'Gateway' : pct < 0.15 ? 'OOF' : pct < 0.20 ? 'BIL' : 'Live';
+    if (m.status === 'Gateway') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(0, 90)); }
+    else if (m.status === 'OOF') { m.startDate = _isoAdd(TODAY, -ri(548, 730)); m.plannedGateway = _isoAdd(TODAY, -ri(30, 150)); }
+    else if (m.status === 'BIL') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(90, 270)); }
+    else { m.startDate = _isoAdd(TODAY, -ri(30, 455)); const pl = ri(365, 548); m.plannedGateway = _isoAdd(m.startDate, pl); }
+  });
+
+  const touchpoints = masters.filter(m => m.status === 'Live' && pr(0.15)).map(m => ({
+    name: m.name, employer: m.employer, lsc: m.lsc,
+    lastMeeting: _isoAdd(TODAY, -ri(35, 90)), meetingType: pick(_MTYPE),
+  }));
+  const sla = masters.filter(m => m.status !== 'BIL' && pr(0.09)).map(m => {
+    const w = ri(8, 17);
+    return { name: m.name, employer: m.employer, lsc: m.lsc, lastReview: _isoAdd(TODAY, -(w * 7)), weeksSince: w };
+  });
+  const otj = masters.filter(m => m.status === 'Live' && pr(0.12)).map(m => {
+    const exp = ri(35, 70), done = ri(15, exp - 5);
+    return { name: m.name, employer: m.employer, lsc: m.lsc, otjPct: done, otjExpected: exp, lastEntry: _isoAdd(TODAY, -ri(7, 45)) };
+  });
+  const starters = masters.filter(m => m.status === 'Live' && new Date(m.startDate) >= new Date('2026-05-01')).map(m => ({
+    name: m.name, employer: m.employer, standard: m.standard, lsc: m.lsc,
+    plannedStart: m.startDate, firstDayDone: pr(0.6), checklistDone: pr(0.4),
+  }));
+  const oof = masters.filter(m => m.status === 'OOF').map(m => ({
+    employer: m.employer, name: m.name, standard: m.standard, plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(['Current','Current','Current','At Gateway','BIL','Withdrawn']),
+    monthExpected: pick(['Jun 2026','Jul 2026','Aug 2026','Sep 2026',null]),
+    gwToEpa: pr(0.5) ? _isoAdd(TODAY, ri(30, 120)) : null, portfolioRag: pick(_RAG),
+    notes: 'Learner beyond planned end date — action in progress.',
+  }));
+  const bil = masters.filter(m => m.status === 'BIL').map(m => ({
+    employer: m.employer, name: m.name, standard: m.standard, plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(['BIL Ongoing','BIL Ongoing','BIL Decision Needed','RTL Confirmed']),
+    ldol: _isoAdd(TODAY, -ri(14, 90)), expectedRtl: pr(0.6) ? _isoAdd(TODAY, ri(30, 90)) : null,
+    notes: 'Agreed break in learning — return date being confirmed.',
+  }));
+
+  const ksbStds = Object.keys(KSB_STANDARDS);
+  const todayMs = new Date(TODAY).getTime();
+  const ksb = masters.filter(m => m.status !== 'Withdrawn' && ksbStds.includes(m.standard)).map(m => {
+    const startMs = new Date(m.startDate).getTime(), gwMs = new Date(m.plannedGateway).getTime();
+    const progress = Math.min(1, (todayMs - startMs) / Math.max(1, gwMs - startMs));
+    const base = m.status === 'Gateway' ? ri(75, 95) : m.status === 'OOF' ? ri(30, 65) : m.status === 'BIL' ? ri(20, 55) : Math.round(progress * 85) + ri(0, 15);
+    return {
+      employer: m.employer, name: m.name, standard: m.standard, lsc: m.lsc,
+      startDate: m.startDate, plannedGateway: m.plannedGateway,
+      status: m.status === 'BIL' ? 'BIL' : m.status === 'OOF' ? 'OOF' : m.status === 'Gateway' ? 'Gateway' : 'Live',
+      knowledgePct: Math.min(100, Math.max(0, base + ri(-5, 10))),
+      skillsPct:    Math.min(100, Math.max(0, base + ri(-8, 8))),
+      behavioursPct:Math.min(100, Math.max(0, base + ri(-3, 12))),
+    };
+  });
+
+  const gwPool = masters.filter(m => m.status === 'Gateway');
+  const mkGwRow = (m, statusOpts, months) => ({
+    employer: m.employer, name: m.name, standard: m.standard, plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(statusOpts), monthExpected: pick(months),
+    gwToEpa: pr(0.5) ? _isoAdd(TODAY, ri(30, 90)) : null, portfolioRag: pick(_RAG),
+  });
+  const gwQ2 = gwPool.slice(0, Math.floor(gwPool.length * 0.4)).map(m => mkGwRow(m, ['At Gateway','At Gateway','Current','Withdrawn'], ['Jun 2026','Jun 2026','Jul 2026']));
+  const gwQ3 = gwPool.slice(Math.floor(gwPool.length * 0.4), Math.floor(gwPool.length * 0.7)).map(m => mkGwRow(m, ['Current','Current','BIL'], ['Jul 2026','Aug 2026','Sep 2026']));
+  const gwQ4 = gwPool.slice(Math.floor(gwPool.length * 0.7)).map(m => mkGwRow(m, ['Current'], ['Oct 2026','Nov 2026','Dec 2026']));
+
+  const mkGwMonth = (monthStr, forecast, expected, pool) => {
+    const isPastOrCurrent = new Date(monthStr + '-01') <= new Date('2026-06-01');
+    return { forecast, expected, groups: COACHES_200.map(coach => ({
+      lsc: coach,
+      learners: pool.filter(m => m.lsc === coach).map(m => ({
+        name: m.name, standard: m.standard,
+        prepDate: isPastOrCurrent && pr(0.7) ? _isoAdd(TODAY, -ri(14, 60)) : null,
+        atGateway: isPastOrCurrent ? pr(0.5) : false,
+        monthsCarried: isPastOrCurrent && pr(0.2) ? ri(1, 3) : 0,
+        carryOverNext: isPastOrCurrent ? pr(0.15) : false,
+        withdrawn: isPastOrCurrent ? pr(0.05) : false, notes: '',
+      })),
+    })).filter(g => g.learners.length > 0) };
+  };
+  const sl = gwPool;
+  const gatewayMonths = {
+    '2026-05': mkGwMonth('2026-05', 14, 11, sl.slice(0, 11)),
+    '2026-06': mkGwMonth('2026-06', 12, 10, sl.slice(0, 10)),
+    '2026-07': mkGwMonth('2026-07', 6,  5,  sl.slice(2, 9)),
+    '2026-08': mkGwMonth('2026-08', 5,  4,  sl.slice(4, 10)),
+    '2026-09': mkGwMonth('2026-09', 11, 9,  sl.slice(3, 12)),
+    '2026-10': mkGwMonth('2026-10', 13, 11, sl.slice(2, 13)),
+    '2026-11': mkGwMonth('2026-11', 12, 10, sl.slice(1, 11)),
+    '2026-12': mkGwMonth('2026-12', 4,  3,  sl.slice(8, 12)),
+  };
+
+  const als = masters.filter((m, i) => i % 9 === 0).map(m => ({
+    name: m.name, standard: m.standard, lsc: m.lsc,
+    need: pick(_NEEDS), adjustments: pick(_ADJ),
+    lastReview: _isoAdd(TODAY, -ri(30, 180)), nextReview: _isoAdd(TODAY, ri(-30, 90)),
+  }));
+  const safeguarding = masters.filter((m, i) => i % 50 === 0).map(m => ({
+    name: m.name, lsc: m.lsc, dateRaised: _isoAdd(TODAY, -ri(14, 120)),
+    category: pick(_SGCAT), status: pr(0.7) ? 'active' : 'closed',
+    lastAction: _isoAdd(TODAY, -ri(1, 21)), notes: 'Case being monitored — regular check-ins in place.',
+  }));
+  const welfareDue = masters.filter((m, i) => i % 20 === 0).map(m => ({
+    name: m.name, lsc: m.lsc,
+    reason: pick(['ALS review due','Mental health monitoring','Safeguarding welfare follow-up','BIL welfare check']),
+    lastCheckin: _isoAdd(TODAY, -ri(7, 45)), daysSince: ri(7, 45),
+  }));
+
+  const currStds = Object.keys(_SPRINTS);
+  const curriculum = masters.filter(m => m.status === 'Live' && currStds.includes(m.standard)).map(m => {
+    const sprints = _SPRINTS[m.standard];
+    const expected = ri(2, 8), complete = Math.min(8, Math.max(0, expected + ri(-4, 2)));
+    return {
+      name: m.name, employer: m.employer, standard: m.standard, lsc: m.lsc,
+      sprint: pick(sprints), partsComplete: complete, partsExpected: expected,
+      lastActivity: _isoAdd(TODAY, -ri(1, 45)),
+    };
+  });
+
+  return { touchpoints, sla, otj, starters, oof, bil, ksb, gwQ2, gwQ3, gwQ4, gatewayMonths, als, safeguarding, welfareDue, curriculum, masters };
+})();
+
 // Active data accessor — returns 200 or 1000 dataset based on currentSize
 const AD = {
-  get touchpoints()   { return currentSize === 1000 ? SCALE_1000.touchpoints   : TOUCHPOINT_DATA; },
-  get sla()           { return currentSize === 1000 ? SCALE_1000.sla           : SLA_DATA; },
-  get otj()           { return currentSize === 1000 ? SCALE_1000.otj           : OTJ_DATA; },
-  get starters()      { return currentSize === 1000 ? SCALE_1000.starters      : STARTER_DATA; },
-  get oof()           { return currentSize === 1000 ? SCALE_1000.oof           : OOF_DATA; },
-  get bil()           { return currentSize === 1000 ? SCALE_1000.bil           : BIL_DATA; },
-  get ksb()           { return currentSize === 1000 ? SCALE_1000.ksb           : KSB_DATA; },
-  get gwQ2()          { return currentSize === 1000 ? SCALE_1000.gwQ2          : GW_Q2_DATA; },
-  get gwQ3()          { return currentSize === 1000 ? SCALE_1000.gwQ3          : GW_Q3_DATA; },
-  get gwQ4()          { return currentSize === 1000 ? SCALE_1000.gwQ4          : GW_Q4_DATA; },
-  get als()           { return currentSize === 1000 ? SCALE_1000.als           : ALS_DATA; },
-  get safeguarding()  { return currentSize === 1000 ? SCALE_1000.safeguarding  : SAFEGUARDING_DATA; },
-  get welfareDue()    { return currentSize === 1000 ? SCALE_1000.welfareDue    : WELFARE_DUE_DATA; },
-  get curriculum()    { return currentSize === 1000 ? SCALE_1000.curriculum    : CURRICULUM_DATA; },
-  get gatewayMonths() { return currentSize === 1000 ? SCALE_1000.gatewayMonths : GATEWAY_MONTHS_DATA; },
-  // All learners regardless of standard — use as caseload base
-  get masters()       { return currentSize === 1000 ? SCALE_1000.masters       : KSB_DATA; },
+  get touchpoints()   { return currentSize === 1000 ? SCALE_1000.touchpoints   : SCALE_200.touchpoints; },
+  get sla()           { return currentSize === 1000 ? SCALE_1000.sla           : SCALE_200.sla; },
+  get otj()           { return currentSize === 1000 ? SCALE_1000.otj           : SCALE_200.otj; },
+  get starters()      { return currentSize === 1000 ? SCALE_1000.starters      : SCALE_200.starters; },
+  get oof()           { return currentSize === 1000 ? SCALE_1000.oof           : SCALE_200.oof; },
+  get bil()           { return currentSize === 1000 ? SCALE_1000.bil           : SCALE_200.bil; },
+  get ksb()           { return currentSize === 1000 ? SCALE_1000.ksb           : SCALE_200.ksb; },
+  get gwQ2()          { return currentSize === 1000 ? SCALE_1000.gwQ2          : SCALE_200.gwQ2; },
+  get gwQ3()          { return currentSize === 1000 ? SCALE_1000.gwQ3          : SCALE_200.gwQ3; },
+  get gwQ4()          { return currentSize === 1000 ? SCALE_1000.gwQ4          : SCALE_200.gwQ4; },
+  get als()           { return currentSize === 1000 ? SCALE_1000.als           : SCALE_200.als; },
+  get safeguarding()  { return currentSize === 1000 ? SCALE_1000.safeguarding  : SCALE_200.safeguarding; },
+  get welfareDue()    { return currentSize === 1000 ? SCALE_1000.welfareDue    : SCALE_200.welfareDue; },
+  get curriculum()    { return currentSize === 1000 ? SCALE_1000.curriculum    : SCALE_200.curriculum; },
+  get gatewayMonths() { return currentSize === 1000 ? SCALE_1000.gatewayMonths : SCALE_200.gatewayMonths; },
+  get masters()       { return currentSize === 1000 ? SCALE_1000.masters       : SCALE_200.masters; },
 };
 
 // ─── Users ─────────────────────────────────────────────────────────────
