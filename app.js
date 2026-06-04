@@ -1380,9 +1380,8 @@ function renderAAF() {
 function renderTouchpoints(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = lscFilter
-    ? AD.touchpoints.filter(r => r.lsc === lscFilter)
-    : AD.touchpoints;
+  const rows = (lscFilter ? AD.touchpoints.filter(r => r.lsc === lscFilter) : AD.touchpoints)
+    .slice().sort((a, b) => new Date(a.lastMeeting) - new Date(b.lastMeeting));
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No outstanding touchpoints for this coach.');
     return;
