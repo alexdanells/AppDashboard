@@ -490,20 +490,20 @@
           <div class="ksb-kpi-section">
             <div class="ksb-kpi-label">Within 6 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Dec 2026)</span></div>
             <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-6m-sr">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-6m-r">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-6m-a">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-6m-g">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Super Red <span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-6m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red <span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-6m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber <span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-6m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green <span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-6m-g">—</span></div>
             </div>
           </div>
 
           <div class="ksb-kpi-section" style="margin-bottom:1.25rem;">
             <div class="ksb-kpi-label">Within 3 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Sep 2026)</span></div>
             <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-3m-sr">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-3m-r">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-3m-a">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-3m-g">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Super Red <span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-3m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red <span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-3m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber <span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-3m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green <span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-3m-g">—</span></div>
             </div>
           </div>
 
@@ -520,9 +520,16 @@
               <table class="data-table dd-table">
                 <thead>
                   <tr>
-                    <th>Employer</th><th>Learner</th><th>Standard</th>
-                    <th>Start Date</th><th>Planned Gateway</th><th>Status</th>
-                    <th>Knowledge</th><th>Skills</th><th>Behaviours</th><th>RAG</th>
+                    <th class="sort-th" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="startDate">Start Date <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="plannedGateway">Planned Gateway <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="status">Status <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="knowledgePct">Knowledge <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="skillsPct">Skills <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="behavioursPct">Behaviours <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="rag">RAG <span class="sort-icon">⇅</span></th>
                   </tr>
                 </thead>
                 <tbody id="ksb-tbody"></tbody>
@@ -619,7 +626,7 @@
           <div class="kpi-card"><span class="kpi-label">Awaiting First Meeting</span><span class="kpi-value" id="kpi-awaiting-first">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Outstanding Touchpoints</span><span class="kpi-value amber" id="kpi-outstanding">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Progress Reviews (8+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">No OTJ This Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">OTJ Compliance in Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Out of Funding</span><span class="kpi-value" id="comp-oof-total">—</span></div>
           <div class="kpi-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
           <div class="kpi-card" id="comp-reviews-due-card"><span class="kpi-label">Reviews Due (14 days)</span><span class="kpi-value amber" id="lsc-reviews-due">—</span></div>
@@ -653,7 +660,7 @@
           </div>
 
           <div class="panel">
-            <div class="panel-header"><div><h2 class="panel-title">No OTJ Evidence Recorded This Month</h2><p class="panel-desc">Longest since last entry at top — flagged red beyond 4 weeks</p></div><button class="btn-export">⬇ Export</button></div>
+            <div class="panel-header"><div><h2 class="panel-title">OTJ Compliance in Month</h2><p class="panel-desc">Learners with no OTJ evidence recorded this month — longest since last entry at top</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>OTJ Completed</th><th>OTJ Expected</th><th>Last Entry Date</th></tr></thead><tbody id="otj-tbody"></tbody></table>
             </div>

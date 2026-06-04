@@ -512,6 +512,8 @@ let lscPageCoach       = 'James Okafor';
 let ksbLSCFilter       = '';
 let ksbStandardFilter  = '';
 let ksbStatusFilter    = '';
+let ksbSortCol         = 'rag';
+let ksbSortAsc         = true;
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -1673,9 +1675,28 @@ function renderKSB() {
   if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
   if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
 
-  // Sort: super-red → red → amber → green
+  // Sort
   const ragOrder = {'super-red': 0, 'red': 1, 'amber': 2, 'green': 3};
-  rows.sort((a, b) => ragOrder[ksbRag(a)] - ragOrder[ksbRag(b)]);
+  rows.sort((a, b) => {
+    let av = ksbSortCol === 'rag' ? ragOrder[ksbRag(a)] : (a[ksbSortCol] ?? '');
+    let bv = ksbSortCol === 'rag' ? ragOrder[ksbRag(b)] : (b[ksbSortCol] ?? '');
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    return (av < bv ? -1 : av > bv ? 1 : 0) * (ksbSortAsc ? 1 : -1);
+  });
+
+  // Update sort header icons
+  document.querySelectorAll('.sort-th').forEach(th => {
+    const icon = th.querySelector('.sort-icon');
+    if (!icon) return;
+    if (th.dataset.col === ksbSortCol) {
+      icon.textContent = ksbSortAsc ? '↑' : '↓';
+      th.classList.add('sort-active');
+    } else {
+      icon.textContent = '⇅';
+      th.classList.remove('sort-active');
+    }
+  });
 
   const countEl = document.getElementById('ksb-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
@@ -1703,6 +1724,19 @@ function renderKSB() {
     </tr>`;
   }).join('');
 }
+
+document.querySelectorAll('.sort-th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (ksbSortCol === col) {
+      ksbSortAsc = !ksbSortAsc;
+    } else {
+      ksbSortCol = col;
+      ksbSortAsc = true;
+    }
+    renderKSB();
+  });
+});
 
 document.getElementById('ksb-lsc')?.addEventListener('change', function() {
   ksbLSCFilter = this.value;
