@@ -862,8 +862,9 @@ function renderOverviewKPIs() {
     setKpiCard('kpi-on-track',    'Reviews Due',       c.reviewsDue     || '—');
     setKpiCard('kpi-at-risk',     'At Risk',           c.atRisk         || '—');
     setKpiCard('kpi-overdue',     'OTJ Compliance',    c.otjCompliance  || '—');
-    setKpiCard('kpi-employers',   'Employers',         '—');
-    setKpiCard('kpi-achievement', 'Achievement Rate',  '—');
+    const prov = DATA[currentSize];
+    setKpiCard('kpi-employers',   'Employers',         prov.employers);
+    setKpiCard('kpi-achievement', 'Achievement Rate',  prov.achievement);
   } else {
     const d = DATA[currentSize];
     setKpiCard('kpi-learners',    'Active Learners',   d.learners);
