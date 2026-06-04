@@ -537,9 +537,13 @@ function applyRolePermissions() {
     document.querySelector(`.nav-link[data-page="${firstPage}"]`)?.click();
   }
 
-  // DfE AAF section on Overview (hidden for LSC)
+  // DfE AAF section and overview cards (hidden for LSC)
   const aafSection = document.getElementById('ov-aaf-section');
   if (aafSection) aafSection.style.display = isLSC ? 'none' : '';
+  const ovSalesCard = document.getElementById('ov-sales-card');
+  const ovAafCard   = document.getElementById('ov-aaf-card');
+  if (ovSalesCard) ovSalesCard.style.display = isLSC ? 'none' : '';
+  if (ovAafCard)   ovAafCard.style.display   = isLSC ? 'none' : '';
 
   // Delivery: show manager view or LSC caseload view
   const mgView  = document.getElementById('delivery-manager-view');
@@ -672,38 +676,46 @@ function renderOverviewKPIs() {
 
 // ─── Overview Summary Cards ────────────────────────────────────────────
 function renderOverviewSummary() {
+  const isLSC = currentUser.role === 'lsc';
+  const coach = isLSC ? currentUser.coach : null;
+  const lscF  = arr => coach ? arr.filter(r => r.lsc === coach) : arr;
 
   // — Compliance —
-  setText('ov-touchpoints', TOUCHPOINT_DATA.length);
-  setText('ov-sla',         SLA_DATA.length);
-  setText('ov-otj',         OTJ_DATA.length);
-  setText('ov-starters',    STARTER_DATA.length);
+  setText('ov-touchpoints', lscF(TOUCHPOINT_DATA).length);
+  setText('ov-sla',         lscF(SLA_DATA).length);
+  setText('ov-otj',         lscF(OTJ_DATA).length);
+  setText('ov-starters',    lscF(STARTER_DATA).length);
 
   // — Learner Welfare —
-  const alsOverdue         = ALS_DATA.filter(r => alsReviewRag(r.nextReview).cls === 'urgent').length;
-  const alsSoon            = ALS_DATA.filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
-  const safeguardingActive = SAFEGUARDING_DATA.filter(r => r.status === 'active').length;
-  const welfareDue         = WELFARE_DUE_DATA.filter(r => r.daysSince > 14).length;
+  const alsOverdue         = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'urgent').length;
+  const alsSoon            = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
+  const safeguardingActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
+  const welfareDue         = lscF(WELFARE_DUE_DATA).filter(r => r.daysSince > 14).length;
   setText('ov-als-overdue',  alsOverdue);
   setText('ov-als-soon',     alsSoon);
   setText('ov-safeguarding', safeguardingActive);
   setText('ov-welfare-due',  welfareDue);
 
   // — Delivery —
-  const oofActive   = OOF_DATA.filter(r => r.status !== 'Withdrawn').length;
-  const oofRed      = OOF_DATA.filter(r => r.portfolioRag === 'red' && r.status !== 'Withdrawn').length;
-  const bilDecision = BIL_DATA.filter(r => r.status === 'BIL Decision Needed').length;
-  const bilTotal    = BIL_DATA.length;
+  const oofActive   = lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length;
+  const oofRed      = lscF(OOF_DATA).filter(r => r.portfolioRag === 'red' && r.status !== 'Withdrawn').length;
+  const bilDecision = lscF(BIL_DATA).filter(r => r.status === 'BIL Decision Needed').length;
+  const bilTotal    = lscF(BIL_DATA).length;
   setText('ov-oof',          oofActive);
   setText('ov-oof-red',      oofRed);
   setText('ov-bil-decision', bilDecision);
   setText('ov-bil-total',    bilTotal);
 
-  // — Gateway Pipeline (May 2026 snapshot) —
-  const gwData      = GATEWAY_MONTHS_DATA['2026-05'];
-  const gwLearners  = gwData ? gwData.groups.flatMap(g => g.learners) : [];
+  // — Gateway Pipeline (May 2026 — filtered to LSC's group if applicable) —
+  const gwData = GATEWAY_MONTHS_DATA['2026-05'];
+  let gwLearners = [];
+  if (gwData) {
+    gwLearners = isLSC
+      ? (gwData.groups.find(g => g.lsc === coach)?.learners || [])
+      : gwData.groups.flatMap(g => g.learners);
+  }
   const gwAt        = gwLearners.filter(l => l.atGateway).length;
-  const gwExpected  = gwData ? gwData.expected : 0;
+  const gwExpected  = isLSC ? gwLearners.filter(l => !l.withdrawn).length : (gwData ? gwData.expected : 0);
   const gwCarry     = gwLearners.filter(l => l.carryOverNext).length;
   const gwWithdrawn = gwLearners.filter(l => l.withdrawn).length;
   setText('ov-gw-at',        gwAt);
@@ -711,34 +723,33 @@ function renderOverviewSummary() {
   setText('ov-gw-carry',     gwCarry);
   setText('ov-gw-withdrawn', gwWithdrawn);
 
-  // — Sales Pipeline (May 2026) —
-  const mayEntries     = PIPELINE_ENTRIES.filter(e => {
-    const d = new Date(e.start);
-    return d.getFullYear() === 2026 && d.getMonth() === 4;
-  });
-  const salesConfirmed = mayEntries.filter(e => e.prob >= 70).length;
-  const salesTarget    = PIPELINE_TARGETS['2026-05'] || 0;
-  const salesInScope   = mayEntries.filter(e => e.status !== 'Cold Lead').length;
-  const salesCold      = mayEntries.filter(e => e.status === 'Cold Lead').length;
-  setText('ov-sales-confirmed', salesConfirmed);
-  setText('ov-sales-target',    salesTarget);
-  setText('ov-sales-inscope',   salesInScope);
-  setText('ov-sales-cold',      salesCold);
+  // — Sales Pipeline (May 2026 — managers only) —
+  if (!isLSC) {
+    const mayEntries = PIPELINE_ENTRIES.filter(e => {
+      const d = new Date(e.start);
+      return d.getFullYear() === 2026 && d.getMonth() === 4;
+    });
+    setText('ov-sales-confirmed', mayEntries.filter(e => e.prob >= 70).length);
+    setText('ov-sales-target',    PIPELINE_TARGETS['2026-05'] || 0);
+    setText('ov-sales-inscope',   mayEntries.filter(e => e.status !== 'Cold Lead').length);
+    setText('ov-sales-cold',      mayEntries.filter(e => e.status === 'Cold Lead').length);
+  }
 
-  // — DfE AAF (size-dependent) —
-  const aafMetrics = AAF_METRICS[currentSize];
-  const aafGreen   = aafMetrics.filter(m => m.rag === 'green').length;
-  const aafAmber   = aafMetrics.filter(m => m.rag === 'amber').length;
-  const aafRed     = aafMetrics.filter(m => m.rag === 'red').length;
-  const redNames   = aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ');
-  setText('ov-aaf-green', aafGreen);
-  setText('ov-aaf-amber', aafAmber);
-  setText('ov-aaf-red',   aafRed);
-  const redNamesEl = document.getElementById('ov-aaf-red-names');
-  if (redNamesEl) redNamesEl.textContent = aafRed > 0 ? `Red metrics: ${redNames}` : 'No red metrics';
+  // — DfE AAF (managers only) —
+  if (!isLSC) {
+    const aafMetrics = AAF_METRICS[currentSize];
+    const aafRed     = aafMetrics.filter(m => m.rag === 'red').length;
+    setText('ov-aaf-green', aafMetrics.filter(m => m.rag === 'green').length);
+    setText('ov-aaf-amber', aafMetrics.filter(m => m.rag === 'amber').length);
+    setText('ov-aaf-red',   aafRed);
+    const redNamesEl = document.getElementById('ov-aaf-red-names');
+    if (redNamesEl) redNamesEl.textContent = aafRed > 0
+      ? `Red metrics: ${aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ')}`
+      : 'No red metrics';
+  }
 
-  // — Urgent banner (items needing immediate action) —
-  const urgentTotal = SLA_DATA.length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
+  // — Urgent banner —
+  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
   setText('ov-total-actions', urgentTotal);
 }
 
