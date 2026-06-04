@@ -989,9 +989,10 @@ body {
   border-radius: 50%;
   background: var(--navy);
   color: var(--white);
-  font-size: 0.65rem; font-weight: 700;
+  font-size: 0.55rem; font-weight: 700;
   display: inline-flex; align-items: center; justify-content: center;
   flex-shrink: 0;
+  letter-spacing: -0.02em;
 }
 .user-name   { font-weight: 600; }
 .user-chevron { font-size: 0.75rem; color: var(--text-muted); }

@@ -386,11 +386,11 @@ const USERS = [
   { id: 'compliance', name: 'Compliance Manager',  role: 'compliance', initials: 'CM' },
   { id: 'quality',    name: 'Quality Manager',     role: 'quality',    initials: 'QM' },
   { id: 'sales',      name: 'Sales Manager',       role: 'sales',      initials: 'SM' },
-  { id: 'sarah',      name: 'Sarah Mitchell',      role: 'lsc',        initials: 'SM', coach: 'Sarah Mitchell' },
-  { id: 'james',      name: 'James Okafor',        role: 'lsc',        initials: 'JO', coach: 'James Okafor'   },
-  { id: 'priya',      name: 'Priya Sharma',        role: 'lsc',        initials: 'PS', coach: 'Priya Sharma'   },
-  { id: 'tom',        name: 'Tom Bradley',         role: 'lsc',        initials: 'TB', coach: 'Tom Bradley'    },
-  { id: 'hannah',     name: 'Hannah Clarke',       role: 'lsc',        initials: 'HC', coach: 'Hannah Clarke'  },
+  { id: 'sarah',      name: 'Sarah Mitchell',      role: 'lsc',        initials: 'LSC', coach: 'Sarah Mitchell' },
+  { id: 'james',      name: 'James Okafor',        role: 'lsc',        initials: 'LSC', coach: 'James Okafor'   },
+  { id: 'priya',      name: 'Priya Sharma',        role: 'lsc',        initials: 'LSC', coach: 'Priya Sharma'   },
+  { id: 'tom',        name: 'Tom Bradley',         role: 'lsc',        initials: 'LSC', coach: 'Tom Bradley'    },
+  { id: 'hannah',     name: 'Hannah Clarke',       role: 'lsc',        initials: 'LSC', coach: 'Hannah Clarke'  },
 ];
 
 let currentUser = USERS[0]; // default: Delivery Manager
