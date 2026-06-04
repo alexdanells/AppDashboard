@@ -86,17 +86,21 @@ const TOUCHPOINT_DATA = [
   { name: 'Callum Fraser',   employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastMeeting: '2026-04-30', meetingType: 'Interim Review'  },
 ];
 
-// Table 2: Beyond 10-week SLA — sorted by weeksSince desc
+// Table 2: Progress Reviews — 8+ weeks since last review (sorted weeksSince desc)
 const SLA_DATA = [
-  { name: 'Destiny Osei',   employer: 'Bright Digital Agency',  lsc: 'Hannah Clarke',  lastReview: '2026-01-26', weeksSince: 17 },
-  { name: 'Harry Singh',    employer: 'Pinnacle Finance Group', lsc: 'Tom Bradley',    lastReview: '2026-02-02', weeksSince: 16 },
-  { name: 'Grace Adeniran', employer: 'DataSphere Analytics',   lsc: 'James Okafor',   lastReview: '2026-02-05', weeksSince: 16 },
-  { name: 'Quinn Andrews',  employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-02-13', weeksSince: 15 },
-  { name: 'Imani Adeyemi',  employer: 'Greenfield Consulting',  lsc: 'Hannah Clarke',  lastReview: '2026-02-20', weeksSince: 14 },
-  { name: 'Noah Williams',  employer: 'Horizon Analytics',      lsc: 'Hannah Clarke',  lastReview: '2026-02-27', weeksSince: 13 },
-  { name: 'Felix Huang',    employer: 'Meridian Consulting',    lsc: 'Sarah Mitchell', lastReview: '2026-03-06', weeksSince: 12 },
-  { name: 'Callum Fraser',  employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastReview: '2026-03-13', weeksSince: 11 },
-  { name: 'Leo Okafor',     employer: 'Clarity Finance Ltd',    lsc: 'James Okafor',   lastReview: '2026-03-20', weeksSince: 10 },
+  { name: 'Destiny Osei',    employer: 'Bright Digital Agency',  lsc: 'Hannah Clarke',  lastReview: '2026-01-26', weeksSince: 17 },
+  { name: 'Harry Singh',     employer: 'Pinnacle Finance Group', lsc: 'Tom Bradley',    lastReview: '2026-02-02', weeksSince: 16 },
+  { name: 'Grace Adeniran',  employer: 'DataSphere Analytics',   lsc: 'James Okafor',   lastReview: '2026-02-05', weeksSince: 16 },
+  { name: 'Quinn Andrews',   employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-02-13', weeksSince: 15 },
+  { name: 'Imani Adeyemi',   employer: 'Greenfield Consulting',  lsc: 'Hannah Clarke',  lastReview: '2026-02-20', weeksSince: 14 },
+  { name: 'Noah Williams',   employer: 'Horizon Analytics',      lsc: 'Hannah Clarke',  lastReview: '2026-02-27', weeksSince: 13 },
+  { name: 'Felix Huang',     employer: 'Meridian Consulting',    lsc: 'Sarah Mitchell', lastReview: '2026-03-06', weeksSince: 12 },
+  { name: 'Callum Fraser',   employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastReview: '2026-03-13', weeksSince: 11 },
+  { name: 'Leo Okafor',      employer: 'Clarity Finance Ltd',    lsc: 'James Okafor',   lastReview: '2026-03-20', weeksSince: 10 },
+  { name: 'Ben Cartwright',  employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-04-01', weeksSince: 9  },
+  { name: 'Maya Thompson',   employer: 'Urban Digital Ltd',      lsc: 'Tom Bradley',    lastReview: '2026-04-03', weeksSince: 9  },
+  { name: 'Patrick Doherty', employer: 'Apex Digital Ltd',       lsc: 'Sarah Mitchell', lastReview: '2026-04-10', weeksSince: 8  },
+  { name: 'Ellie Forsyth',   employer: 'Nova Solutions',         lsc: 'Priya Sharma',   lastReview: '2026-04-12', weeksSince: 8  },
 ];
 
 // Table 3: No OTJ Evidence This Month — sorted by lastEntry asc
@@ -848,11 +852,12 @@ function renderSMTKPIs() {
 
 // ─── Delivery KPIs ─────────────────────────────────────────────────────
 function renderDeliveryKPIs() {
-  const d = DATA[currentSize];
-  setText('kpi-outstanding',     d.outstanding);
-  setText('kpi-overdue-reviews', d.overdueReviews);
-  setText('kpi-no-otj',          d.noOtj);
-  setText('kpi-awaiting-first',  d.awaitingFirst);
+  const f = deliveryLSCFilter === 'All' ? null : deliveryLSCFilter;
+  const lscF = arr => f ? arr.filter(r => r.lsc === f) : arr;
+  setText('kpi-outstanding',     lscF(TOUCHPOINT_DATA).length);
+  setText('kpi-overdue-reviews', lscF(SLA_DATA).length);
+  setText('kpi-no-otj',          lscF(OTJ_DATA).length);
+  setText('kpi-awaiting-first',  lscF(STARTER_DATA).length);
 }
 
 // ─── LSC KPIs ──────────────────────────────────────────────────────────
@@ -922,26 +927,23 @@ function renderSLATable(tbodyId, lscFilter) {
     ? SLA_DATA.filter(r => r.lsc === lscFilter)
     : SLA_DATA;
   if (!rows.length) {
-    tbody.innerHTML = emptyRow(5, 'No overdue reviews for this coach.');
+    tbody.innerHTML = emptyRow(5, 'No reviews approaching or overdue.');
     return;
   }
   tbody.innerHTML = rows.map(r => {
-    const isUrgent  = r.weeksSince > 12;
-    const pillClass = isUrgent ? 'urgent' : 'warning';
-    const rowClass  = isUrgent ? 'row-alert' : '';
-    const weeksOver = r.weeksSince - 10;
-    return `
-      <tr class="${rowClass}">
-        <td>${r.name}</td>
-        <td>${r.employer}</td>
-        <td>${r.lsc}</td>
-        <td class="${isUrgent ? 'cell-alert' : ''}">${addDays(r.lastReview, 70)}</td>
-        <td>
-          <span class="weeks-pill ${pillClass}">${r.weeksSince} wks</span>
-          ${weeksOver > 0 ? `<span style="font-size:0.72rem;color:var(--text-muted);margin-left:0.35rem;">(${weeksOver} wk${weeksOver > 1 ? 's' : ''} over)</span>` : ''}
-        </td>
-      </tr>
-    `;
+    const isOverdue  = r.weeksSince >= 10;
+    const weeksOver  = r.weeksSince - 10;
+    const rowClass   = isOverdue ? ' class="row-alert"' : '';
+    const pill       = isOverdue
+      ? `<span class="weeks-pill urgent">${r.weeksSince} wks</span><span style="font-size:0.72rem;color:var(--red);margin-left:0.4rem;">${weeksOver} wk${weeksOver !== 1 ? 's' : ''} overdue</span>`
+      : `<span class="weeks-pill warning">${r.weeksSince} wks</span><span style="font-size:0.72rem;color:var(--amber);margin-left:0.4rem;">approaching</span>`;
+    return `<tr${rowClass}>
+      <td>${r.name}</td>
+      <td>${r.employer}</td>
+      <td>${r.lsc}</td>
+      <td class="${isOverdue ? 'cell-alert' : ''}">${addDays(r.lastReview, 70)}</td>
+      <td>${pill}</td>
+    </tr>`;
   }).join('');
 }
 
@@ -1009,10 +1011,17 @@ function renderStarterTable(tbodyId, lscFilter) {
 // ─── Delivery tables (uses deliveryLSCFilter state) ────────────────────
 function renderDeliveryTables() {
   const f = deliveryLSCFilter === 'All' ? null : deliveryLSCFilter;
+  renderStarterTable('starter-tbody', f);
   renderTouchpoints('touchpoint-tbody', f);
   renderSLATable('sla-tbody', f);
   renderOTJTable('otj-tbody', f);
-  renderStarterTable('starter-tbody', f);
+  renderOOFTable(f);
+  renderBILTable(f);
+  renderDeliveryKPIs();
+  // OOF + BIL KPI cards in Compliance bar
+  const lscF = arr => f ? arr.filter(r => r.lsc === f) : arr;
+  setText('comp-oof-total',  lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length);
+  setText('comp-bil-action', lscF(BIL_DATA).filter(r => r.status === 'BIL Decision Needed').length);
 }
 
 // ─── LSC page tables (uses lscPageCoach state) ─────────────────────────
