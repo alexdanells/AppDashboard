@@ -629,6 +629,10 @@ function applyRolePermissions() {
 
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = 'none';
+    const compReviewsCard = document.getElementById('comp-reviews-due-card');
+    const compOtjCard     = document.getElementById('comp-otj-card');
+    if (compReviewsCard) compReviewsCard.style.display = '';
+    if (compOtjCard)     compOtjCard.style.display     = '';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = 'none';
 
@@ -643,6 +647,10 @@ function applyRolePermissions() {
 
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = '';
+    const compReviewsCard = document.getElementById('comp-reviews-due-card');
+    const compOtjCard     = document.getElementById('comp-otj-card');
+    if (compReviewsCard) compReviewsCard.style.display = 'none';
+    if (compOtjCard)     compOtjCard.style.display     = 'none';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = '';
 
