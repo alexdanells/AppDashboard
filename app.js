@@ -121,14 +121,14 @@ const OTJ_DATA = [
 
 // Table 4: Awaiting First LSC Meeting — sorted by plannedStart asc
 const STARTER_DATA = [
-  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', plannedStart: '2026-05-05', firstDayDone: true,  checklistDone: true  },
-  { name: 'Ethan Brooks',   employer: 'Pinnacle Finance Group', lsc: 'James Okafor',   plannedStart: '2026-05-12', firstDayDone: true,  checklistDone: true  },
-  { name: 'Fatima Malik',   employer: 'DataSphere Analytics',   lsc: 'Priya Sharma',   plannedStart: '2026-05-12', firstDayDone: false, checklistDone: false },
-  { name: 'George Baker',   employer: 'Urban Digital Ltd',      lsc: 'Tom Bradley',    plannedStart: '2026-05-19', firstDayDone: true,  checklistDone: false },
-  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       lsc: 'Hannah Clarke',  plannedStart: '2026-05-19', firstDayDone: false, checklistDone: false },
-  { name: 'Isaac Rivera',   employer: 'Clarity Finance Ltd',    lsc: 'Sarah Mitchell', plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
-  { name: 'Jade Thompson',  employer: 'Nova Solutions',         lsc: 'James Okafor',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
-  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  standard: 'Data Technician',         lsc: 'Sarah Mitchell', plannedStart: '2026-05-05', firstDayDone: true,  checklistDone: true  },
+  { name: 'Ethan Brooks',   employer: 'Pinnacle Finance Group', standard: 'Data Analyst',            lsc: 'James Okafor',   plannedStart: '2026-05-12', firstDayDone: true,  checklistDone: true  },
+  { name: 'Fatima Malik',   employer: 'DataSphere Analytics',   standard: 'Data Analyst',            lsc: 'Priya Sharma',   plannedStart: '2026-05-12', firstDayDone: false, checklistDone: false },
+  { name: 'George Baker',   employer: 'Urban Digital Ltd',      standard: 'Data Technician',         lsc: 'Tom Bradley',    plannedStart: '2026-05-19', firstDayDone: true,  checklistDone: false },
+  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       standard: 'Data Technician',         lsc: 'Hannah Clarke',  plannedStart: '2026-05-19', firstDayDone: false, checklistDone: false },
+  { name: 'Isaac Rivera',   employer: 'Clarity Finance Ltd',    standard: 'Data Analyst',            lsc: 'Sarah Mitchell', plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Jade Thompson',  employer: 'Nova Solutions',         standard: 'Multi-Channel Marketer',  lsc: 'James Okafor',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  standard: 'Data Technician',         lsc: 'Priya Sharma',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
 ];
 
 // ─── Sales Pipeline Data ───────────────────────────────────────────────
@@ -437,6 +437,41 @@ const CURRICULUM_DATA = [
   { name: 'Will Thornton',   employer: 'Clarity Finance Ltd',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-05' },
 ];
 
+// ─── Learner Voice Data ────────────────────────────────────────────────
+
+const LEARNER_COMMENTS_DATA = [
+  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', lastReview: '2026-05-20', comment: "I'm really enjoying the Python modules — they've already helped me at work. I'd love more practice exercises alongside the theory." },
+  { name: 'Isla Thomson',   employer: 'TechCore UK',            lsc: 'Sarah Mitchell', lastReview: '2026-05-15', comment: "The SQL content has been challenging but really relevant to my day job. My LSC is always on hand when I get stuck, which makes a big difference." },
+  { name: 'Quinn Andrews',  employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-04-30', comment: "Feeling confident about gateway now. The AI modules have been the most engaging part of the programme for me by far." },
+  { name: 'Grace Adeniran', employer: 'DataSphere Analytics',   lsc: 'James Okafor',   lastReview: '2026-04-10', comment: "The BIL period has been difficult but I appreciate the support from my LSC throughout. Looking forward to returning in August." },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-12', comment: "Really engaged with the automation content. My employer has already started using some of the tools I've introduced from the programme." },
+  { name: 'Maya Patel',     employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-28', comment: "Brilliant programme overall. The practical elements are well-designed and directly relevant to my role. Gateway prep is going really well." },
+  { name: 'Victor Marsh',   employer: 'Greenfield Consulting',  lsc: 'Tom Bradley',    lastReview: '2026-05-22', comment: "Good progress this month. The data analytics content is stretching me but I can clearly see the improvement I'm making week on week." },
+  { name: 'Tara Collins',   employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastReview: '2026-05-18', comment: "Really positive experience throughout. My line manager is fully supportive and allocates protected time for learning activities." },
+  { name: 'Nathan Brooks',  employer: 'TechCore UK',            lsc: 'Hannah Clarke',  lastReview: '2026-05-05', comment: "Finding the statistics module hard going but I know it's important for the EPA. My LSC has been very patient and provides great resources." },
+  { name: 'Reuben Adeyemi', employer: 'Bloom Marketing Co.',    lsc: 'Hannah Clarke',  lastReview: '2026-04-28', comment: "Thoroughly enjoying the programme. The blend of theory and practical application works really well for how I learn." },
+];
+
+const EMPLOYER_COMMENTS_DATA = [
+  { name: 'Amara Osei',     lineManager: 'James Thornton',  employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', lastReview: '2026-05-20', comment: "Amara is applying her learning immediately. We've seen real improvement in how she approaches data tasks. Excellent programme and great support from the coach." },
+  { name: 'Isla Thomson',   lineManager: 'Rebecca Walsh',   employer: 'TechCore UK',            lsc: 'Sarah Mitchell', lastReview: '2026-05-15', comment: "Isla is growing in confidence week on week. The SQL skills she's developing are already being used in live client projects." },
+  { name: 'Quinn Andrews',  lineManager: 'David Park',      employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-04-30', comment: "Quinn is one of our strongest apprentices. His AI and automation work has already saved the team several hours a week on repetitive tasks." },
+  { name: 'Kyle Patterson', lineManager: 'Fiona Greenwood', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-12', comment: "Kyle's enthusiasm is infectious. We've been genuinely impressed by how proactively he shares his learning with the wider team." },
+  { name: 'Luca Ferretti',  lineManager: 'Marco Rossi',     employer: 'NovaTech Solutions',     lsc: 'Priya Sharma',   lastReview: '2026-05-08', comment: "Good progress overall. Luca occasionally needs prompting to submit OTJ evidence but his practical skills are developing strongly." },
+  { name: 'Victor Marsh',   lineManager: 'Sarah Connelly',  employer: 'Greenfield Consulting',  lsc: 'Tom Bradley',    lastReview: '2026-05-22', comment: "Victor has added real value to the team. The data skills he's gaining are immediately applicable to our everyday work." },
+  { name: 'Jordan Ellis',   lineManager: 'Chris Hamilton',  employer: 'Apex Digital Ltd',       lsc: 'Tom Bradley',    lastReview: '2026-05-19', comment: "Jordan is progressing well and is popular with the team. We're fully committed to supporting him throughout the apprenticeship journey." },
+  { name: 'Nathan Brooks',  lineManager: 'Helen Yates',     employer: 'TechCore UK',            lsc: 'Hannah Clarke',  lastReview: '2026-05-05', comment: "Nathan is a committed learner. He finds the academic writing element challenging but he is steadily improving with support." },
+  { name: 'Reuben Adeyemi', lineManager: 'Tony Okonkwo',    employer: 'Bloom Marketing Co.',    lsc: 'Hannah Clarke',  lastReview: '2026-04-28', comment: "Reuben is an asset to the team. His willingness to apply his learning in real-world scenarios immediately is outstanding." },
+];
+
+const EXIT_REVIEW_DATA = [
+  { name: 'Callum Nash',   standard: 'Applied AI & Automation', lsc: 'Tom Bradley',   exitStatus: 'Withdrawn', comment: "Left due to personal reasons unrelated to the programme. Spoke highly of the learning content and LSC support throughout his time on programme." },
+  { name: 'Willow James',  standard: 'Assistant Accountant',    lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Employer ceased trading. Learner expressed strong interest in continuing with a new employer but family circumstances prevented a transfer being arranged in time." },
+  { name: 'Noah Williams', standard: 'Data Analyst',            lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Withdrew following ongoing mental health challenges. Received full welfare and safeguarding support throughout. Left on positive terms with the programme team." },
+  { name: 'Destiny Osei',  standard: 'Multi-Channel Marketer',  lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Employer ceased trading mid-programme. Learner was performing well and expressed genuine disappointment at being unable to complete her qualification." },
+  { name: 'Callum Fraser', standard: 'Assistant Accountant',    lsc: 'Tom Bradley',   exitStatus: 'Withdrawn', comment: "Financial hardship concerns were successfully resolved with external signposting. Learner subsequently secured a higher-paid role and chose to withdraw voluntarily." },
+];
+
 // ─── KSB Tracker Data ──────────────────────────────────────────────────
 const KSB_STANDARDS = {
   'Data Technician':         { knowledge: 52, skills: 32, behaviours: 8  },
@@ -451,6 +486,7 @@ const KSB_DATA = [
   { employer: 'Apex Digital Ltd',       name: 'Tasha Morris',     standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-01-06', plannedGateway: '2026-07-10', status: 'Live',    knowledgePct: 45, skillsPct: 40, behavioursPct: 50  },
   { employer: 'Future Tech Services',   name: 'Kira Patel',       standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-03-10', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
   { employer: 'Clarity Finance Ltd',    name: 'Yasmin Al-Hassan', standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-12-02', plannedGateway: '2026-12-10', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  { employer: 'Meridian Consulting',    name: 'Felix Huang',      standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-08-14', plannedGateway: '2026-06-30', status: 'OOF',     knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
   // ─── James Okafor ─────────────────────────────────────────────────────
   { employer: 'TechCore UK',            name: 'Quinn Andrews',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2024-09-15', plannedGateway: '2026-06-10', status: 'Gateway', knowledgePct: 90, skillsPct: 85, behavioursPct: 95  },
   { employer: 'Clarity Finance Ltd',    name: 'Leo Okafor',       standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2024-10-01', plannedGateway: '2026-06-25', status: 'Gateway', knowledgePct: 85, skillsPct: 80, behavioursPct: 90  },
@@ -464,6 +500,7 @@ const KSB_DATA = [
   { employer: 'Greenfield Consulting',  name: 'Maya Patel',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-01-01', plannedGateway: '2026-07-01', status: 'Live',    knowledgePct: 75, skillsPct: 70, behavioursPct: 80  },
   { employer: 'Bloom Marketing Co.',    name: 'Uma Sharma',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-04-01', plannedGateway: '2026-11-01', status: 'BIL',     knowledgePct: 25, skillsPct: 20, behavioursPct: 30  },
   // ─── Tom Bradley ──────────────────────────────────────────────────────
+  { employer: 'Pinnacle Finance Group', name: 'Harry Singh',      standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-08-01', plannedGateway: '2026-07-30', status: 'OOF',     knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
   { employer: 'Urban Digital Ltd',      name: 'George Baker',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2025-05-01', plannedGateway: '2026-11-18', status: 'Live',    knowledgePct: 35, skillsPct: 30, behavioursPct: 40  },
   { employer: 'Greenfield Consulting',  name: 'Victor Marsh',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-12-18', plannedGateway: '2026-07-18', status: 'Live',    knowledgePct: 60, skillsPct: 55, behavioursPct: 65  },
   { employer: 'Apex Digital Ltd',       name: 'Jordan Ellis',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2025-02-28', plannedGateway: '2026-08-28', status: 'Live',    knowledgePct: 55, skillsPct: 50, behavioursPct: 55  },
@@ -508,10 +545,14 @@ let gatewayOffset      = 0; // 0 = June 2026
 let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
 let gwForecastFilter   = 'All';
+let welfareFilter      = 'All';
+let learnerVoiceFilter = 'All';
 let lscPageCoach       = 'James Okafor';
 let ksbLSCFilter       = '';
 let ksbStandardFilter  = '';
 let ksbStatusFilter    = '';
+let ksbSortCol         = 'rag';
+let ksbSortAsc         = true;
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -698,6 +739,12 @@ function applyRolePermissions() {
     if (currLscBar) currLscBar.style.display = 'none';
     const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
     if (gwFcLscBar) gwFcLscBar.style.display = 'none';
+    const welfareLscBar = document.getElementById('welfare-lsc-bar');
+    if (welfareLscBar) welfareLscBar.style.display = 'none';
+    welfareFilter = 'All';
+    const lvLscBar = document.getElementById('learner-voice-lsc-bar');
+    if (lvLscBar) lvLscBar.style.display = 'none';
+    learnerVoiceFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -718,6 +765,12 @@ function applyRolePermissions() {
     if (currLscBar) currLscBar.style.display = '';
     const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
     if (gwFcLscBar) gwFcLscBar.style.display = '';
+    const welfareLscBar = document.getElementById('welfare-lsc-bar');
+    if (welfareLscBar) welfareLscBar.style.display = '';
+    welfareFilter = 'All';
+    const lvLscBar = document.getElementById('learner-voice-lsc-bar');
+    if (lvLscBar) lvLscBar.style.display = '';
+    learnerVoiceFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -790,6 +843,7 @@ function renderAll() {
   renderCurriculum();
   renderGatewayForecast();
   renderKSB();
+  renderLearnerVoice();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -1053,13 +1107,14 @@ function renderStarterTable(tbodyId, lscFilter) {
     ? STARTER_DATA.filter(r => r.lsc === lscFilter)
     : STARTER_DATA;
   if (!rows.length) {
-    tbody.innerHTML = emptyRow(7, 'No new starters awaiting first meeting for this coach.');
+    tbody.innerHTML = emptyRow(8, 'No new starters awaiting first meeting for this coach.');
     return;
   }
   tbody.innerHTML = rows.map(r => `
     <tr>
       <td title="${r.name}">${r.name}</td>
       <td title="${r.employer}">${r.employer}</td>
+      <td title="${r.standard || ''}">${r.standard || '—'}</td>
       <td title="${r.lsc}">${r.lsc}</td>
       <td>${fmtDate(r.plannedStart)}</td>
       <td>${addDays(r.plannedStart, 30)}</td>
@@ -1249,18 +1304,25 @@ document.getElementById('gw-month-next')?.addEventListener('click', () => { gate
 
 // ─── Welfare KPIs ──────────────────────────────────────────────────────
 function renderWelfareKPIs() {
-  const d = DATA[currentSize];
-  setText('kpi-als-total',      d.alsTotal);
-  setText('kpi-als-active',     d.alsActive);
-  setText('kpi-safeguarding',   d.safeguardingActive);
-  setText('kpi-welfare-due',    d.welfareChecksDue);
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
+  const lscF  = arr => f ? arr.filter(r => r.lsc === f) : arr;
+  const alsRows  = lscF(ALS_DATA);
+  const sgActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
+  const wdRows   = lscF(WELFARE_DUE_DATA);
+  setText('kpi-als-total',    alsRows.length);
+  setText('kpi-als-active',   alsRows.length);
+  setText('kpi-safeguarding', sgActive);
+  setText('kpi-welfare-due',  wdRows.length);
 }
 
 // ─── Welfare Tables ────────────────────────────────────────────────────
 function renderWelfare() {
-  renderALSTable();
-  renderSafeguardingTable();
-  renderWelfareDueTable();
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
+  renderWelfareKPIs();
+  renderALSTable(f);
+  renderCombinedWelfareTable(f);
 }
 
 function alsReviewRag(nextReviewStr) {
@@ -1272,67 +1334,62 @@ function alsReviewRag(nextReviewStr) {
   return               { label: 'On track',  cls: 'ok' };
 }
 
-function renderALSTable() {
+function renderALSTable(lscFilter) {
   const tbody = document.getElementById('als-tbody');
   if (!tbody) return;
-  tbody.innerHTML = ALS_DATA.map(r => {
-    const rag = alsReviewRag(r.nextReview);
-    return `
-      <tr class="${rag.cls === 'urgent' ? 'row-alert' : ''}">
-        <td>${r.name}</td>
-        <td>${r.standard}</td>
-        <td>${r.lsc}</td>
-        <td><strong>${r.need}</strong></td>
-        <td style="font-size:0.78rem;">${r.adjustments}</td>
-        <td>${fmtDate(r.lastReview)}</td>
-        <td class="${rag.cls === 'urgent' ? 'cell-alert' : ''}">${fmtDate(r.nextReview)}</td>
-        <td style="text-align:center;"><span class="weeks-pill ${rag.cls}">${rag.label}</span></td>
-      </tr>
-    `;
-  }).join('');
+  const rows = lscFilter ? ALS_DATA.filter(r => r.lsc === lscFilter) : ALS_DATA;
+  if (!rows.length) { tbody.innerHTML = emptyRow(5, 'No ALS learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.standard}</td>
+      <td>${r.lsc}</td>
+      <td><strong>${r.need}</strong></td>
+      <td style="font-size:0.78rem;">${r.adjustments}</td>
+    </tr>
+  `).join('');
 }
 
-function renderSafeguardingTable() {
-  const tbody = document.getElementById('safeguarding-tbody');
+function renderCombinedWelfareTable(lscFilter) {
+  const tbody = document.getElementById('welfare-combined-tbody');
   if (!tbody) return;
-  tbody.innerHTML = SAFEGUARDING_DATA.map(r => {
-    const isActive  = r.status === 'active';
-    const rowClass  = isActive ? 'row-carry' : '';
-    const statusEl  = isActive
-      ? '<span class="status-active">Active</span>'
-      : '<span class="status-closed">Closed</span>';
-    return `
-      <tr class="${rowClass}">
-        <td><strong>${r.name}</strong></td>
-        <td>${r.lsc}</td>
-        <td>${fmtDate(r.dateRaised)}</td>
-        <td>${r.category}</td>
-        <td>${statusEl}</td>
-        <td>${fmtDate(r.lastAction)}</td>
-        <td style="font-size:0.78rem;">${r.notes}</td>
-      </tr>
-    `;
-  }).join('');
+  const sgRows = lscFilter ? SAFEGUARDING_DATA.filter(r => r.lsc === lscFilter) : SAFEGUARDING_DATA;
+  const wdRows = lscFilter ? WELFARE_DUE_DATA.filter(r => r.lsc === lscFilter) : WELFARE_DUE_DATA;
+  if (!sgRows.length && !wdRows.length) {
+    tbody.innerHTML = emptyRow(7, 'No welfare concerns for this coach.');
+    return;
+  }
+  const sgHtml = sgRows.map(r => {
+    const isActive = r.status === 'active';
+    return `<tr class="${isActive ? 'row-carry' : ''}">
+      <td><strong>${r.name}</strong></td>
+      <td>${r.lsc}</td>
+      <td><span class="welfare-type-sg">Safeguarding</span></td>
+      <td>${r.category}</td>
+      <td>${isActive ? '<span class="status-active">Active</span>' : '<span class="status-closed">Closed</span>'}</td>
+      <td>${fmtDate(r.lastAction)}</td>
+      <td style="font-size:0.78rem;max-width:200px;white-space:normal;">${r.notes}</td>
+    </tr>`;
+  });
+  const wdHtml = wdRows.map(r => {
+    const isUrgent = r.daysSince > 14;
+    return `<tr class="${isUrgent ? 'row-alert' : ''}">
+      <td>${r.name}</td>
+      <td>${r.lsc}</td>
+      <td><span class="welfare-type-check">Welfare Check-in</span></td>
+      <td>${r.reason}</td>
+      <td><span class="weeks-pill ${isUrgent ? 'urgent' : 'warning'}">${r.daysSince}d ago</span></td>
+      <td>${fmtDate(r.lastCheckin)}</td>
+      <td>—</td>
+    </tr>`;
+  });
+  tbody.innerHTML = [...sgHtml, ...wdHtml].join('');
 }
 
-function renderWelfareDueTable() {
-  const tbody = document.getElementById('welfare-due-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = WELFARE_DUE_DATA.map(r => {
-    const isAlert = r.daysSince > 14;
-    return `
-      <tr class="${isAlert ? 'row-alert' : ''}">
-        <td>${r.name}</td>
-        <td>${r.lsc}</td>
-        <td>${r.reason}</td>
-        <td>${fmtDate(r.lastCheckin)}</td>
-        <td class="${isAlert ? 'cell-alert' : ''}">
-          <span class="weeks-pill ${isAlert ? 'urgent' : 'warning'}">${r.daysSince}d ago</span>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
+document.getElementById('welfare-lsc')?.addEventListener('change', function() {
+  welfareFilter = this.value;
+  renderWelfare();
+});
 
 // ─── Delivery Dashboard ────────────────────────────────────────────────
 
@@ -1405,7 +1462,7 @@ function renderOOFTable(lscFilter) {
   const rows = lscFilter ? OOF_DATA.filter(r => r.lsc === lscFilter) : OOF_DATA;
   const countEl = document.getElementById('oof-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
-  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No OOF learners for this coach.'); return; }
+  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No OOF learners for this coach.'); return; }
   tbody.innerHTML = rows.map(r => {
     const isWithdrawn = r.status === 'Withdrawn';
     const isRed       = r.portfolioRag === 'red';
@@ -1419,7 +1476,6 @@ function renderOOFTable(lscFilter) {
         <td title="${r.standard}">${r.standard}</td>
         <td>${fmtDate(r.plannedGateway)}</td>
         <td>${r.lsc}</td>
-        <td>${oofStatusPill(r.status)}</td>
         <td>${monthCell}</td>
         <td>${prepCell}</td>
         <td style="text-align:center;">${portfolioRagBadge(r.portfolioRag)}</td>
@@ -1434,18 +1490,16 @@ function renderBILTable(lscFilter) {
   const rows = lscFilter ? BIL_DATA.filter(r => r.lsc === lscFilter) : BIL_DATA;
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
-  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No BIL learners for this coach.'); return; }
+  if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
   tbody.innerHTML = rows.map(r => {
     const isNeeded = r.status === 'BIL Decision Needed';
     const rowClass = isNeeded ? 'row-alert' : '';
     const rtlCell  = r.expectedRtl ? fmtDate(r.expectedRtl) : '<span class="cell-alert">Not confirmed</span>';
-    const gwCell   = r.plannedGateway ? fmtDate(r.plannedGateway) : '<span style="color:var(--text-muted)">—</span>';
     return `
       <tr class="${rowClass}">
         <td title="${r.employer}">${r.employer}</td>
         <td title="${r.name}">${r.name}</td>
         <td title="${r.standard}">${r.standard}</td>
-        <td>${gwCell}</td>
         <td>${r.lsc}</td>
         <td>${bilStatusPill(r.status)}</td>
         <td>${fmtDate(r.ldol)}</td>
@@ -1614,6 +1668,71 @@ function renderGateway() {
   container.innerHTML = html;
 }
 
+// ─── Learner Voice ─────────────────────────────────────────────────────
+
+function renderLearnerVoice() {
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (learnerVoiceFilter === 'All' ? null : learnerVoiceFilter);
+
+  const lcRows = f ? LEARNER_COMMENTS_DATA.filter(r => r.lsc === f)  : LEARNER_COMMENTS_DATA;
+  const ecRows = f ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === f) : EMPLOYER_COMMENTS_DATA;
+  const erRows = f ? EXIT_REVIEW_DATA.filter(r => r.lsc === f)       : EXIT_REVIEW_DATA;
+
+  const lcCount = document.getElementById('learner-comments-count');
+  const ecCount = document.getElementById('employer-comments-count');
+  const erCount = document.getElementById('exit-review-count');
+  if (lcCount) lcCount.textContent = lcRows.length + ' comment' + (lcRows.length !== 1 ? 's' : '');
+  if (ecCount) ecCount.textContent = ecRows.length + ' comment' + (ecRows.length !== 1 ? 's' : '');
+  if (erCount) erCount.textContent = erRows.length + ' review' + (erRows.length !== 1 ? 's' : '');
+
+  const lcTbody = document.getElementById('learner-comments-tbody');
+  if (lcTbody) {
+    lcTbody.innerHTML = lcRows.length
+      ? lcRows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.employer}</td>
+          <td>${fmtDate(r.lastReview)}</td>
+          <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+        </tr>`).join('')
+      : emptyRow(4, 'No learner comments for this coach.');
+  }
+
+  const ecTbody = document.getElementById('employer-comments-tbody');
+  if (ecTbody) {
+    ecTbody.innerHTML = ecRows.length
+      ? ecRows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.lineManager}</td>
+          <td>${r.employer}</td>
+          <td>${fmtDate(r.lastReview)}</td>
+          <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+        </tr>`).join('')
+      : emptyRow(5, 'No employer comments for this coach.');
+  }
+
+  const erTbody = document.getElementById('exit-review-tbody');
+  if (erTbody) {
+    erTbody.innerHTML = erRows.length
+      ? erRows.map(r => {
+          const statusPill = r.exitStatus === 'Achieved'
+            ? '<span class="dd-status-gateway">Achieved</span>'
+            : '<span class="dd-status-withdrawn">Withdrawn</span>';
+          return `<tr>
+            <td>${r.name}</td>
+            <td>${r.standard}</td>
+            <td>${statusPill}</td>
+            <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+          </tr>`;
+        }).join('')
+      : emptyRow(4, 'No exit reviews for this coach.');
+  }
+}
+
+document.getElementById('learner-voice-lsc')?.addEventListener('change', function() {
+  learnerVoiceFilter = this.value;
+  renderLearnerVoice();
+});
+
 // ─── KSB Tracker ───────────────────────────────────────────────────────
 
 function ksbRag(r) {
@@ -1639,6 +1758,7 @@ function ksbRagBadge(rag) {
 function ksbStatusPill(status) {
   if (status === 'Live')    return `<span class="dd-status-current">Live</span>`;
   if (status === 'BIL')     return `<span class="ksb-status-bil">BIL</span>`;
+  if (status === 'OOF')     return `<span class="ksb-status-oof">OOF</span>`;
   if (status === 'Gateway') return `<span class="dd-status-gateway">Gateway</span>`;
   return status;
 }
@@ -1668,20 +1788,47 @@ function renderKSB() {
 
   // Managers with no LSC filter: show only at-risk (not green)
   const managerAllView = !isLSC && !ksbLSCFilter;
-  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green');
+  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green' && r.status !== 'BIL');
 
   if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
   if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
 
-  // Sort: super-red → red → amber → green
+  // Sort
   const ragOrder = {'super-red': 0, 'red': 1, 'amber': 2, 'green': 3};
-  rows.sort((a, b) => ragOrder[ksbRag(a)] - ragOrder[ksbRag(b)]);
+  rows.sort((a, b) => {
+    let av = ksbSortCol === 'rag' ? ragOrder[ksbRag(a)] : (a[ksbSortCol] ?? '');
+    let bv = ksbSortCol === 'rag' ? ragOrder[ksbRag(b)] : (b[ksbSortCol] ?? '');
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    return (av < bv ? -1 : av > bv ? 1 : 0) * (ksbSortAsc ? 1 : -1);
+  });
+
+  // Update sort header icons
+  document.querySelectorAll('.sort-th').forEach(th => {
+    const icon = th.querySelector('.sort-icon');
+    if (!icon) return;
+    if (th.dataset.col === ksbSortCol) {
+      icon.textContent = ksbSortAsc ? '↑' : '↓';
+      th.classList.add('sort-active');
+    } else {
+      icon.textContent = '⇅';
+      th.classList.remove('sort-active');
+    }
+  });
 
   const countEl = document.getElementById('ksb-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
 
   const notice = document.getElementById('ksb-manager-notice');
   if (notice) notice.style.display = managerAllView ? '' : 'none';
+
+  // Update subtitle based on role
+  const subtitle = document.querySelector('#delivery-manager-view .page-subtitle');
+  if (subtitle) {
+    subtitle.textContent = isLSC
+      ? 'Knowledge, Skills and Behaviours across your caseload'
+      : 'Knowledge, Skills and Behaviours progress across your provision';
+  }
 
   const tbody = document.getElementById('ksb-tbody');
   if (!tbody) return;
@@ -1703,6 +1850,19 @@ function renderKSB() {
     </tr>`;
   }).join('');
 }
+
+document.querySelectorAll('.sort-th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (ksbSortCol === col) {
+      ksbSortAsc = !ksbSortAsc;
+    } else {
+      ksbSortCol = col;
+      ksbSortAsc = true;
+    }
+    renderKSB();
+  });
+});
 
 document.getElementById('ksb-lsc')?.addEventListener('change', function() {
   ksbLSCFilter = this.value;
@@ -1763,6 +1923,15 @@ function renderCurriculum() {
   if (!isLSC && lscVal) rows = rows.filter(r => r.lsc === lscVal);
   if (stdVal)            rows = rows.filter(r => r.standard === stdVal);
   if (statVal)           rows = rows.filter(r => curriculumStatus(r) === statVal);
+
+  // Sort: furthest behind first (largest gap between expected and complete)
+  const statusOrder = {'No Activity': 0, 'Behind': 1, 'Off Track': 2, 'On Track': 3};
+  rows.sort((a, b) => {
+    const sa = statusOrder[curriculumStatus(a)] ?? 3;
+    const sb = statusOrder[curriculumStatus(b)] ?? 3;
+    if (sa !== sb) return sa - sb;
+    return (b.partsExpected - b.partsComplete) - (a.partsExpected - a.partsComplete);
+  });
 
   const countEl = document.getElementById('curr-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');

@@ -331,6 +331,18 @@
           <button class="btn-export">⬇ Export</button>
         </div>
 
+        <div class="lsc-selector-bar" id="learner-voice-lsc-bar">
+          <label class="lsc-selector-label" for="learner-voice-lsc">Filter by LSC:</label>
+          <select class="filter-select" id="learner-voice-lsc">
+            <option value="All">All Coaches</option>
+            <option>Sarah Mitchell</option>
+            <option>James Okafor</option>
+            <option>Priya Sharma</option>
+            <option>Tom Bradley</option>
+            <option>Hannah Clarke</option>
+          </select>
+        </div>
+
         <div class="enps-hero" id="enps-hero">
           <div class="enps-score-block">
             <span class="enps-label">Learner eNPS</span>
@@ -358,11 +370,57 @@
           </div>
         </div>
 
-        <div class="dashboard-grid">
-          <div class="panel"><div class="panel-header"><h2 class="panel-title">Recent Learner Comments</h2></div><div class="panel-body placeholder-body">Verbatim feedback from progress reviews — sentiment-tagged positive / neutral / negative.</div></div>
-          <div class="panel"><div class="panel-header"><h2 class="panel-title">Recent Employer Comments</h2></div><div class="panel-body placeholder-body">Employer feedback from review sign-offs — flagged concerns and praise.</div></div>
-          <div class="panel panel--wide"><div class="panel-header"><h2 class="panel-title">Exit Review Summary</h2><button class="btn-export">⬇ Export</button></div><div class="panel-body placeholder-body">Themes from exit reviews — reason for leaving, satisfaction score, NPS at exit.</div></div>
-          <div class="panel panel--wide"><div class="panel-header"><h2 class="panel-title">Survey Results by Standard</h2></div><div class="panel-body placeholder-body">Aggregated survey scores per apprenticeship standard — satisfaction, teaching quality, relevance.</div></div>
+        <div class="panel-stack">
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Learner Comments</h2>
+              <span class="panel-count" id="learner-comments-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Employer</th><th>Last Progress Review</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="learner-comments-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Employer Comments</h2>
+              <span class="panel-count" id="employer-comments-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Line Manager</th><th>Employer</th><th>Last Progress Review</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="employer-comments-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Exit Review Summary</h2>
+              <span class="panel-count" id="exit-review-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Standard</th><th>Status</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="exit-review-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -376,11 +434,23 @@
           <button class="btn-export">⬇ Export</button>
         </div>
 
+        <div class="lsc-selector-bar" id="welfare-lsc-bar">
+          <label class="lsc-selector-label" for="welfare-lsc">Filter by LSC:</label>
+          <select class="filter-select" id="welfare-lsc">
+            <option value="All">All Coaches</option>
+            <option>Sarah Mitchell</option>
+            <option>James Okafor</option>
+            <option>Priya Sharma</option>
+            <option>Tom Bradley</option>
+            <option>Hannah Clarke</option>
+          </select>
+        </div>
+
         <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
           <div class="kpi-card"><span class="kpi-label">Learners with Declared Needs</span><span class="kpi-value" id="kpi-als-total">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Active Support Plans</span><span class="kpi-value green" id="kpi-als-active">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Active Safeguarding Concerns</span><span class="kpi-value red" id="kpi-safeguarding">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">Support Reviews Due</span><span class="kpi-value amber" id="kpi-welfare-due">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Welfare Check-ins Due</span><span class="kpi-value amber" id="kpi-welfare-due">—</span></div>
         </div>
 
         <div class="panel-stack">
@@ -396,50 +466,31 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Learner</th><th>Standard</th><th>LSC</th><th>Declared Need</th>
-                    <th>Adjustments in Place</th><th>Last Review</th><th>Next Review</th>
-                    <th style="text-align:center;">Review Status</th>
+                    <th>Learner</th><th>Standard</th><th>LSC</th>
+                    <th>Declared Need</th><th>Adjustments in Place</th>
                   </tr>
                 </thead>
                 <tbody id="als-tbody"></tbody>
               </table>
             </div>
           </div>
-          <div class="panel">
+
+          <div class="panel panel--span">
             <div class="panel-header">
               <div>
                 <h2 class="panel-title">Safeguarding &amp; Welfare Concerns</h2>
-                <p class="panel-desc">Active and recently resolved cases — handled in confidence</p>
+                <p class="panel-desc">Active safeguarding cases and overdue welfare check-ins — handled in confidence</p>
               </div>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Learner</th><th>LSC</th><th>Date Raised</th><th>Category</th>
-                    <th>Status</th><th>Last Action</th><th>Notes</th>
+                    <th>Learner</th><th>LSC</th><th>Type</th><th>Category / Reason</th>
+                    <th>Status / Days Since</th><th>Last Action / Check-in</th><th>Notes</th>
                   </tr>
                 </thead>
-                <tbody id="safeguarding-tbody"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title">Welfare Check-ins Due</h2>
-                <p class="panel-desc">Ordered by most overdue — flagged red beyond 14 days</p>
-              </div>
-            </div>
-            <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table">
-                <thead>
-                  <tr>
-                    <th>Learner</th><th>LSC</th><th>Reason for Monitoring</th>
-                    <th>Last Check-in</th><th>Days Since</th>
-                  </tr>
-                </thead>
-                <tbody id="welfare-due-tbody"></tbody>
+                <tbody id="welfare-combined-tbody"></tbody>
               </table>
             </div>
           </div>
@@ -482,6 +533,7 @@
             <select class="filter-select" id="ksb-status">
               <option value="">All Statuses</option>
               <option>Live</option>
+              <option>OOF</option>
               <option>BIL</option>
               <option>Gateway</option>
             </select>
@@ -490,25 +542,25 @@
           <div class="ksb-kpi-section">
             <div class="ksb-kpi-label">Within 6 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Dec 2026)</span></div>
             <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-6m-sr">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-6m-r">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-6m-a">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-6m-g">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Super Red <span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-6m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red <span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-6m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber <span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-6m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green <span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-6m-g">—</span></div>
             </div>
           </div>
 
           <div class="ksb-kpi-section" style="margin-bottom:1.25rem;">
             <div class="ksb-kpi-label">Within 3 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Sep 2026)</span></div>
             <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
-              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-3m-sr">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-3m-r">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-3m-a">—</span></div>
-              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-3m-g">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Super Red <span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-3m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red <span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-3m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber <span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-3m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green <span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-3m-g">—</span></div>
             </div>
           </div>
 
           <div id="ksb-manager-notice" class="ksb-notice" style="display:none;">
-            ⓘ Showing at-risk learners only (Super Red, Red, Amber). Filter by LSC above to see the full caseload for a specific coach.
+            ⓘ Showing at-risk learners only (Super Red, Red, Amber) with gateway within 6 months. Filter by LSC above to see the full caseload for a specific coach.
           </div>
 
           <div class="panel panel--span">
@@ -520,9 +572,16 @@
               <table class="data-table dd-table">
                 <thead>
                   <tr>
-                    <th>Employer</th><th>Learner</th><th>Standard</th>
-                    <th>Start Date</th><th>Planned Gateway</th><th>Status</th>
-                    <th>Knowledge</th><th>Skills</th><th>Behaviours</th><th>RAG</th>
+                    <th class="sort-th" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="startDate">Start Date <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="plannedGateway">Planned Gateway <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="status">Status <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="knowledgePct">Knowledge <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="skillsPct">Skills <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="behavioursPct">Behaviours <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-col="rag">RAG <span class="sort-icon">⇅</span></th>
                   </tr>
                 </thead>
                 <tbody id="ksb-tbody"></tbody>
@@ -619,7 +678,7 @@
           <div class="kpi-card"><span class="kpi-label">Awaiting First Meeting</span><span class="kpi-value" id="kpi-awaiting-first">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Outstanding Touchpoints</span><span class="kpi-value amber" id="kpi-outstanding">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Progress Reviews (8+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">No OTJ This Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">OTJ Compliance in Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Out of Funding</span><span class="kpi-value" id="comp-oof-total">—</span></div>
           <div class="kpi-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
           <div class="kpi-card" id="comp-reviews-due-card"><span class="kpi-label">Reviews Due (14 days)</span><span class="kpi-value amber" id="lsc-reviews-due">—</span></div>
@@ -632,7 +691,7 @@
             <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
-                <thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Planned Start</th><th>30-Day Window</th><th>FDOL Entry</th><th>Starter Checklist</th></tr></thead>
+                <thead><tr><th>Learner</th><th>Employer</th><th>Standard</th><th>LSC</th><th>Planned Start</th><th>30-Day Window</th><th>FDOL Entry</th><th>Starter Checklist</th></tr></thead>
                 <tbody id="starter-tbody"></tbody>
               </table>
             </div>
@@ -653,7 +712,7 @@
           </div>
 
           <div class="panel">
-            <div class="panel-header"><div><h2 class="panel-title">No OTJ Evidence Recorded This Month</h2><p class="panel-desc">Longest since last entry at top — flagged red beyond 4 weeks</p></div><button class="btn-export">⬇ Export</button></div>
+            <div class="panel-header"><div><h2 class="panel-title">OTJ Compliance in Month</h2><p class="panel-desc">Learners with no OTJ evidence recorded this month — longest since last entry at top</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>OTJ Completed</th><th>OTJ Expected</th><th>Last Entry Date</th></tr></thead><tbody id="otj-tbody"></tbody></table>
             </div>
@@ -663,7 +722,7 @@
             <div class="panel-header"><h2 class="panel-title">Out of Funding (OOF)</h2><span class="panel-count" id="oof-panel-count">—</span></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
-                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th><th>Notes</th></tr></thead>
+                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th><th>Notes</th></tr></thead>
                 <tbody id="oof-tbody"></tbody>
               </table>
             </div>
@@ -673,7 +732,7 @@
             <div class="panel-header"><h2 class="panel-title">Break in Learning (BIL)</h2><span class="panel-count" id="bil-panel-count">—</span></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
-                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>LDOL</th><th>Expected RTL</th><th>Notes</th></tr></thead>
+                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>LSC</th><th>Status</th><th>LDOL</th><th>Expected RTL</th><th>Notes</th></tr></thead>
                 <tbody id="bil-tbody"></tbody>
               </table>
             </div>

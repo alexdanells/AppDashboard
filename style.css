@@ -1221,6 +1221,41 @@ body {
 .ksb-pct--green { color: var(--green-dark); }
 .ksb-pct--red   { color: var(--red); }
 
+.sort-th {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+.sort-th:hover { background: #f1f5f9; }
+.sort-th.sort-active { color: var(--navy); }
+.sort-icon {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-left: 0.25rem;
+}
+.sort-th.sort-active .sort-icon { color: var(--navy); }
+
+.welfare-type-sg, .welfare-type-check {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.welfare-type-sg    { background: #fee2e2; color: var(--red); }
+.welfare-type-check { background: #fef3c7; color: #92400e; }
+
+.ksb-status-oof {
+  background: #fee2e2;
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  display: inline-block;
+}
+
 .ksb-status-bil {
   background: #fef3c7;
   color: #92400e;
