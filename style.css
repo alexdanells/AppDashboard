@@ -1235,6 +1235,17 @@ body {
 }
 .sort-th.sort-active .sort-icon { color: var(--navy); }
 
+.welfare-type-sg, .welfare-type-check {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+  display: inline-block;
+}
+.welfare-type-sg    { background: #fee2e2; color: var(--red); }
+.welfare-type-check { background: #fef3c7; color: #92400e; }
+
 .ksb-status-bil {
   background: #fef3c7;
   color: #92400e;

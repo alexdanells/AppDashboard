@@ -508,6 +508,7 @@ let gatewayOffset      = 0; // 0 = June 2026
 let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
 let gwForecastFilter   = 'All';
+let welfareFilter      = 'All';
 let lscPageCoach       = 'James Okafor';
 let ksbLSCFilter       = '';
 let ksbStandardFilter  = '';
@@ -700,6 +701,9 @@ function applyRolePermissions() {
     if (currLscBar) currLscBar.style.display = 'none';
     const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
     if (gwFcLscBar) gwFcLscBar.style.display = 'none';
+    const welfareLscBar = document.getElementById('welfare-lsc-bar');
+    if (welfareLscBar) welfareLscBar.style.display = 'none';
+    welfareFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -720,6 +724,9 @@ function applyRolePermissions() {
     if (currLscBar) currLscBar.style.display = '';
     const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
     if (gwFcLscBar) gwFcLscBar.style.display = '';
+    const welfareLscBar = document.getElementById('welfare-lsc-bar');
+    if (welfareLscBar) welfareLscBar.style.display = '';
+    welfareFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -1252,18 +1259,25 @@ document.getElementById('gw-month-next')?.addEventListener('click', () => { gate
 
 // ─── Welfare KPIs ──────────────────────────────────────────────────────
 function renderWelfareKPIs() {
-  const d = DATA[currentSize];
-  setText('kpi-als-total',      d.alsTotal);
-  setText('kpi-als-active',     d.alsActive);
-  setText('kpi-safeguarding',   d.safeguardingActive);
-  setText('kpi-welfare-due',    d.welfareChecksDue);
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
+  const lscF  = arr => f ? arr.filter(r => r.lsc === f) : arr;
+  const alsRows  = lscF(ALS_DATA);
+  const sgActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
+  const wdRows   = lscF(WELFARE_DUE_DATA);
+  setText('kpi-als-total',    alsRows.length);
+  setText('kpi-als-active',   alsRows.length);
+  setText('kpi-safeguarding', sgActive);
+  setText('kpi-welfare-due',  wdRows.length);
 }
 
 // ─── Welfare Tables ────────────────────────────────────────────────────
 function renderWelfare() {
-  renderALSTable();
-  renderSafeguardingTable();
-  renderWelfareDueTable();
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
+  renderWelfareKPIs();
+  renderALSTable(f);
+  renderCombinedWelfareTable(f);
 }
 
 function alsReviewRag(nextReviewStr) {
@@ -1275,67 +1289,62 @@ function alsReviewRag(nextReviewStr) {
   return               { label: 'On track',  cls: 'ok' };
 }
 
-function renderALSTable() {
+function renderALSTable(lscFilter) {
   const tbody = document.getElementById('als-tbody');
   if (!tbody) return;
-  tbody.innerHTML = ALS_DATA.map(r => {
-    const rag = alsReviewRag(r.nextReview);
-    return `
-      <tr class="${rag.cls === 'urgent' ? 'row-alert' : ''}">
-        <td>${r.name}</td>
-        <td>${r.standard}</td>
-        <td>${r.lsc}</td>
-        <td><strong>${r.need}</strong></td>
-        <td style="font-size:0.78rem;">${r.adjustments}</td>
-        <td>${fmtDate(r.lastReview)}</td>
-        <td class="${rag.cls === 'urgent' ? 'cell-alert' : ''}">${fmtDate(r.nextReview)}</td>
-        <td style="text-align:center;"><span class="weeks-pill ${rag.cls}">${rag.label}</span></td>
-      </tr>
-    `;
-  }).join('');
+  const rows = lscFilter ? ALS_DATA.filter(r => r.lsc === lscFilter) : ALS_DATA;
+  if (!rows.length) { tbody.innerHTML = emptyRow(5, 'No ALS learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => `
+    <tr>
+      <td>${r.name}</td>
+      <td>${r.standard}</td>
+      <td>${r.lsc}</td>
+      <td><strong>${r.need}</strong></td>
+      <td style="font-size:0.78rem;">${r.adjustments}</td>
+    </tr>
+  `).join('');
 }
 
-function renderSafeguardingTable() {
-  const tbody = document.getElementById('safeguarding-tbody');
+function renderCombinedWelfareTable(lscFilter) {
+  const tbody = document.getElementById('welfare-combined-tbody');
   if (!tbody) return;
-  tbody.innerHTML = SAFEGUARDING_DATA.map(r => {
-    const isActive  = r.status === 'active';
-    const rowClass  = isActive ? 'row-carry' : '';
-    const statusEl  = isActive
-      ? '<span class="status-active">Active</span>'
-      : '<span class="status-closed">Closed</span>';
-    return `
-      <tr class="${rowClass}">
-        <td><strong>${r.name}</strong></td>
-        <td>${r.lsc}</td>
-        <td>${fmtDate(r.dateRaised)}</td>
-        <td>${r.category}</td>
-        <td>${statusEl}</td>
-        <td>${fmtDate(r.lastAction)}</td>
-        <td style="font-size:0.78rem;">${r.notes}</td>
-      </tr>
-    `;
-  }).join('');
+  const sgRows = lscFilter ? SAFEGUARDING_DATA.filter(r => r.lsc === lscFilter) : SAFEGUARDING_DATA;
+  const wdRows = lscFilter ? WELFARE_DUE_DATA.filter(r => r.lsc === lscFilter) : WELFARE_DUE_DATA;
+  if (!sgRows.length && !wdRows.length) {
+    tbody.innerHTML = emptyRow(7, 'No welfare concerns for this coach.');
+    return;
+  }
+  const sgHtml = sgRows.map(r => {
+    const isActive = r.status === 'active';
+    return `<tr class="${isActive ? 'row-carry' : ''}">
+      <td><strong>${r.name}</strong></td>
+      <td>${r.lsc}</td>
+      <td><span class="welfare-type-sg">Safeguarding</span></td>
+      <td>${r.category}</td>
+      <td>${isActive ? '<span class="status-active">Active</span>' : '<span class="status-closed">Closed</span>'}</td>
+      <td>${fmtDate(r.lastAction)}</td>
+      <td style="font-size:0.78rem;max-width:200px;white-space:normal;">${r.notes}</td>
+    </tr>`;
+  });
+  const wdHtml = wdRows.map(r => {
+    const isUrgent = r.daysSince > 14;
+    return `<tr class="${isUrgent ? 'row-alert' : ''}">
+      <td>${r.name}</td>
+      <td>${r.lsc}</td>
+      <td><span class="welfare-type-check">Welfare Check-in</span></td>
+      <td>${r.reason}</td>
+      <td><span class="weeks-pill ${isUrgent ? 'urgent' : 'warning'}">${r.daysSince}d ago</span></td>
+      <td>${fmtDate(r.lastCheckin)}</td>
+      <td>—</td>
+    </tr>`;
+  });
+  tbody.innerHTML = [...sgHtml, ...wdHtml].join('');
 }
 
-function renderWelfareDueTable() {
-  const tbody = document.getElementById('welfare-due-tbody');
-  if (!tbody) return;
-  tbody.innerHTML = WELFARE_DUE_DATA.map(r => {
-    const isAlert = r.daysSince > 14;
-    return `
-      <tr class="${isAlert ? 'row-alert' : ''}">
-        <td>${r.name}</td>
-        <td>${r.lsc}</td>
-        <td>${r.reason}</td>
-        <td>${fmtDate(r.lastCheckin)}</td>
-        <td class="${isAlert ? 'cell-alert' : ''}">
-          <span class="weeks-pill ${isAlert ? 'urgent' : 'warning'}">${r.daysSince}d ago</span>
-        </td>
-      </tr>
-    `;
-  }).join('');
-}
+document.getElementById('welfare-lsc')?.addEventListener('change', function() {
+  welfareFilter = this.value;
+  renderWelfare();
+});
 
 // ─── Delivery Dashboard ────────────────────────────────────────────────
 
