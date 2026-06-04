@@ -694,8 +694,8 @@ function applyRolePermissions() {
   // Overview card order — LSC: Delivery, Compliance, Gateway, Curriculum, Welfare
   //                      Managers: AAF, Sales, Delivery, Compliance, Gateway, Curriculum, Welfare
   const cardOrder = isLSC
-    ? { 'ov-delivery-card': 1, 'ov-compliance-card': 2, 'ov-gateway-card': 3, 'ov-curriculum-card': 4, 'ov-welfare-card': 5 }
-    : { 'ov-aaf-card': 1, 'ov-sales-card': 2, 'ov-delivery-card': 3, 'ov-compliance-card': 4, 'ov-gateway-card': 5, 'ov-curriculum-card': 6, 'ov-welfare-card': 7 };
+    ? { 'ov-compliance-card': 1, 'ov-delivery-card': 2, 'ov-ksb-card': 3, 'ov-gateway-card': 4, 'ov-gwf-card': 5, 'ov-curriculum-card': 6, 'ov-welfare-card': 7, 'ov-voice-card': 8 }
+    : { 'ov-aaf-card': 1, 'ov-sales-card': 2, 'ov-compliance-card': 3, 'ov-delivery-card': 4, 'ov-ksb-card': 5, 'ov-gateway-card': 6, 'ov-gwf-card': 7, 'ov-curriculum-card': 8, 'ov-welfare-card': 9, 'ov-voice-card': 10 };
   Object.entries(cardOrder).forEach(([id, order]) => {
     const el = document.getElementById(id);
     if (el) el.style.order = order;
@@ -959,8 +959,35 @@ function renderOverviewSummary() {
   setText('ov-curr-off-track',   currStatuses.filter(s => s === 'Off Track' || s === 'Behind').length);
   setText('ov-curr-no-activity', currStatuses.filter(s => s === 'No Activity').length);
 
-  // — Urgent banner —
-  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
+  // — KSB Tracker (within 6 months of gateway) —
+  const mo6 = new Date('2026-12-04');
+  const ksbBase = isLSC ? KSB_DATA.filter(r => r.lsc === coach) : KSB_DATA;
+  const ksbW6   = ksbBase.filter(r => new Date(r.plannedGateway) <= mo6);
+  const ksbSuperRed = ksbW6.filter(r => ksbRag(r) === 'super-red').length;
+  setText('ov-ksb-sr', ksbSuperRed);
+  setText('ov-ksb-r',  ksbW6.filter(r => ksbRag(r) === 'red').length);
+  setText('ov-ksb-a',  ksbW6.filter(r => ksbRag(r) === 'amber').length);
+  setText('ov-ksb-g',  ksbW6.filter(r => ksbRag(r) === 'green').length);
+
+  // — Gateway Forecast (Q2/Q3/Q4) —
+  const gwLscF = r => !isLSC || r.lsc === coach;
+  const q2Rows = GW_Q2_DATA.filter(gwLscF);
+  const q3Rows = GW_Q3_DATA.filter(gwLscF);
+  const q4Rows = GW_Q4_DATA.filter(gwLscF);
+  setText('ov-gwf-q2',  q2Rows.length);
+  setText('ov-gwf-q3',  q3Rows.length);
+  setText('ov-gwf-q4',  q4Rows.length);
+  setText('ov-gwf-red', [...q2Rows, ...q3Rows, ...q4Rows].filter(r => r.portfolioRag === 'red').length);
+
+  // — Learner Voice —
+  const d = DATA[currentSize];
+  setText('ov-lv-learner-enps',      d.learnerENPS);
+  setText('ov-lv-employer-enps',     d.employerENPS);
+  setText('ov-lv-learner-comments',  isLSC ? LEARNER_COMMENTS_DATA.filter(r => r.lsc === coach).length : LEARNER_COMMENTS_DATA.length);
+  setText('ov-lv-employer-comments', isLSC ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === coach).length : EMPLOYER_COMMENTS_DATA.length);
+
+  // — Urgent banner (includes KSB super-red within 6 months) —
+  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue + ksbSuperRed;
   setText('ov-total-actions', urgentTotal);
 }
 
