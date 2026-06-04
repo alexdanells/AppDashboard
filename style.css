@@ -1223,6 +1223,13 @@ body {
 .ksb-pct--green { color: var(--green-dark); }
 .ksb-pct--red   { color: var(--red); }
 
+.filter-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 0 0;
+}
+
 .sort-th {
   cursor: pointer;
   user-select: none;

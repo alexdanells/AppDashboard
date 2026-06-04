@@ -964,6 +964,16 @@ document.addEventListener('click', e => {
   })[tid]?.();
 });
 
+// ─── Collapsible AAF section ───────────────────────────────────────────
+function toggleAAFSection() {
+  const grid = document.getElementById('aaf-grid');
+  const btn  = document.getElementById('aaf-toggle-btn');
+  if (!grid || !btn) return;
+  const isCollapsed = grid.style.display === 'none';
+  grid.style.display = isCollapsed ? '' : 'none';
+  btn.textContent = isCollapsed ? 'Collapse ▲' : 'Expand ▼';
+}
+
 // ─── Sub-navigation (scoped to each section's own nav) ─────────────────
 document.querySelectorAll('.sub-nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1710,6 +1720,13 @@ document.getElementById('gw-month-prev')?.addEventListener('click', () => { gate
 document.getElementById('gw-month-next')?.addEventListener('click', () => { gatewayOffset++; renderGateway(); });
 
 // ─── Welfare KPIs ──────────────────────────────────────────────────────
+const ALS_GROUPS = {
+  'kpi-als-learning': { label: 'Learning Difficulties', needs: ['Dyslexia', 'Dyspraxia', 'Dyscalculia'] },
+  'kpi-als-neuro':    { label: 'ADHD & Autism',         needs: ['ADHD', 'Autism Spectrum (ASC)'] },
+  'kpi-als-mental':   { label: 'Mental Health',         needs: ['Anxiety / Mental Health'] },
+  'kpi-als-physical': { label: 'Physical & Sensory',    needs: ['Visual Impairment', 'Hearing Impairment', 'Physical Disability'] },
+};
+
 function renderWelfareKPIs() {
   const isLSC = currentUser.role === 'lsc';
   const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
@@ -1721,6 +1738,10 @@ function renderWelfareKPIs() {
   setText('kpi-als-active',   alsRows.length);
   setText('kpi-safeguarding', sgActive);
   setText('kpi-welfare-due',  wdRows.length);
+  // ALS breakdown by category
+  Object.entries(ALS_GROUPS).forEach(([id, { needs }]) => {
+    setText(id, alsRows.filter(r => needs.includes(r.need)).length);
+  });
 }
 
 // ─── Welfare Tables ────────────────────────────────────────────────────
