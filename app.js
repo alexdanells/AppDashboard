@@ -400,7 +400,7 @@ const NAV_ACCESS = {
   'page-sales':     ['delivery', 'compliance', 'quality', 'sales'],
   'page-smt':       ['delivery', 'compliance', 'quality'],
   'page-learners':  ['delivery', 'compliance', 'quality', 'lsc'],
-  'page-gateway':   ['delivery', 'quality'],
+  'page-gateway':   ['delivery', 'quality', 'lsc'],
   'page-reporting': ['delivery', 'compliance', 'quality', 'sales', 'lsc'],
 };
 
