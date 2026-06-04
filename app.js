@@ -514,6 +514,254 @@ const KSB_DATA = [
   { employer: 'Clarity Finance Ltd',    name: 'Will Thornton',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  startDate: '2025-04-01', plannedGateway: '2026-10-01', status: 'BIL',     knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
 ];
 
+// ─── 1,000-Learner Scale Generator ────────────────────────────────────
+
+const COACHES_1000 = [
+  'Sarah Mitchell','James Okafor','Priya Sharma','Tom Bradley','Hannah Clarke',
+  'Natasha Reynolds','Daniel Osei','Emma Whitfield','Marcus Chen','Lorna MacPherson',
+  'Aidan Walsh','Fatima Begum','Ryan Saunders','Charlotte Patel','Leon Adeyemi',
+  "Niamh O'Brien",'Josh Carpenter','Amara Diallo','Steven Park','Rosa Ferreira',
+];
+
+const _FN = ['James','Emma','Oliver','Sophia','William','Isabella','Noah','Charlotte','Aiden','Mia',
+  'Lucas','Harper','Mason','Evelyn','Ethan','Abigail','Alexander','Emily','Henry','Elizabeth',
+  'Sebastian','Mila','Jack','Ella','Owen','Avery','Samuel','Sofia','Daniel','Camila',
+  'Logan','Aria','Muhammad','Fatima','Yusuf','Aisha','Khalid','Nadia','Omar','Layla',
+  'Liam','Grace','Callum','Freya','Rajan','Priya','Aryan','Ananya','Kwame','Ama',
+  'Kofi','Abena','Tariq','Zara','Idris','Amara','Cian','Siobhan','Declan','Aoife',
+  'Leon','Maya','Jordan','Riley','Tyler','Morgan','Casey','Blake','Finn','Isla',
+  'Rory','Skye','Hamish','Morag','Ewan','Ailsa','Aaron','Bella','Calvin','Diana',
+  'Eric','Fiona','George','Helena','Ivan','Julia','Kevin','Laura','Michael','Natalie'];
+const _LN = ['Smith','Jones','Williams','Taylor','Brown','Davies','Evans','Wilson',
+  'Thomas','Roberts','Johnson','Lewis','Walker','Robinson','Wood','Thompson',
+  'White','Watson','Jackson','Wright','Green','Harris','Cooper','King',
+  'Lee','Martin','Clarke','James','Morgan','Hughes','Edwards','Hill',
+  'Moore','Clark','Harrison','Scott','Young','Morris','Hall','Ward',
+  'Turner','Carter','Phillips','Mitchell','Patel','Ahmed','Khan','Ali',
+  'Rahman','Singh','Kumar','Shah','Gupta','Sharma','Das','Roy',
+  'Okafor','Adeyemi','Osei','Mensah','Agyei','Boateng','Owusu','Asante',
+  'Ferreira','Silva','Santos','Costa','Chen','Zhang','Liu','Wang',
+  'Murphy','Kelly','Walsh','Ryan','Byrne','Doyle','McCarthy','Burke',
+  'Park','Kim','Choi','Andersen','Berg','Johansson','Nielsen','Hansen'];
+const _EMP = [
+  'TechCore UK','DataSphere Analytics','Apex Digital Ltd','Bright Digital Agency',
+  'Greenfield Consulting','Sterling Accounts','Meridian Consulting','Nova Solutions',
+  'Pinnacle Finance Group','Clarity Finance Ltd','Urban Digital Ltd','Horizon Analytics',
+  'Bloom Marketing Co.','NovaTech Solutions','Future Tech Services','Peak Performance Ltd',
+  'Vantage Systems Ltd','Cipher Analytics','Redwood Digital','Bluebell Finance',
+  'Summit Consulting','Nexus Technologies','Atlas Data Co.','Ember Creative',
+  'Forge Analytics','Quantum Finance','Ridgeway Digital','Solent Consulting',
+  'Tidal Marketing','Upland Data Services','Kestrel Tech','Falcon Finance',
+  'Osprey Analytics','Hawk Digital','Eagle Consulting','Harrier Solutions',
+  'Swift Data','Merlin Marketing','Robin Finance','Wren Technologies',
+];
+const _NEEDS = ['Dyslexia','ADHD','Anxiety / Mental Health','Dyspraxia','Dyscalculia',
+  'Autism Spectrum (ASC)','Visual Impairment','Hearing Impairment','Physical Disability'];
+const _ADJ = [
+  'Extended assessment time, dyslexia-friendly materials',
+  'Chunked tasks, visual planners, frequent check-ins',
+  'Regular welfare check-ins, phased support',
+  'Alternative format submissions, extended time',
+  'Calculator permitted, formulae sheet provided',
+  'Written instructions, structured routine, quiet space',
+  'Large print, screen reader software',
+  'Written communication preferred, transcripts provided',
+  'Accessible formats, ergonomic workstation support',
+];
+const _SGCAT = ['Mental Health & Wellbeing','Workplace Concern','Personal Welfare','Financial Hardship'];
+const _MTYPE = ['Progress Review','Interim Review','Welfare Check-in','Learning Review'];
+const _RAG   = ['green','amber','amber','amber','red'];
+const _SPRINTS = {
+  'Data Technician':         ['AI Literacy','AI Applications in Business L3','AI for Data Analytics L3'],
+  'Data Analyst':            ['Introduction to Data Analytics L4 v2','Python Foundations L4 v2','Module to be Selected','Main Analysis Types L4'],
+  'Applied AI & Automation': ['L4 AI Copilot AI Literacy','L4 AI Copilot No Code AI Applications','L4 AI Copilot Low Code AI Applications'],
+};
+
+function _mkRng(seed) {
+  let s = ((seed ^ 0xdeadbeef) >>> 0) || 1;
+  return () => {
+    s = Math.imul(s ^ (s >>> 16), 0x45d9f3b); s ^= s >>> 16;
+    return (s >>> 0) / 4294967296;
+  };
+}
+function _isoAdd(base, days) {
+  const d = new Date(base); d.setDate(d.getDate() + days); return d.toISOString().slice(0, 10);
+}
+
+const SCALE_1000 = (function () {
+  const rng  = _mkRng(42);
+  const pick = arr => arr[Math.floor(rng() * arr.length)];
+  const ri   = (lo, hi) => lo + Math.floor(rng() * (hi - lo + 1));
+  const pr   = p => rng() < p;
+  const TODAY = '2026-06-04';
+
+  // --- Master learner list: 50 per coach = 1000 ---
+  const used = new Set();
+  const genName = () => {
+    let n, t = 0;
+    do { n = `${pick(_FN)} ${pick(_LN)}`; t++; } while (used.has(n) && t < 300);
+    used.add(n); return n;
+  };
+
+  const masters = [];
+  COACHES_1000.forEach(coach => {
+    for (let i = 0; i < 50; i++) {
+      masters.push({ name: genName(), employer: pick(_EMP), standard: pick(STANDARDS), lsc: coach });
+    }
+  });
+
+  // Shuffle then assign statuses: 10% Gateway, 5% OOF, 5% BIL, 80% Live
+  for (let i = masters.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [masters[i], masters[j]] = [masters[j], masters[i]]; }
+  masters.forEach((m, i) => {
+    m.status = i < 100 ? 'Gateway' : i < 150 ? 'OOF' : i < 200 ? 'BIL' : 'Live';
+    if (m.status === 'Gateway') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(0, 90));   }
+    else if (m.status === 'OOF') { m.startDate = _isoAdd(TODAY, -ri(548, 730)); m.plannedGateway = _isoAdd(TODAY, -ri(30, 150)); }
+    else if (m.status === 'BIL') { m.startDate = _isoAdd(TODAY, -ri(365, 548)); m.plannedGateway = _isoAdd(TODAY, ri(90, 270));  }
+    else                         { m.startDate = _isoAdd(TODAY, -ri(30, 182));  m.plannedGateway = _isoAdd(TODAY, ri(365, 548)); }
+  });
+
+  // ── Compliance ──────────────────────────────────────────────────────
+  const touchpoints = masters.filter(m => m.status === 'Live' && pr(0.15)).map(m => ({
+    name: m.name, employer: m.employer, lsc: m.lsc,
+    lastMeeting: _isoAdd(TODAY, -ri(35, 90)), meetingType: pick(_MTYPE),
+  }));
+  const sla = masters.filter(m => m.status !== 'BIL' && pr(0.09)).map(m => {
+    const w = ri(8, 17);
+    return { name: m.name, employer: m.employer, lsc: m.lsc, lastReview: _isoAdd(TODAY, -(w * 7)), weeksSince: w };
+  });
+  const otj = masters.filter(m => m.status === 'Live' && pr(0.12)).map(m => {
+    const exp = ri(35, 70), done = ri(15, exp - 5);
+    return { name: m.name, employer: m.employer, lsc: m.lsc, otjPct: done, otjExpected: exp, lastEntry: _isoAdd(TODAY, -ri(7, 45)) };
+  });
+  const starters = masters.filter(m => m.status === 'Live' && new Date(m.startDate) >= new Date('2026-05-01')).map(m => ({
+    name: m.name, employer: m.employer, standard: m.standard, lsc: m.lsc,
+    plannedStart: m.startDate, firstDayDone: pr(0.6), checklistDone: pr(0.4),
+  }));
+
+  // ── OOF / BIL ──────────────────────────────────────────────────────
+  const oof = masters.filter(m => m.status === 'OOF').map(m => ({
+    employer: m.employer, name: m.name, standard: m.standard,
+    plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(['Current','Current','Current','At Gateway','BIL','Withdrawn']),
+    monthExpected: pick(['Jun 2026','Jul 2026','Aug 2026','Sep 2026',null]),
+    gwToEpa: pr(0.5) ? _isoAdd(TODAY, ri(30, 120)) : null,
+    portfolioRag: pick(_RAG),
+    notes: 'Learner beyond planned end date — action in progress.',
+  }));
+  const bil = masters.filter(m => m.status === 'BIL').map(m => ({
+    employer: m.employer, name: m.name, standard: m.standard,
+    plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(['BIL Ongoing','BIL Ongoing','BIL Decision Needed','RTL Confirmed']),
+    ldol: _isoAdd(TODAY, -ri(14, 90)),
+    expectedRtl: pr(0.6) ? _isoAdd(TODAY, ri(30, 90)) : null,
+    notes: 'Agreed break in learning — return date being confirmed.',
+  }));
+
+  // ── KSB ─────────────────────────────────────────────────────────────
+  const ksbStds = Object.keys(KSB_STANDARDS);
+  const ksb = masters.filter(m => m.status !== 'Withdrawn' && ksbStds.includes(m.standard)).map(m => {
+    const near = new Date(m.plannedGateway) < new Date('2026-12-04');
+    const base = m.status === 'Gateway' ? ri(70, 95) : m.status === 'OOF' ? ri(30, 65) : m.status === 'BIL' ? ri(20, 55) : near ? ri(40, 80) : ri(5, 40);
+    return {
+      employer: m.employer, name: m.name, standard: m.standard, lsc: m.lsc,
+      startDate: m.startDate, plannedGateway: m.plannedGateway,
+      status: m.status === 'BIL' ? 'BIL' : m.status === 'OOF' ? 'OOF' : m.status === 'Gateway' ? 'Gateway' : 'Live',
+      knowledgePct: Math.min(100, Math.max(0, base + ri(-5, 10))),
+      skillsPct:    Math.min(100, Math.max(0, base + ri(-8, 8))),
+      behavioursPct:Math.min(100, Math.max(0, base + ri(-3, 12))),
+    };
+  });
+
+  // ── Gateway Quarterly ───────────────────────────────────────────────
+  const gwPool = masters.filter(m => m.status === 'Gateway');
+  const mkGwRow = (m, statusOpts, months) => ({
+    employer: m.employer, name: m.name, standard: m.standard,
+    plannedGateway: m.plannedGateway, lsc: m.lsc,
+    status: pick(statusOpts), monthExpected: pick(months),
+    gwToEpa: pr(0.5) ? _isoAdd(TODAY, ri(30, 90)) : null, portfolioRag: pick(_RAG),
+  });
+  const gwQ2 = gwPool.slice(0, 40).map(m => mkGwRow(m, ['At Gateway','At Gateway','Current','Withdrawn'], ['Jun 2026','Jun 2026','Jul 2026']));
+  const gwQ3 = gwPool.slice(40, 80).map(m => mkGwRow(m, ['Current','Current','BIL'], ['Jul 2026','Aug 2026','Sep 2026']));
+  const gwQ4 = gwPool.slice(80, 100).map(m => mkGwRow(m, ['Current'], ['Oct 2026','Nov 2026','Dec 2026']));
+
+  // ── Gateway Monthly Pipeline ────────────────────────────────────────
+  const gwMonthLearners = masters.filter(m => m.status === 'Gateway');
+  const mkGwMonth = (monthStr, forecast, expected, pool) => ({
+    forecast, expected,
+    groups: COACHES_1000.map(coach => ({
+      lsc: coach,
+      learners: pool.filter(m => m.lsc === coach).map(m => ({
+        name: m.name, standard: m.standard,
+        prepDate: pr(0.7) ? _isoAdd(TODAY, -ri(14, 60)) : null,
+        atGateway: pr(0.5), monthsCarried: pr(0.2) ? ri(1, 3) : 0,
+        carryOverNext: pr(0.15), withdrawn: pr(0.05),
+        notes: '',
+      })),
+    })).filter(g => g.learners.length > 0),
+  });
+  const gatewayMonths = {
+    '2026-05': GATEWAY_MONTHS_DATA['2026-05'], // keep original for 200
+    '2026-06': mkGwMonth('2026-06', 55, 45, gwMonthLearners.slice(0, 50)),
+    '2026-07': mkGwMonth('2026-07', 48, 40, gwMonthLearners.slice(25, 75)),
+    '2026-08': mkGwMonth('2026-08', 42, 35, gwMonthLearners.slice(50, 100)),
+  };
+
+  // ── Welfare ─────────────────────────────────────────────────────────
+  const als = masters.filter((m, i) => i % 12 === 0).map(m => ({
+    name: m.name, standard: m.standard, lsc: m.lsc,
+    need: pick(_NEEDS), adjustments: pick(_ADJ),
+    lastReview: _isoAdd(TODAY, -ri(30, 180)),
+    nextReview: _isoAdd(TODAY, ri(-30, 90)),
+  }));
+  const safeguarding = masters.filter((m, i) => i % 50 === 0).map(m => ({
+    name: m.name, lsc: m.lsc,
+    dateRaised: _isoAdd(TODAY, -ri(14, 120)),
+    category: pick(_SGCAT),
+    status: pr(0.7) ? 'active' : 'closed',
+    lastAction: _isoAdd(TODAY, -ri(1, 21)),
+    notes: 'Case being monitored — regular check-ins in place.',
+  }));
+  const welfareDue = masters.filter((m, i) => i % 20 === 0).map(m => ({
+    name: m.name, lsc: m.lsc,
+    reason: pick(['ALS review due','Mental health monitoring','Safeguarding welfare follow-up','BIL welfare check']),
+    lastCheckin: _isoAdd(TODAY, -ri(7, 45)),
+    daysSince: ri(7, 45),
+  }));
+
+  // ── Curriculum ───────────────────────────────────────────────────────
+  const currStds = Object.keys(_SPRINTS);
+  const curriculum = masters.filter(m => m.status === 'Live' && currStds.includes(m.standard)).map(m => {
+    const sprints = _SPRINTS[m.standard];
+    const expected = ri(2, 8), complete = Math.min(8, Math.max(0, expected + ri(-4, 2)));
+    return {
+      name: m.name, employer: m.employer, standard: m.standard, lsc: m.lsc,
+      sprint: pick(sprints), partsComplete: complete, partsExpected: expected,
+      lastActivity: _isoAdd(TODAY, -ri(1, 45)),
+    };
+  });
+
+  return { touchpoints, sla, otj, starters, oof, bil, ksb, gwQ2, gwQ3, gwQ4, gatewayMonths, als, safeguarding, welfareDue, curriculum, masters };
+})();
+
+// Active data accessor — returns 200 or 1000 dataset based on currentSize
+const AD = {
+  get touchpoints()   { return currentSize === 1000 ? SCALE_1000.touchpoints   : TOUCHPOINT_DATA; },
+  get sla()           { return currentSize === 1000 ? SCALE_1000.sla           : SLA_DATA; },
+  get otj()           { return currentSize === 1000 ? SCALE_1000.otj           : OTJ_DATA; },
+  get starters()      { return currentSize === 1000 ? SCALE_1000.starters      : STARTER_DATA; },
+  get oof()           { return currentSize === 1000 ? SCALE_1000.oof           : OOF_DATA; },
+  get bil()           { return currentSize === 1000 ? SCALE_1000.bil           : BIL_DATA; },
+  get ksb()           { return currentSize === 1000 ? SCALE_1000.ksb           : KSB_DATA; },
+  get gwQ2()          { return currentSize === 1000 ? SCALE_1000.gwQ2          : GW_Q2_DATA; },
+  get gwQ3()          { return currentSize === 1000 ? SCALE_1000.gwQ3          : GW_Q3_DATA; },
+  get gwQ4()          { return currentSize === 1000 ? SCALE_1000.gwQ4          : GW_Q4_DATA; },
+  get als()           { return currentSize === 1000 ? SCALE_1000.als           : ALS_DATA; },
+  get safeguarding()  { return currentSize === 1000 ? SCALE_1000.safeguarding  : SAFEGUARDING_DATA; },
+  get welfareDue()    { return currentSize === 1000 ? SCALE_1000.welfareDue    : WELFARE_DUE_DATA; },
+  get curriculum()    { return currentSize === 1000 ? SCALE_1000.curriculum    : CURRICULUM_DATA; },
+  get gatewayMonths() { return currentSize === 1000 ? SCALE_1000.gatewayMonths : GATEWAY_MONTHS_DATA; },
+};
+
 // ─── Users ─────────────────────────────────────────────────────────────
 const USERS = [
   { id: 'delivery',   name: 'Delivery Manager',   role: 'delivery',   initials: 'DM' },
@@ -790,7 +1038,14 @@ document.querySelectorAll('.toggle-btn').forEach(btn => {
     currentSize = size;
     document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    syncCoachDropdowns();
+    populateEmployerDropdown();
     renderAll();
+    renderPipeline();
+    renderGateway();
+    renderGatewayForecast();
+    renderWelfare();
+    renderDeliveryDash();
   });
 });
 
@@ -885,16 +1140,16 @@ function renderOverviewSummary() {
   const lscF  = arr => coach ? arr.filter(r => r.lsc === coach) : arr;
 
   // — Compliance —
-  setText('ov-touchpoints', lscF(TOUCHPOINT_DATA).length);
-  setText('ov-sla',         lscF(SLA_DATA).length);
-  setText('ov-otj',         lscF(OTJ_DATA).length);
-  setText('ov-starters',    lscF(STARTER_DATA).length);
+  setText('ov-touchpoints', lscF(AD.touchpoints).length);
+  setText('ov-sla',         lscF(AD.sla).length);
+  setText('ov-otj',         lscF(AD.otj).length);
+  setText('ov-starters',    lscF(AD.starters).length);
 
   // — Learner Welfare —
-  const alsOverdue         = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'urgent').length;
-  const alsSoon            = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
-  const safeguardingActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
-  const welfareDue         = lscF(WELFARE_DUE_DATA).filter(r => r.daysSince > 14).length;
+  const alsOverdue         = lscF(AD.als).filter(r => alsReviewRag(r.nextReview).cls === 'urgent').length;
+  const alsSoon            = lscF(AD.als).filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
+  const safeguardingActive = lscF(AD.safeguarding).filter(r => r.status === 'active').length;
+  const welfareDue         = lscF(AD.welfareDue).filter(r => r.daysSince > 14).length;
   const setOvColour = (id, value, cls) => {
     const el = document.getElementById(id);
     if (el) { el.textContent = value; el.className = 'ov-value' + (value > 0 ? ' ' + cls : ''); }
@@ -905,17 +1160,17 @@ function renderOverviewSummary() {
   setOvColour('ov-welfare-due',  welfareDue,         'ov-amber');
 
   // — Delivery —
-  const oofActive   = lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length;
-  const oofRed      = lscF(OOF_DATA).filter(r => r.portfolioRag === 'red' && r.status !== 'Withdrawn').length;
-  const bilDecision = lscF(BIL_DATA).filter(r => r.status === 'BIL Decision Needed').length;
-  const bilTotal    = lscF(BIL_DATA).length;
+  const oofActive   = lscF(AD.oof).filter(r => r.status !== 'Withdrawn').length;
+  const oofRed      = lscF(AD.oof).filter(r => r.portfolioRag === 'red' && r.status !== 'Withdrawn').length;
+  const bilDecision = lscF(AD.bil).filter(r => r.status === 'BIL Decision Needed').length;
+  const bilTotal    = lscF(AD.bil).length;
   setText('ov-oof',          oofActive);
   setText('ov-oof-red',      oofRed);
   setText('ov-bil-decision', bilDecision);
   setText('ov-bil-total',    bilTotal);
 
   // — Gateway Pipeline (May 2026 — filtered to LSC's group if applicable) —
-  const gwData = GATEWAY_MONTHS_DATA['2026-05'];
+  const gwData = AD.gatewayMonths['2026-05'];
   let gwLearners = [];
   if (gwData) {
     gwLearners = isLSC
@@ -957,7 +1212,7 @@ function renderOverviewSummary() {
   }
 
   // — Curriculum —
-  const currBase     = isLSC ? CURRICULUM_DATA.filter(r => r.lsc === coach) : CURRICULUM_DATA;
+  const currBase     = isLSC ? AD.curriculum.filter(r => r.lsc === coach) : AD.curriculum;
   const currStatuses = currBase.map(r => curriculumStatus(r));
   setText('ov-curr-total',       currBase.length);
   setText('ov-curr-on-track',    currStatuses.filter(s => s === 'On Track').length);
@@ -966,7 +1221,7 @@ function renderOverviewSummary() {
 
   // — KSB Tracker (within 6 months of gateway) —
   const mo6 = new Date('2026-12-04');
-  const ksbBase = isLSC ? KSB_DATA.filter(r => r.lsc === coach) : KSB_DATA;
+  const ksbBase = isLSC ? AD.ksb.filter(r => r.lsc === coach) : AD.ksb;
   const ksbW6   = ksbBase.filter(r => new Date(r.plannedGateway) <= mo6);
   const ksbSuperRed = ksbW6.filter(r => ksbRag(r) === 'super-red').length;
   setText('ov-ksb-sr', ksbSuperRed);
@@ -976,9 +1231,9 @@ function renderOverviewSummary() {
 
   // — Gateway Forecast (Q2/Q3/Q4) —
   const gwLscF = r => !isLSC || r.lsc === coach;
-  const q2Rows = GW_Q2_DATA.filter(gwLscF);
-  const q3Rows = GW_Q3_DATA.filter(gwLscF);
-  const q4Rows = GW_Q4_DATA.filter(gwLscF);
+  const q2Rows = AD.gwQ2.filter(gwLscF);
+  const q3Rows = AD.gwQ3.filter(gwLscF);
+  const q4Rows = AD.gwQ4.filter(gwLscF);
   setText('ov-gwf-q2',  q2Rows.length);
   setText('ov-gwf-q3',  q3Rows.length);
   setText('ov-gwf-q4',  q4Rows.length);
@@ -998,7 +1253,7 @@ function renderOverviewSummary() {
   setText('ov-lv-employer-comments', isLSC ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === coach).length : EMPLOYER_COMMENTS_DATA.length);
 
   // — Urgent banner (includes KSB super-red within 6 months) —
-  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue + ksbSuperRed;
+  const urgentTotal = lscF(AD.sla).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue + ksbSuperRed;
   setText('ov-total-actions', urgentTotal);
 }
 
@@ -1015,10 +1270,10 @@ function renderSMTKPIs() {
 function renderDeliveryKPIs() {
   const f = deliveryLSCFilter === 'All' ? null : deliveryLSCFilter;
   const lscF = arr => f ? arr.filter(r => r.lsc === f) : arr;
-  setText('kpi-outstanding',     lscF(TOUCHPOINT_DATA).length);
-  setText('kpi-overdue-reviews', lscF(SLA_DATA).length);
-  setText('kpi-no-otj',          lscF(OTJ_DATA).length);
-  setText('kpi-awaiting-first',  lscF(STARTER_DATA).length);
+  setText('kpi-outstanding',     lscF(AD.touchpoints).length);
+  setText('kpi-overdue-reviews', lscF(AD.sla).length);
+  setText('kpi-no-otj',          lscF(AD.otj).length);
+  setText('kpi-awaiting-first',  lscF(AD.starters).length);
 }
 
 // ─── LSC KPIs ──────────────────────────────────────────────────────────
@@ -1064,8 +1319,8 @@ function renderTouchpoints(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
   const rows = lscFilter
-    ? TOUCHPOINT_DATA.filter(r => r.lsc === lscFilter)
-    : TOUCHPOINT_DATA;
+    ? AD.touchpoints.filter(r => r.lsc === lscFilter)
+    : AD.touchpoints;
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No outstanding touchpoints for this coach.');
     return;
@@ -1085,8 +1340,8 @@ function renderSLATable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
   const rows = lscFilter
-    ? SLA_DATA.filter(r => r.lsc === lscFilter)
-    : SLA_DATA;
+    ? AD.sla.filter(r => r.lsc === lscFilter)
+    : AD.sla;
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No reviews approaching or overdue.');
     return;
@@ -1112,8 +1367,8 @@ function renderOTJTable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
   const rows = lscFilter
-    ? OTJ_DATA.filter(r => r.lsc === lscFilter)
-    : OTJ_DATA;
+    ? AD.otj.filter(r => r.lsc === lscFilter)
+    : AD.otj;
   if (!rows.length) {
     tbody.innerHTML = emptyRow(6, 'No missing OTJ entries for this coach.');
     return;
@@ -1142,8 +1397,8 @@ function renderStarterTable(tbodyId, lscFilter) {
   if (tbody.closest('table')) tbody.closest('table').classList.add('table--fit');
 
   const rows = lscFilter
-    ? STARTER_DATA.filter(r => r.lsc === lscFilter)
-    : STARTER_DATA;
+    ? AD.starters.filter(r => r.lsc === lscFilter)
+    : AD.starters;
   if (!rows.length) {
     tbody.innerHTML = emptyRow(8, 'No new starters awaiting first meeting for this coach.');
     return;
@@ -1182,8 +1437,8 @@ function renderDeliveryTables() {
   renderDeliveryKPIs();
   // OOF + BIL KPI cards in Compliance bar
   const lscF = arr => f ? arr.filter(r => r.lsc === f) : arr;
-  setText('comp-oof-total',  lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length);
-  setText('comp-bil-action', lscF(BIL_DATA).filter(r => r.status === 'BIL Decision Needed').length);
+  setText('comp-oof-total',  lscF(AD.oof).filter(r => r.status !== 'Withdrawn').length);
+  setText('comp-bil-action', lscF(AD.bil).filter(r => r.status === 'BIL Decision Needed').length);
 }
 
 // ─── LSC page tables (uses lscPageCoach state) ─────────────────────────
@@ -1345,9 +1600,9 @@ function renderWelfareKPIs() {
   const isLSC = currentUser.role === 'lsc';
   const f     = isLSC ? currentUser.coach : (welfareFilter === 'All' ? null : welfareFilter);
   const lscF  = arr => f ? arr.filter(r => r.lsc === f) : arr;
-  const alsRows  = lscF(ALS_DATA);
-  const sgActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
-  const wdRows   = lscF(WELFARE_DUE_DATA);
+  const alsRows  = lscF(AD.als);
+  const sgActive = lscF(AD.safeguarding).filter(r => r.status === 'active').length;
+  const wdRows   = lscF(AD.welfareDue);
   setText('kpi-als-total',    alsRows.length);
   setText('kpi-als-active',   alsRows.length);
   setText('kpi-safeguarding', sgActive);
@@ -1375,7 +1630,7 @@ function alsReviewRag(nextReviewStr) {
 function renderALSTable(lscFilter) {
   const tbody = document.getElementById('als-tbody');
   if (!tbody) return;
-  const rows = lscFilter ? ALS_DATA.filter(r => r.lsc === lscFilter) : ALS_DATA;
+  const rows = lscFilter ? AD.als.filter(r => r.lsc === lscFilter) : AD.als;
   if (!rows.length) { tbody.innerHTML = emptyRow(5, 'No ALS learners for this coach.'); return; }
   tbody.innerHTML = rows.map(r => `
     <tr>
@@ -1391,8 +1646,8 @@ function renderALSTable(lscFilter) {
 function renderCombinedWelfareTable(lscFilter) {
   const tbody = document.getElementById('welfare-combined-tbody');
   if (!tbody) return;
-  const sgRows = lscFilter ? SAFEGUARDING_DATA.filter(r => r.lsc === lscFilter) : SAFEGUARDING_DATA;
-  const wdRows = lscFilter ? WELFARE_DUE_DATA.filter(r => r.lsc === lscFilter) : WELFARE_DUE_DATA;
+  const sgRows = lscFilter ? AD.safeguarding.filter(r => r.lsc === lscFilter) : AD.safeguarding;
+  const wdRows = lscFilter ? AD.welfareDue.filter(r => r.lsc === lscFilter) : AD.welfareDue;
   if (!sgRows.length && !wdRows.length) {
     tbody.innerHTML = emptyRow(7, 'No welfare concerns for this coach.');
     return;
@@ -1458,7 +1713,7 @@ function bilStatusPill(status) {
 function renderDeliveryDash() {
   const f = deliveryDashFilter === 'All' ? null : deliveryDashFilter;
   const filterFn  = r => !f || r.lsc === f;
-  const bilRows   = BIL_DATA.filter(filterFn);
+  const bilRows   = AD.bil.filter(filterFn);
   const bilNeeded = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
   setText('dd-bil-total',  bilRows.length);
   setText('dd-bil-sub',    `${bilNeeded} decision${bilNeeded !== 1 ? 's' : ''} needed`);
@@ -1472,14 +1727,14 @@ function renderGatewayForecast() {
   const isLSC = currentUser.role === 'lsc';
   const f = isLSC ? currentUser.coach : (gwForecastFilter === 'All' ? null : gwForecastFilter);
 
-  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
-  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
-  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
+  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', AD.gwQ2, f);
+  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', AD.gwQ3, f);
+  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', AD.gwQ4, f);
 
   const filterFn = r => !f || r.lsc === f;
-  const q2Rows   = GW_Q2_DATA.filter(filterFn);
-  const q3Rows   = GW_Q3_DATA.filter(filterFn);
-  const q4Rows   = GW_Q4_DATA.filter(filterFn);
+  const q2Rows   = AD.gwQ2.filter(filterFn);
+  const q3Rows   = AD.gwQ3.filter(filterFn);
+  const q4Rows   = AD.gwQ4.filter(filterFn);
   const q2AtGw   = q2Rows.filter(r => r.status === 'At Gateway').length;
   setText('dd-q2-total', q2Rows.length);
   setText('dd-q2-sub',   `${q2AtGw} at gateway`);
@@ -1497,7 +1752,7 @@ function renderGatewayForecast() {
 function renderOOFTable(lscFilter) {
   const tbody = document.getElementById('oof-tbody');
   if (!tbody) return;
-  const rows = lscFilter ? OOF_DATA.filter(r => r.lsc === lscFilter) : OOF_DATA;
+  const rows = lscFilter ? AD.oof.filter(r => r.lsc === lscFilter) : AD.oof;
   const countEl = document.getElementById('oof-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No OOF learners for this coach.'); return; }
@@ -1525,7 +1780,7 @@ function renderOOFTable(lscFilter) {
 function renderBILTable(lscFilter) {
   const tbody = document.getElementById('bil-tbody');
   if (!tbody) return;
-  const rows = lscFilter ? BIL_DATA.filter(r => r.lsc === lscFilter) : BIL_DATA;
+  const rows = lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil;
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
@@ -1586,7 +1841,7 @@ function getGatewayMonthKey() {
 
 function renderGateway() {
   const key       = getGatewayMonthKey();
-  const monthData = GATEWAY_MONTHS_DATA[key];
+  const monthData = AD.gatewayMonths[key];
   const container = document.getElementById('gateway-container');
 
   // Month label
@@ -1813,7 +2068,7 @@ function renderKSB() {
   const lscF   = isLSC ? currentUser.coach : ksbLSCFilter;
 
   // KPI base: full caseload (pre-additional-filter)
-  const kpiBase = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA;
+  const kpiBase = lscF ? AD.ksb.filter(r => r.lsc === lscF) : AD.ksb;
   const w6 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo6);
   const w3 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo3);
   [['sr','super-red'],['r','red'],['a','amber'],['g','green']].forEach(([code, rag]) => {
@@ -1822,7 +2077,7 @@ function renderKSB() {
   });
 
   // Table rows
-  let rows = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA.slice();
+  let rows = lscF ? AD.ksb.filter(r => r.lsc === lscF) : AD.ksb.slice();
 
   // Managers with no LSC filter: show only at-risk (not green)
   const managerAllView = !isLSC && !ksbLSCFilter;
@@ -1944,7 +2199,7 @@ function renderCurriculum() {
   const stdVal   = document.getElementById('curr-standard')?.value || '';
   const statVal  = document.getElementById('curr-status')?.value   || '';
 
-  const base = isLSC ? CURRICULUM_DATA.filter(r => r.lsc === currentUser.coach) : CURRICULUM_DATA;
+  const base = isLSC ? AD.curriculum.filter(r => r.lsc === currentUser.coach) : AD.curriculum;
 
   // KPI counts from base (before status filter)
   const statuses     = base.map(r => curriculumStatus(r));
@@ -2034,27 +2289,27 @@ const REPORT_CONFIGS = {
     columns: ['Area', 'Learner', 'Employer', 'LSC', 'Issue / Status', 'Detail'],
     getData(f) {
       const rows = [];
-      reportFilterBy(TOUCHPOINT_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.touchpoints, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
         'Outstanding touchpoint', `Last: ${fmtDate(r.lastMeeting)}`
       ]}));
-      reportFilterBy(SLA_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.sla, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
         'SLA breach', `${r.weeksSince} weeks since last review`
       ]}));
-      reportFilterBy(OTJ_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.otj, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
         'No OTJ evidence', `${r.otjPct}% / ${r.otjExpected}% expected`
       ]}));
-      reportFilterBy(OOF_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.oof, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
         statusPill(r.status), portfolioRagBadge(r.portfolioRag)
       ], _rowClass: r.portfolioRag === 'red' ? 'row-alert' : '' }));
-      reportFilterBy(BIL_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.bil, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
         statusPill(r.status), r.expectedRtl ? `RTL: ${fmtDate(r.expectedRtl)}` : 'RTL TBC'
       ]}));
-      reportFilterBy(SAFEGUARDING_DATA, f).forEach(r => rows.push({ _cols: [
+      reportFilterBy(AD.safeguarding, f).forEach(r => rows.push({ _cols: [
         '<span class="area-badge area-welfare">Welfare</span>', r.name, '—', r.lsc,
         `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
         r.category
@@ -2066,7 +2321,7 @@ const REPORT_CONFIGS = {
     label: 'Outstanding Touchpoints',
     columns: ['Learner', 'Employer', 'LSC', 'Last Meeting', 'Meeting Type', 'Days Since'],
     getData(f) {
-      return reportFilterBy(TOUCHPOINT_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.touchpoints, f).map(r => ({ _cols: [
         r.name, r.employer, r.lsc, fmtDate(r.lastMeeting), r.meetingType,
         Math.floor((new Date('2026-06-04') - new Date(r.lastMeeting)) / 86400000) + ' days'
       ]}));
@@ -2076,7 +2331,7 @@ const REPORT_CONFIGS = {
     label: 'SLA Breaches — Progress Reviews >10 Weeks',
     columns: ['Learner', 'Employer', 'LSC', 'Last Review', 'Weeks Since'],
     getData(f) {
-      return reportFilterBy(SLA_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.sla, f).map(r => ({ _cols: [
         r.name, r.employer, r.lsc, fmtDate(r.lastReview), r.weeksSince + ' weeks'
       ]}));
     }
@@ -2085,7 +2340,7 @@ const REPORT_CONFIGS = {
     label: 'OTJ Compliance',
     columns: ['Learner', 'Employer', 'LSC', 'OTJ %', 'Expected %', 'Gap', 'Last Entry'],
     getData(f) {
-      return reportFilterBy(OTJ_DATA, f).map(r => {
+      return reportFilterBy(AD.otj, f).map(r => {
         const gap = r.otjExpected - r.otjPct;
         return { _cols: [
           r.name, r.employer, r.lsc,
@@ -2100,7 +2355,7 @@ const REPORT_CONFIGS = {
     label: 'Awaiting First LSC Meeting',
     columns: ['Learner', 'Employer', 'LSC', 'Planned Start', 'FDOL Entry', 'Starter Checklist'],
     getData(f) {
-      return reportFilterBy(STARTER_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.starters, f).map(r => ({ _cols: [
         r.name, r.employer, r.lsc, fmtDate(r.plannedStart),
         r.firstDayDone  ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
         r.checklistDone ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
@@ -2111,7 +2366,7 @@ const REPORT_CONFIGS = {
     label: 'Out of Funding (OOF)',
     columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'Portfolio RAG', 'Month Expected', 'Notes'],
     getData(f) {
-      return reportFilterBy(OOF_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.oof, f).map(r => ({ _cols: [
         r.name, r.employer, r.standard, r.lsc,
         statusPill(r.status), portfolioRagBadge(r.portfolioRag),
         r.monthExpected || '—', r.notes
@@ -2122,7 +2377,7 @@ const REPORT_CONFIGS = {
     label: 'Break in Learning (BIL)',
     columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'LDOL', 'Expected RTL', 'Notes'],
     getData(f) {
-      return reportFilterBy(BIL_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.bil, f).map(r => ({ _cols: [
         r.name, r.employer, r.standard, r.lsc,
         statusPill(r.status), fmtDate(r.ldol),
         r.expectedRtl ? fmtDate(r.expectedRtl) : '—', r.notes
@@ -2138,14 +2393,14 @@ const REPORT_CONFIGS = {
         statusPill(r.status), fmtDate(r.plannedGateway),
         r.monthExpected || '—', portfolioRagBadge(r.portfolioRag)
       ]}));
-      return [...q(GW_Q2_DATA, 'Q2 2026'), ...q(GW_Q3_DATA, 'Q3 2026'), ...q(GW_Q4_DATA, 'Q4 2026')];
+      return [...q(AD.gwQ2, 'Q2 2026'), ...q(AD.gwQ3, 'Q3 2026'), ...q(AD.gwQ4, 'Q4 2026')];
     }
   },
   welfare_als: {
     label: 'ALS Register',
     columns: ['Learner', 'Standard', 'LSC', 'Need', 'Last Review', 'Next Review', 'Status'],
     getData(f) {
-      return reportFilterBy(ALS_DATA, f).map(r => {
+      return reportFilterBy(AD.als, f).map(r => {
         const rag = alsReviewRag(r.nextReview);
         return { _cols: [
           r.name, r.standard, r.lsc, r.need,
@@ -2159,7 +2414,7 @@ const REPORT_CONFIGS = {
     label: 'Safeguarding & Welfare Concerns',
     columns: ['Learner', 'LSC', 'Category', 'Status', 'Date Raised', 'Last Action', 'Notes'],
     getData(f) {
-      return reportFilterBy(SAFEGUARDING_DATA, f).map(r => ({ _cols: [
+      return reportFilterBy(AD.safeguarding, f).map(r => ({ _cols: [
         r.name, r.lsc, r.category,
         `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
         fmtDate(r.dateRaised), fmtDate(r.lastAction), r.notes
@@ -2257,15 +2512,40 @@ function exportReportCSV() {
 function populateEmployerDropdown() {
   const sel = document.getElementById('rf-employer');
   if (!sel) return;
+  const current = sel.value;
+  while (sel.options.length > 1) sel.remove(1);
   const employers = new Set(
-    [TOUCHPOINT_DATA, SLA_DATA, OTJ_DATA, STARTER_DATA, OOF_DATA, BIL_DATA,
-     GW_Q2_DATA, GW_Q3_DATA, GW_Q4_DATA, PIPELINE_ENTRIES]
+    [AD.touchpoints, AD.sla, AD.otj, AD.starters, AD.oof, AD.bil,
+     AD.gwQ2, AD.gwQ3, AD.gwQ4, PIPELINE_ENTRIES]
       .flatMap(arr => arr.map(r => r.employer).filter(Boolean))
   );
   [...employers].sort().forEach(e => {
     const opt = document.createElement('option');
     opt.value = opt.textContent = e;
     sel.appendChild(opt);
+  });
+  sel.value = current;
+}
+
+function syncCoachDropdowns() {
+  const coaches = currentSize === 1000 ? COACHES_1000 : COACHES_1000.slice(0, 5);
+  const selectors = [
+    'delivery-lsc', 'delivery-dash-lsc', 'gw-forecast-lsc',
+    'welfare-lsc', 'learner-voice-lsc', 'ksb-lsc', 'curr-lsc', 'rf-lsc',
+  ];
+  selectors.forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    // Keep first "All" option, replace the rest
+    while (sel.options.length > 1) sel.remove(1);
+    coaches.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    // Restore selection if still valid
+    if ([...sel.options].some(o => o.value === current)) sel.value = current;
   });
 }
 
@@ -2307,6 +2587,8 @@ populateEmployerDropdown();
 // ─── Init ──────────────────────────────────────────────────────────────
 renderUserSwitcher();
 applyRolePermissions();
+syncCoachDropdowns();
+populateEmployerDropdown();
 renderAll();
 renderPipeline();
 renderGateway();
