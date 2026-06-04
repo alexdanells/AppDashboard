@@ -1,9 +1,10 @@
 # Apprenticeship Business Dashboard
 
 ## Project Overview
-A demo dashboard for **Boom Training**, an apprenticeship training provider. Built with realistic dummy data to:
-- Provide **visual data** in tabulated format (downloadable as Google Sheets-compatible file)
+A demo dashboard for **Boom Training**, an apprenticeship training provider. Built with realistic generated dummy data to:
+- Provide **visual data** in tabulated format (downloadable as CSV/Google Sheets-compatible)
 - Deliver **actionable data** to drive performance and support daily management
+- Demonstrate the system concept across role-based accounts at two provision scales
 
 **Live URL:** https://alexdanells-boomtraining.github.io/AppDashboard/
 **GitHub repo:** https://github.com/alexdanells-boomtraining/AppDashboard
@@ -14,178 +15,275 @@ A demo dashboard for **Boom Training**, an apprenticeship training provider. Bui
 - **HTML** — structure (`index.html`)
 - **CSS** — styling (`style.css`)
 - **JavaScript** — logic and data (`app.js`)
-- **localStorage** — data persistence (no backend, no database)
+- No libraries, no build step, no backend
 
 ## File Rules
 - Keep all code in exactly **three files**: `index.html`, `style.css`, `app.js`
-- **Do not add new libraries** (e.g. Chart.js, Bootstrap, etc.) without asking the user first
+- **Do not add new libraries** without asking the user first
 
 ## Running the App
 Open `index.html` directly in a browser — no build step, no server needed.
 
 ## Hosting
 - Hosted on **GitHub Pages** from the `main` branch
-- To publish changes: `git push origin main`
-
-## Data
-- All data is dummy/realistic placeholder data
-- Supports a **200 learner** (default) and **1,000 learner** toggle to illustrate current vs scaled provision
-- Data keyed by `currentSize` (200 or 1000) where applicable
+- To publish: `git push origin main`
 
 ## Developer Notes
 - The user (**Alex Danells**, Head of Delivery at Boom Training) is not a developer
-- Explain all git steps clearly (branching, committing, pushing)
-- Keep explanations beginner-friendly
-- Use feature branches per dashboard; merge to `main` when complete; delete the branch
+- Explain all git steps clearly
+- Use feature branches per task; merge to `main` when complete; delete the branch
 
 ---
 
-## Navigation Pages (11 total)
+## Navigation (6 items)
 
-| Nav Label | Page ID | Status |
+| Nav Label | Page ID | Visible to |
 |---|---|---|
-| Overview | `page-overview` | Built |
-| DfE AAF | `page-aaf` | Built |
-| Sales Pipeline | `page-sales` | Built |
-| SMT | `page-smt` | Built |
-| Learner Voice | `page-learner-voice` | Built |
-| Compliance | `page-compliance` | Built |
-| Delivery | `page-delivery` | Built |
-| Learning | `page-learning` | Placeholder |
-| Learner Welfare | `page-welfare` | Built |
-| LSC | `page-lsc` | Built |
-| Gateway Pipeline | `page-gateway` | Built |
+| Overview | `page-overview` | All except Sales Manager; LSC sees no DfE AAF section |
+| Sales Pipeline | `page-sales` | All except LSC |
+| Learners | `page-learners` | All except Sales Manager |
+| Gateway | `page-gateway` | Delivery Manager, Quality Manager, LSC |
+| Reporting | `page-reporting` | Everyone |
+
+**SMT** was removed from nav. The standalone pages for Learner Voice, Compliance, Delivery, Welfare, LSC, Gateway Pipeline, DfE AAF have all been merged into the new structure.
+
+---
+
+## Role-Based Accounts
+
+9 accounts accessible via the user switcher (top-right header):
+
+| Account | Role | Access restrictions |
+|---|---|---|
+| Delivery Manager | `delivery` | Full access |
+| Compliance Manager | `compliance` | Full access |
+| Quality Manager | `quality` | Full access (incl. Gateway) |
+| Sales Manager | `sales` | Sales Pipeline + Reporting (pipeline only) |
+| Sarah Mitchell | `lsc` | Own learners only; no Sales Pipeline, no SMT |
+| James Okafor | `lsc` | Same as above |
+| Priya Sharma | `lsc` | Same as above |
+| Tom Bradley | `lsc` | Same as above |
+| Hannah Clarke | `lsc` | Same as above |
+
+LSC avatar shows **LSC** (not initials). Manager avatars show their initials (DM, CM, QM, SM).
+
+`NAV_ACCESS` in `app.js` governs which pages each role can see. `applyRolePermissions()` hides/shows nav links, overview cards, filter bars, and data views based on `currentUser.role`.
+
+---
+
+## Data Scaling (200 / 1,000 Learner Toggle)
+
+Two fully generated datasets, both deterministic (seeded RNG):
+
+| | `SCALE_200` | `SCALE_1000` |
+|---|---|---|
+| Seed | 99 | 42 |
+| Coaches | 5 (existing) | 20 (5 + 15 new) |
+| Total learners | 200 | 1,000 |
+| Distribution | 10% Gateway, 5% OOF, 5% BIL, 80% Live | Same |
+| Start dates | Last 15 months | Same |
+
+`AD` accessor in `app.js` transparently returns the right dataset based on `currentSize`:
+```javascript
+const AD = {
+  get touchpoints() { return currentSize === 1000 ? SCALE_1000.touchpoints : SCALE_200.touchpoints; },
+  // ... all arrays
+  get masters() { ... } // all learners regardless of standard
+};
+```
+
+Old hand-crafted arrays (`TOUCHPOINT_DATA`, `KSB_DATA` etc.) are kept in the file but no longer used by any dashboard or report.
+
+**20 coaches at 1,000 scale:** Sarah Mitchell, James Okafor, Priya Sharma, Tom Bradley, Hannah Clarke + Natasha Reynolds, Daniel Osei, Emma Whitfield, Marcus Chen, Lorna MacPherson, Aidan Walsh, Fatima Begum, Ryan Saunders, Charlotte Patel, Leon Adeyemi, Niamh O'Brien, Josh Carpenter, Amara Diallo, Steven Park, Rosa Ferreira.
 
 ---
 
 ## Page Details
 
-### Overview
-- 6 KPI cards: Learners, On Track, At Risk, Overdue, Employers, Achievement Rate
-- Actions Today and At Risk summary panels
+### Overview (`page-overview`)
+- **DfE AAF section** — 6 RAG metric cards at top, collapsible via toggle button. Hidden for LSC users.
+- **6 KPI cards** — dynamic labels: managers see provision-wide stats; LSC sees own caseload (My Learners, Reviews Due, At Risk, OTJ Compliance, + provision Employers/Achievement Rate)
+- **Urgent actions banner** — count of SLA breaches + BIL decisions + OOF red + ALS overdue + active safeguarding + welfare overdue + KSB super-red
+- **Summary cards grid** — 10 cards (managers) / 8 cards (LSC), ordered via CSS `order` property:
+  - **Manager order:** DfE AAF · Sales Pipeline · Compliance · OOF & BIL · KSB Tracker · Gateway Pipeline · Gateway Forecast · Curriculum · Learner Welfare · Learner Voice
+  - **LSC order:** Compliance · OOF & BIL · KSB Tracker · Gateway Pipeline · Gateway Forecast · Curriculum · Learner Welfare · Learner Voice
+- All summary card values filter to LSC's own learners when role is `lsc`
 
-### DfE AAF
-- 6 AAF metric cards (Overall Achievement, Timely Achievement, Retention, Pass Rate, Timely Completion, Ofsted Readiness)
-- Each card has a RAG pill and benchmark comparison
-- Data keyed by `AAF_METRICS[currentSize]`
-
-### Sales Pipeline
-- Month navigation (offset from **May 2026** = offset 0)
+### Sales Pipeline (`page-sales`)
+- Month navigation (offset from May 2026 = offset 0)
 - Progress bar: confirmed starts (≥70% prob) vs monthly target
-- **RAG breakdown cards** (High ≥70% / Medium 40–60% / Low ≤30%) showing standards split
+- RAG breakdown cards (High/Medium/Low) with standards split
 - Filters: Standard, AM, Status, Probability
-- Table columns: Learner, Employer, AM, Standard, Probability, Expected Start, Status
-- **Probability:** 10-point scale (10%–100%)
-- **Statuses:** Cold Lead → In Scope → Proposal Sent → Contract Issued → Contract Signed → Enrolment
-- **Account Managers:** Rachel Thornton, Marcus Webb, Sophie Lawson, Dan Kirby
-- Data: May–Aug 2026 only; earlier months have no entries
-- Month-specific targets in `PIPELINE_TARGETS` object
+- Data: May–Aug 2026. Statuses: Cold Lead → In Scope → Proposal Sent → Contract Issued → Contract Signed → Enrolment
+- Account Managers: Rachel Thornton, Marcus Webb, Sophie Lawson, Dan Kirby
 
-### SMT
-- 4 KPI cards: Revenue, Starts, At Gateway, Withdrawals
-- Data from `DATA[currentSize]`
+### Learners (`page-learners`) — 5 sub-tabs
 
-### Learner Voice
-- eNPS score for learners and employers
-- Promoters / Passives / Detractors breakdown
+#### Delivery — KSB Tracker
+- For **managers**: shows at-risk learners only (Super Red, Red, Amber) within 6 months of gateway by default; filter by LSC shows full caseload
+- For **LSC**: shows own caseload with all learners
+- KPI bar — two groups (within 6 months / within 3 months): Super Red / Red / Amber / Green counts
+- Table: Employer, Learner, Standard, LSC, Start Date, Planned Gateway, Status, Knowledge %, Skills %, Behaviours %, RAG
+- Manager notice explains the filter and scope
+- **KSB Standards:** Data Technician (52K/32S/8B), Data Analyst (30K/30S/14B), Applied AI & Automation (58K/58S/12B)
+- RAG: Super Red ≥75% remaining, Red 51–74%, Amber 25–50%, Green ≤24%
+- Sortable column headers (click to sort asc/desc)
 
-### Compliance
-- LSC filter bar (drives all 4 tables simultaneously)
-- 4 tables — all shared render functions parameterised by `(tbodyId, lscFilter)`:
-  1. Outstanding Monthly Touchpoints
-  2. Beyond 10-Week SLA (progress reviews)
-  3. No OTJ Evidence This Month
-  4. Awaiting First LSC Meeting (with 30-day window column, FDOL Entry, Starter Checklist tick system)
-- Awaiting First LSC Meeting uses `table--fit` (fixed-layout, overflow ellipsis) for wide table fit
+#### Compliance
+- LSC filter bar (hidden for LSC, auto-filtered to own coach)
+- 8 KPI cards: Awaiting First Meeting, Outstanding Touchpoints, Progress Reviews (8+ wks), OTJ Compliance in Month, OOF Active, BIL Decisions Needed + (LSC-only) Reviews Due, OTJ Compliance %
+- 6 tables (sortable):
+  1. **Awaiting First LSC Meeting** — learners where FDOL+checklist not both done; columns: Learner, Employer, Standard, LSC, Planned Start, 30-Day Window, FDOL Entry
+  2. **Outstanding Monthly Touchpoints** — sorted oldest meeting first
+  3. **Progress Reviews** — 8+ weeks, sorted most overdue first; columns: Learner, Employer, LSC, Last Progress Review, Review Due By, Weeks Since, Status
+  4. **OTJ Compliance in Month** — sorted longest since entry first; columns: Learner, Employer, LSC, OTJ Completed, OTJ Expected, Last Entry Date
+  5. **Out of Funding (OOF)** — sorted by most overdue planned gateway
+  6. **Break in Learning (BIL)** — null RTL at top, then soonest RTL first
 
-### Delivery
-- LSC filter bar (drives all tables + KPIs)
-- KPI bar: OOF count, BIL count, BIL decisions needed (turns red when >0), Q2/Q3/Q4 counts
-- Portfolio RAG summary strip across all quarterly tables
-- 5 tables:
-  1. **Out of Funding (OOF)** — columns: Employer, Learner, Standard, Planned Gateway, LSC, Status (Current/At Gateway/Withdrawn/BIL), Month Expected, GW→EPA, Portfolio RAG, Notes
-  2. **Break in Learning (BIL)** — columns: Employer, Learner, Standard, Planned Gateway, LSC, Status (BIL Ongoing/BIL Decision Needed/RTL Confirmed), LDOL, Expected RTL, Notes
-  3. **Q2 2026 Gateway (Apr–Jun)**
-  4. **Q3 2026 Gateway (Jul–Sep)**
-  5. **Q4 2026 Gateway (Oct–Dec)**
-- Q2/Q3/Q4 tables share the same columns: Employer, Learner, Standard, Planned Gateway, LSC, Status, Month Expected, GW→EPA, Portfolio RAG
-- Uses `dd-table` class (NOT `table--fit`) — natural column widths, `overflow-x: auto` on parent for scroll
+#### Curriculum
+- LSC filter + Standard filter + Status filter (3-column grid layout)
+- KPI bar: total on curriculum, on track, off track/behind, no activity
+- Learner Progress table — sorted furthest behind first: No Activity → Behind → Off Track → On Track
+- Columns: Learner, Employer, Standard, LSC, Current Sprint, Sprint Progress %, Last Activity, Status
+- Sortable column headers
 
-### Learning
-- Blank placeholder — content to be defined
+**Curriculum Sprints by Standard:**
+- Data Technician: AI Literacy, AI Applications in Business L3, AI for Data Analytics L3
+- Data Analyst: Introduction to Data Analytics L4 v2, Python Foundations L4 v2, Module to be Selected, Main Analysis Types L4
+- Applied AI & Automation: L4 AI Copilot AI Literacy, L4 AI Copilot No Code AI Applications, L4 AI Copilot Low Code AI Applications
 
-### Learner Welfare
-- 4 KPI cards: ALS Total, ALS Active, Safeguarding Active, Welfare Checks Due
-- 3 tables: ALS Register, Safeguarding & Welfare Concerns, Welfare Check-ins Due
-- ALS register has RAG review status (Overdue / Due Soon / On Track)
+#### Learner Welfare
+- LSC filter bar (hidden for LSC)
+- 4 KPI cards: Learners with Declared Needs, Active Support Plans, Active Safeguarding, Welfare Check-ins Due
+- 4 ALS breakdown cards (LSC-filtered): Learning Difficulties, ADHD & Autism, Mental Health, Physical & Sensory
+- Tables:
+  1. **ALS Register** — Learner, Standard, LSC, Declared Need, Adjustments in Place
+  2. **Safeguarding & Welfare Concerns** — merged table (Type badge: Safeguarding / Welfare Check-in), sortable by Learner and LSC
 
-### LSC (Individual Coach View)
-- Pre-set to **James Okafor** by default
-- Coach selector dropdown (same 5 coaches)
-- 4 KPI cards: Learners, Reviews Due, At Risk, OTJ Compliance
-- Same 4 tables as Compliance but filtered to the selected coach only
-- Functions: `renderLSCKPIs()`, `renderLSCTables()` — share same render functions as Compliance
+#### Learner Voice
+- LSC filter bar (hidden for LSC)
+- eNPS hero: Learner eNPS, Employer eNPS, Promoters/Passives/Detractors
+- **Learner Comments** — Learner, Employer, Last Progress Review, Commentary
+- **Employer Comments** — Learner, Line Manager, Employer, Last Progress Review, Commentary
+- **Exit Review Summary** — Learner, Standard, Status (Achieved/Withdrawn), Commentary
 
-### Gateway Pipeline
-- Month navigation (offset from **June 2026** = offset 0)
-- Progress bar: at gateway vs expected
-- 4 metric cards: Forecast (blue), Expected at Gateway (amber), At Gateway (green), Carry Over (red)
-- Table: one section per LSC with the **LSC name as a heading above the column headers** (not as an in-table row)
-- Renders into `<div id="gateway-container">` via JS (not a static `<tbody>`)
-- Summary row per LSC group with gateway rate and RAG colour
+### Gateway (`page-gateway`) — 2 sub-tabs
+
+#### Gateway Forecast
+- LSC filter bar (hidden for LSC)
+- 3 KPI cards: Q2/Q3/Q4 learner counts with sub-text
+- RAG summary strip across all quarters
+- Q2 (Apr–Jun), Q3 (Jul–Sep), Q4 (Oct–Dec) tables
+
+#### Gateway Pipeline
+- Month navigation (offset from June 2026 = offset 0)
+- Seasonal variation: spring peak (Apr–Jun), summer flat (Jul–Aug), autumn peak (Sep–Nov), winter flat (Dec)
+- Future months show learners as **forecast only** (`atGateway: false`)
+- LSC users only see their own group
+- 4 metric cards: Forecast, Expected, At Gateway, Carry Over
+
+### Reporting (`page-reporting`)
+
+#### Standard Reports (7 card-style selectors)
+Click a card → relevant filters appear → Run Report
+
+| Report | Base data | Key filters |
+|---|---|---|
+| LSC Full Caseload | `AD.masters` (all 200/1000) | LSC, Standard, Status |
+| Standard Employer Report | `AD.masters` (all) | LSC, Standard, Employer |
+| Learner Touchpoints | `AD.masters` (all) | LSC |
+| Progress Reviews | `AD.sla` (8+ weeks) | LSC |
+| OTJ Compliance | `AD.otj` (flagged) | LSC |
+| KSB Progress | `AD.ksb` (KSB standards) | LSC, Standard |
+| Curriculum Progress | `AD.curriculum` | LSC, Standard |
+
+**LSC Full Caseload columns:** Learner Name, Employer Name, Standard, LSC, Status, Learning Start Date, Planned Gateway Date, OTJ Actual, OTJ Expected, Learning End Date, KSB Progress, Curriculum Progress, Overall RAG, Date of Last Meeting, Meeting Type, LLDD/Declared
+
+**Standard Employer Report columns:** Same as Caseload minus LLDD; adds LSC Commentary (empty placeholder)
+
+- Data is padded with synthetic values for learners not in compliance datasets (meeting dates, OTJ values)
+- `_buildMeetingLookup()` and `_buildOtjLookup()` cover all masters
+- Results paginate at **100 rows per page** with prev/next/numbered controls at bottom
+- **Export CSV always exports the full result set** regardless of current page
+
+#### Quick Reports (11 preset pills)
+One-click pre-filtered reports: Awaiting First Meeting · Progress Reviews Overdue · BIL Decisions Needed · OOF Red Portfolio · KSB At-Risk · Curriculum Off-Track · Gateway Red Portfolio · Active Safeguarding · Welfare Check-ins Due · ALS Register · Sales Pipeline
+
+- Sales Manager can only access Sales Pipeline in Reporting (notice shown for other attempts)
+- LSC `rf-lsc` filter is locked to their coach name when role is `lsc`
 
 ---
 
 ## Key State Variables (`app.js`)
 
 ```javascript
-let currentSize        = 200;        // 200 or 1000
-let pipelineOffset     = 0;          // 0 = May 2026
-let gatewayOffset      = 0;          // 0 = June 2026
-let deliveryLSCFilter  = 'All';      // Compliance page LSC filter
-let deliveryDashFilter = 'All';      // Delivery page LSC filter
-let lscPageCoach       = 'James Okafor'; // LSC page coach
+let currentSize        = 200;
+let pipelineOffset     = 0;           // 0 = May 2026
+let gatewayOffset      = 0;           // 0 = June 2026
+let gwForecastFilter   = 'All';
+let deliveryLSCFilter  = 'All';       // Compliance tab
+let deliveryDashFilter = 'All';       // Delivery/KSB tab
+let welfareFilter      = 'All';
+let learnerVoiceFilter = 'All';
+let lscPageCoach       = 'James Okafor';
+let ksbLSCFilter       = '';
+let ksbSortCol         = 'rag';
+let ksbSortAsc         = true;
+let _currentSrType     = '';          // Reporting: selected standard report type
+let _reportPage        = 1;           // Reporting: current page
+let currentUser        = USERS[0];    // Default: Delivery Manager
 ```
 
 ---
 
-## Key Data Constants (`app.js`)
+## Key Data Structures (`app.js`)
 
 | Constant | Description |
 |---|---|
-| `DATA` | KPI values keyed by 200/1000 |
-| `COACH_DATA` | Per-coach KPIs (5 LSCs) |
+| `DATA` | Summary KPI values keyed by 200/1000 |
+| `COACH_DATA` | Per-coach KPIs (5 LSCs) — still used for LSC KPI cards |
 | `AAF_METRICS` | DfE AAF metrics keyed by 200/1000 |
-| `TOUCHPOINT_DATA` | Outstanding touchpoints table data |
-| `SLA_DATA` | Beyond 10-week SLA table data |
-| `OTJ_DATA` | No OTJ evidence table data |
-| `STARTER_DATA` | Awaiting first LSC meeting data |
-| `PIPELINE_ENTRIES` | Sales pipeline (May–Aug 2026, with `am` field) |
-| `PIPELINE_TARGETS` | Monthly start targets keyed by `'YYYY-MM'` |
-| `ALS_DATA` | Additional Learning Support register |
-| `SAFEGUARDING_DATA` | Safeguarding & welfare concerns |
-| `WELFARE_DUE_DATA` | Welfare check-ins due |
-| `OOF_DATA` | Out of Funding learners |
-| `BIL_DATA` | Break in Learning register |
-| `GW_Q2_DATA` | Q2 2026 gateway learners |
-| `GW_Q3_DATA` | Q3 2026 gateway learners |
-| `GW_Q4_DATA` | Q4 2026 gateway learners |
-| `GATEWAY_MONTHS_DATA` | Monthly gateway pipeline, keyed by `'YYYY-MM'` |
+| `KSB_STANDARDS` | K/S/B totals per standard (Data Technician, Data Analyst, Applied AI) |
+| `PIPELINE_ENTRIES` | Sales pipeline May–Aug 2026 |
+| `PIPELINE_TARGETS` | Monthly start targets `'YYYY-MM'` |
+| `LEARNER_COMMENTS_DATA` | Learner feedback records |
+| `EMPLOYER_COMMENTS_DATA` | Employer feedback records |
+| `EXIT_REVIEW_DATA` | Exit review summaries |
+| `SCALE_200` | Generated 200-learner dataset (seed 99) |
+| `SCALE_1000` | Generated 1000-learner dataset (seed 42) |
+| `AD` | Active data accessor — returns SCALE_200 or SCALE_1000 |
+| `REPORT_CONFIGS` | All report definitions (getData, columns) |
+| `REPORT_PRESETS` | Quick report preset definitions |
+| `USERS` | 9 account definitions (role, initials, coach name for LSCs) |
+| `NAV_ACCESS` | Role → allowed pages map |
+| `COACHES_1000` | All 20 coach names |
+| `COACH_CAPACITIES_1000` | Per-coach learner count at 1000 scale |
 
 ---
 
-## Key Render Functions (`app.js`)
+## Key Functions (`app.js`)
 
 | Function | Purpose |
 |---|---|
-| `renderAll()` | Triggers all KPI and table renders (called on size toggle) |
-| `renderPipeline()` | Sales pipeline — filters to current month, resets filters |
-| `renderPipelineBreakdown(entries)` | RAG breakdown cards below progress bar |
-| `renderGateway()` | Gateway pipeline — builds per-LSC sections into `#gateway-container` |
-| `renderDeliveryDash()` | Delivery dashboard — all 5 tables + KPIs |
-| `renderWelfare()` | Welfare page — ALS, safeguarding, welfare due |
-| `renderDeliveryTables()` | Compliance page 4 tables (uses `deliveryLSCFilter`) |
-| `renderLSCTables()` | LSC page 4 tables (uses `lscPageCoach`) |
+| `renderAll()` | Triggers all KPI and table renders; called on size toggle and user switch |
+| `applyRolePermissions()` | Shows/hides nav, cards, filter bars based on `currentUser.role` |
+| `switchUser(userId)` | Changes active account, re-applies permissions, re-renders |
+| `syncCoachDropdowns()` | Updates all LSC dropdowns to 5 or 20 coaches based on `currentSize` |
+| `renderGatewayForecast()` | Q2/Q3/Q4 tables and KPIs |
+| `renderGateway()` | Monthly pipeline — LSC-filtered for LSC users |
+| `renderWelfare()` | ALS + combined safeguarding/welfare tables |
+| `renderLearnerVoice()` | Comments + exit review tables |
+| `renderKSB()` | KSB tracker table and KPI cards |
+| `renderCurriculum()` | Curriculum progress table |
+| `renderDeliveryTables()` | All Compliance tables + OOF/BIL + KPI updates |
+| `selectStandardReport(type)` | Shows report filters, stores `_currentSrType` |
+| `runReport(area, extras)` | Runs selected report, renders first page |
+| `renderReportPage()` | Renders tbody + pagination for current page |
+| `goReportPage(page)` | Changes page and re-renders |
+| `exportTableCSV(table, name)` | Generic CSV export for any panel table |
+| `exportReportCSV()` | Exports full report dataset (all pages) |
+| `_buildMeetingLookup()` | Last meeting for all masters (TOUCHPOINT_DATA + synthetic) |
+| `_buildOtjLookup()` | OTJ data for all masters (OTJ_DATA + synthetic) |
 
 ---
 
@@ -193,37 +291,45 @@ let lscPageCoach       = 'James Okafor'; // LSC page coach
 
 | Class | Purpose |
 |---|---|
-| `.page` / `.page.active` | Show/hide pages |
+| `.page` / `.page.active` | Show/hide top-level pages |
+| `.sub-nav` / `.sub-nav-btn.active` | Learners and Gateway sub-tab navigation |
+| `.sub-page` / `.sub-page.active` | Show/hide sub-tab content |
 | `.panel-stack` | 2-column grid layout for panels |
-| `.panel--span` | `grid-column: 1 / -1` — full-width panel |
-| `.table--fit` | Fixed-layout table with overflow ellipsis (used for narrow tables) |
-| `.dd-table` | Full-width table, natural column widths, no cell clipping (Delivery dash) |
+| `.panel--span` | Full-width panel (`grid-column: 1 / -1`) |
 | `.kpi-bar` | Responsive KPI card grid |
-| `.kpi-sub` | Small helper text below KPI value |
-| `.rag-badge` | Coloured inline badge for Portfolio RAG |
-| `.rag-summary-bar` | Strip showing RAG counts (Delivery page) |
-| `.bd-card` / `.bd-grid` | RAG breakdown cards (Sales Pipeline) |
-| `.sp-pill` | Sales pipeline status pills (6 variants) |
-| `.dd-status-*` | Delivery/OOF/quarter status pills |
-| `.lsc-table-section` / `.lsc-table-heading` | Gateway Pipeline per-LSC grouping |
+| `.filter-grid-3` | 3-column filter grid (KSB, Curriculum filter bars) |
+| `.sr-grid` | 4-column Standard Reports card grid |
+| `.sr-card` / `.sr-card.active` | Report type selector card |
+| `.rpag-wrap` / `.rpag-btn` | Report pagination controls |
+| `.ov-grid` / `.ov-card` | Overview summary card grid (flex, ordered by role) |
+| `.user-btn` / `.user-dropdown` | Account switcher in header |
+| `.dd-table` | Full-width table, natural column widths |
+| `.rag-badge--super-red/red/amber/green` | KSB RAG badges |
+| `.ksb-status-oof` / `.ksb-status-bil` | KSB status pills |
+| `.curr-status-pill` / `.curr-pill-*` | Curriculum status pills |
+| `.welfare-type-sg` / `.welfare-type-check` | Safeguarding/welfare type badges |
+| `.area-badge` | Cross-provision area labels (compliance/delivery/welfare/curriculum) |
+| `.sort-th` / `.sort-active` | Sortable column header styling |
+| `.sp-pill` + 6 variants | Sales pipeline status pills |
 | `.weeks-pill` | Urgent/warning/ok time-based indicators |
-| `.check-yes` / `.check-no` | Tick/dash indicators for boolean fields |
-| `.panel-count` | Small chip showing row count in panel header |
+| `.check-yes` / `.check-no` | Tick/dash indicators |
+| `.ksb-kpi-section` / `.ksb-kpi-label` | KSB KPI group labels |
+| `.ksb-notice` | Amber info notice box (KSB, Reporting) |
 
 ---
 
-## LSCs (Learning Skills Coaches)
-- Sarah Mitchell
-- James Okafor
-- Priya Sharma
-- Tom Bradley
-- Hannah Clarke
+## LSCs (Learning Skills Coaches) — 200-learner scale
+- Sarah Mitchell (42 learners)
+- James Okafor (40 learners)
+- Priya Sharma (38 learners)
+- Tom Bradley (45 learners)
+- Hannah Clarke (35 learners)
 
-## Apprenticeship Standards Delivered
-- Data Technician
-- Data Analyst
-- Applied AI & Automation
-- Multi-Channel Marketer
-- Assistant Accountant
-- Professional Accounting Technician
-- Digital Support Technician
+## Apprenticeship Standards Delivered (7)
+- Data Technician (Level 3)
+- Data Analyst (Level 4)
+- Applied AI & Automation (Level 4)
+- Multi-Channel Marketer (Level 4)
+- Assistant Accountant (Level 3)
+- Professional Accounting Technician (Level 4)
+- Digital Support Technician (Level 3)
