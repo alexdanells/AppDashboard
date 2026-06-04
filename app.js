@@ -400,7 +400,7 @@ const NAV_ACCESS = {
   'page-sales':     ['delivery', 'compliance', 'quality', 'sales'],
   'page-smt':       ['delivery', 'compliance', 'quality'],
   'page-learners':  ['delivery', 'compliance', 'quality', 'lsc'],
-  'page-gateway':   ['delivery'],
+  'page-gateway':   ['delivery', 'quality'],
   'page-reporting': ['delivery', 'compliance', 'quality', 'sales', 'lsc'],
 };
 
@@ -640,16 +640,34 @@ function renderAll() {
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
+function setKpiCard(id, label, value) {
+  const valEl = document.getElementById(id);
+  if (!valEl) return;
+  valEl.textContent = value;
+  const lblEl = valEl.previousElementSibling;
+  if (lblEl && lblEl.classList.contains('kpi-label')) lblEl.textContent = label;
+}
+
 function renderOverviewKPIs() {
-  const d = DATA[currentSize];
-  setText('kpi-learners',    d.learners);
-  setText('kpi-on-track',    d.onTrack);
-  setText('kpi-at-risk',     d.atRisk);
-  setText('kpi-overdue',     d.overdue);
-  setText('kpi-employers',   d.employers);
-  setText('kpi-achievement', d.achievement);
-  setText('actions-count',   d.actionsToday + ' actions');
-  setText('risk-count',      d.atRisk + ' learners');
+  if (currentUser.role === 'lsc') {
+    const c = COACH_DATA[currentUser.coach] || {};
+    setKpiCard('kpi-learners',    'My Learners',      c.learners       || '—');
+    setKpiCard('kpi-on-track',    'Reviews Due',       c.reviewsDue     || '—');
+    setKpiCard('kpi-at-risk',     'At Risk',           c.atRisk         || '—');
+    setKpiCard('kpi-overdue',     'OTJ Compliance',    c.otjCompliance  || '—');
+    setKpiCard('kpi-employers',   'Employers',         '—');
+    setKpiCard('kpi-achievement', 'Achievement Rate',  '—');
+  } else {
+    const d = DATA[currentSize];
+    setKpiCard('kpi-learners',    'Active Learners',   d.learners);
+    setKpiCard('kpi-on-track',    'On Track',          d.onTrack);
+    setKpiCard('kpi-at-risk',     'At Risk',           d.atRisk);
+    setKpiCard('kpi-overdue',     'Overdue Reviews',   d.overdue);
+    setKpiCard('kpi-employers',   'Employers',         d.employers);
+    setKpiCard('kpi-achievement', 'Achievement Rate',  d.achievement);
+    setText('actions-count', d.actionsToday + ' actions');
+    setText('risk-count',    d.atRisk + ' learners');
+  }
 }
 
 // ─── Overview Summary Cards ────────────────────────────────────────────
