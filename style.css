@@ -1186,6 +1186,8 @@ body {
 .area-compliance { background: #eff6ff; color: #1d4ed8; }
 .area-delivery   { background: #fef3c7; color: #92400e; }
 .area-welfare    { background: #fdf4ff; color: #7e22ce; }
+.area-curriculum { background: #f0fdf4; color: var(--green-dark); }
+.area-gateway    { background: #f0fdf4; color: #065f46; }
 
 /* ===================== KSB Tracker ===================== */
 .ksb-kpi-section { margin-bottom: 0.5rem; }
@@ -1220,6 +1222,14 @@ body {
 .ksb-pct        { font-weight: 600; }
 .ksb-pct--green { color: var(--green-dark); }
 .ksb-pct--red   { color: var(--red); }
+
+.filter-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 0 0;
+  margin-bottom: 1.25rem;
+}
 
 .sort-th {
   cursor: pointer;

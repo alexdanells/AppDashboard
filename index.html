@@ -57,7 +57,10 @@
       <div id="ov-aaf-section">
         <div class="section-subheader">
           <span class="section-subheader-title">DfE Apprenticeship Accountability Framework</span>
-          <button class="btn-export">⬇ Export</button>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <button class="btn-export">⬇ Export</button>
+            <button class="link-btn" id="aaf-toggle-btn" onclick="toggleAAFSection()">Collapse ▲</button>
+          </div>
         </div>
         <div class="aaf-grid" id="aaf-grid"></div>
       </div>
@@ -495,6 +498,29 @@
           <div class="kpi-card"><span class="kpi-label">Welfare Check-ins Due</span><span class="kpi-value amber" id="kpi-welfare-due">—</span></div>
         </div>
 
+        <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="kpi-card">
+            <span class="kpi-label">Learning Difficulties</span>
+            <span class="kpi-value" id="kpi-als-learning">—</span>
+            <span class="kpi-sub">Dyslexia · Dyspraxia · Dyscalculia</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">ADHD &amp; Autism</span>
+            <span class="kpi-value" id="kpi-als-neuro">—</span>
+            <span class="kpi-sub">ADHD · Autism Spectrum (ASC)</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Mental Health</span>
+            <span class="kpi-value" id="kpi-als-mental">—</span>
+            <span class="kpi-sub">Anxiety &amp; Wellbeing</span>
+          </div>
+          <div class="kpi-card">
+            <span class="kpi-label">Physical &amp; Sensory</span>
+            <span class="kpi-value" id="kpi-als-physical">—</span>
+            <span class="kpi-sub">Visual · Hearing · Physical</span>
+          </div>
+        </div>
+
         <div class="panel-stack">
           <div class="panel panel--span">
             <div class="panel-header">
@@ -562,29 +588,39 @@
             <button class="btn-export">⬇ Export</button>
           </div>
 
-          <div class="lsc-selector-bar" id="ksb-filter-bar" style="flex-wrap:wrap;gap:0.75rem;">
-            <label class="lsc-selector-label" for="ksb-lsc">Filter by LSC:</label>
-            <select class="filter-select" id="ksb-lsc">
-              <option value="">All Coaches</option>
-              <option>Sarah Mitchell</option>
-              <option>James Okafor</option>
-              <option>Priya Sharma</option>
-              <option>Tom Bradley</option>
-              <option>Hannah Clarke</option>
-            </select>
-            <select class="filter-select" id="ksb-standard">
-              <option value="">All Standards</option>
-              <option>Data Technician</option>
-              <option>Data Analyst</option>
-              <option>Applied AI &amp; Automation</option>
-            </select>
-            <select class="filter-select" id="ksb-status">
-              <option value="">All Statuses</option>
-              <option>Live</option>
-              <option>OOF</option>
-              <option>BIL</option>
-              <option>Gateway</option>
-            </select>
+          <div id="ksb-filter-bar">
+            <div class="filter-grid-3">
+              <div class="filter-group">
+                <label class="filter-label" for="ksb-lsc">LSC</label>
+                <select class="filter-select" id="ksb-lsc">
+                  <option value="">All Coaches</option>
+                  <option>Sarah Mitchell</option>
+                  <option>James Okafor</option>
+                  <option>Priya Sharma</option>
+                  <option>Tom Bradley</option>
+                  <option>Hannah Clarke</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label" for="ksb-standard">Standard</label>
+                <select class="filter-select" id="ksb-standard">
+                  <option value="">All Standards</option>
+                  <option>Data Technician</option>
+                  <option>Data Analyst</option>
+                  <option>Applied AI &amp; Automation</option>
+                </select>
+              </div>
+              <div class="filter-group">
+                <label class="filter-label" for="ksb-status">Status</label>
+                <select class="filter-select" id="ksb-status">
+                  <option value="">All Statuses</option>
+                  <option>Live</option>
+                  <option>OOF</option>
+                  <option>BIL</option>
+                  <option>Gateway</option>
+                </select>
+              </div>
+            </div>
           </div>
 
           <div class="ksb-kpi-section">
@@ -650,29 +686,39 @@
           <button class="btn-export">⬇ Export</button>
         </div>
 
-        <div class="lsc-selector-bar" id="curriculum-lsc-bar" style="flex-wrap:wrap;gap:0.75rem;">
-          <label class="lsc-selector-label" for="curr-lsc">Filter by LSC:</label>
-          <select class="filter-select" id="curr-lsc">
-            <option value="">All Coaches</option>
-            <option>Sarah Mitchell</option>
-            <option>James Okafor</option>
-            <option>Priya Sharma</option>
-            <option>Tom Bradley</option>
-            <option>Hannah Clarke</option>
-          </select>
-          <select class="filter-select" id="curr-standard">
-            <option value="">All Standards</option>
-            <option>Data Technician</option>
-            <option>Data Analyst</option>
-            <option>Applied AI &amp; Automation</option>
-          </select>
-          <select class="filter-select" id="curr-status">
-            <option value="">All Statuses</option>
-            <option>On Track</option>
-            <option>Off Track</option>
-            <option>Behind</option>
-            <option>No Activity</option>
-          </select>
+        <div id="curriculum-lsc-bar">
+          <div class="filter-grid-3">
+            <div class="filter-group">
+              <label class="filter-label" for="curr-lsc">LSC</label>
+              <select class="filter-select" id="curr-lsc">
+                <option value="">All Coaches</option>
+                <option>Sarah Mitchell</option>
+                <option>James Okafor</option>
+                <option>Priya Sharma</option>
+                <option>Tom Bradley</option>
+                <option>Hannah Clarke</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label" for="curr-standard">Standard</label>
+              <select class="filter-select" id="curr-standard">
+                <option value="">All Standards</option>
+                <option>Data Technician</option>
+                <option>Data Analyst</option>
+                <option>Applied AI &amp; Automation</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label" for="curr-status">Status</label>
+              <select class="filter-select" id="curr-status">
+                <option value="">All Statuses</option>
+                <option>On Track</option>
+                <option>Off Track</option>
+                <option>Behind</option>
+                <option>No Activity</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
@@ -957,13 +1003,17 @@
       <div class="report-presets-bar">
         <span class="report-presets-label">Quick reports</span>
         <div class="report-preset-pills">
-          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
-          <button class="report-preset-pill" data-preset="sla">SLA Breaches</button>
           <button class="report-preset-pill" data-preset="touchpoints">Outstanding Touchpoints</button>
+          <button class="report-preset-pill" data-preset="sla">Progress Reviews</button>
+          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
           <button class="report-preset-pill" data-preset="oof-red">Red Portfolio (OOF)</button>
           <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
-          <button class="report-preset-pill" data-preset="welfare">Active Welfare Concerns</button>
-          <button class="report-preset-pill" data-preset="gateway">Gateway Pipeline</button>
+          <button class="report-preset-pill" data-preset="ksb-atrisk">KSB At-Risk</button>
+          <button class="report-preset-pill" data-preset="curriculum-behind">Curriculum Off-Track</button>
+          <button class="report-preset-pill" data-preset="gateway-red">Gateway Red Portfolio</button>
+          <button class="report-preset-pill" data-preset="welfare-active">Active Safeguarding</button>
+          <button class="report-preset-pill" data-preset="welfare-checkins">Welfare Check-ins Due</button>
+          <button class="report-preset-pill" data-preset="learner-list">Full Learner List</button>
           <button class="report-preset-pill" data-preset="pipeline">Sales Pipeline</button>
         </div>
       </div>
@@ -977,17 +1027,33 @@
           <div class="filter-group">
             <label class="filter-label" for="rf-area">Data area</label>
             <select class="filter-select" id="rf-area">
-              <option value="all">All areas</option>
-              <option value="touchpoints">Outstanding Touchpoints</option>
-              <option value="sla">SLA Breaches</option>
-              <option value="otj">OTJ Compliance</option>
-              <option value="starters">Awaiting First Meeting</option>
-              <option value="oof">Out of Funding (OOF)</option>
-              <option value="bil">Break in Learning (BIL)</option>
-              <option value="gateway">Gateway Pipeline</option>
-              <option value="welfare_als">ALS Register</option>
-              <option value="welfare_safeguarding">Safeguarding &amp; Welfare</option>
-              <option value="pipeline">Sales Pipeline</option>
+              <option value="all">All Areas</option>
+              <optgroup label="Compliance">
+                <option value="touchpoints">Outstanding Touchpoints</option>
+                <option value="sla">Progress Reviews (8+ weeks)</option>
+                <option value="otj">OTJ Compliance in Month</option>
+                <option value="starters">Awaiting First LSC Meeting</option>
+                <option value="oof">Out of Funding (OOF)</option>
+                <option value="bil">Break in Learning (BIL)</option>
+              </optgroup>
+              <optgroup label="Delivery / KSB">
+                <option value="ksb_tracker">KSB Tracker</option>
+                <option value="learner_list">Full Learner List</option>
+              </optgroup>
+              <optgroup label="Gateway">
+                <option value="gateway">Gateway Forecast (All Quarters)</option>
+              </optgroup>
+              <optgroup label="Curriculum">
+                <option value="curriculum">Curriculum Progress</option>
+              </optgroup>
+              <optgroup label="Welfare">
+                <option value="welfare_als">ALS Register</option>
+                <option value="welfare_safeguarding">Safeguarding &amp; Welfare Concerns</option>
+                <option value="welfare_due">Welfare Check-ins Due</option>
+              </optgroup>
+              <optgroup label="Sales">
+                <option value="pipeline">Sales Pipeline</option>
+              </optgroup>
             </select>
           </div>
           <div class="filter-group">
@@ -1047,6 +1113,11 @@
         </div>
       </div>
 
+      <!-- Sales Manager restriction notice -->
+      <div id="report-role-notice" class="ksb-notice" style="display:none;">
+        ⓘ Your account only has access to the Sales Pipeline report. Select <strong>Sales Pipeline</strong> from the Data Area dropdown or use the preset button above.
+      </div>
+
       <div class="panel" id="report-results-panel" style="display:none;">
         <div class="panel-header">
           <div style="display:flex;align-items:center;gap:0.75rem;">
@@ -1054,6 +1125,8 @@
             <span class="panel-count" id="report-results-count">0 records</span>
           </div>
         </div>
+        <!-- Row limit notice -->
+        <div id="report-limit-notice" class="ksb-notice" style="display:none;margin:0.75rem 1.25rem 0;"></div>
         <div style="overflow-x:auto;">
           <table class="data-table dd-table" id="report-table">
             <thead id="report-thead"></thead>
