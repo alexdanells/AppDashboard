@@ -1401,9 +1401,8 @@ function renderTouchpoints(tbodyId, lscFilter) {
 function renderSLATable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = lscFilter
-    ? AD.sla.filter(r => r.lsc === lscFilter)
-    : AD.sla;
+  const rows = (lscFilter ? AD.sla.filter(r => r.lsc === lscFilter) : AD.sla)
+    .slice().sort((a, b) => b.weeksSince - a.weeksSince);
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No reviews approaching or overdue.');
     return;
@@ -1455,11 +1454,11 @@ function renderStarterTable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
 
-  const rows = lscFilter
-    ? AD.starters.filter(r => r.lsc === lscFilter)
-    : AD.starters;
+  // Only show learners where onboarding is incomplete (not both FDOL + checklist done)
+  const base = lscFilter ? AD.starters.filter(r => r.lsc === lscFilter) : AD.starters;
+  const rows = base.filter(r => !(r.firstDayDone && r.checklistDone));
   if (!rows.length) {
-    tbody.innerHTML = emptyRow(8, 'No new starters awaiting first meeting for this coach.');
+    tbody.innerHTML = emptyRow(7, 'No new starters awaiting first meeting for this coach.');
     return;
   }
   tbody.innerHTML = rows.map(r => `
@@ -1472,11 +1471,6 @@ function renderStarterTable(tbodyId, lscFilter) {
       <td>${addDays(r.plannedStart, 30)}</td>
       <td style="text-align:center;">
         ${r.firstDayDone
-          ? '<span class="check-yes" title="Completed">✓</span>'
-          : '<span class="check-no"  title="Not yet completed">–</span>'}
-      </td>
-      <td style="text-align:center;">
-        ${r.checklistDone
           ? '<span class="check-yes" title="Completed">✓</span>'
           : '<span class="check-no"  title="Not yet completed">–</span>'}
       </td>
