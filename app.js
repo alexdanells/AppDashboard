@@ -1294,6 +1294,9 @@ function applyRolePermissions() {
     const lvLscBar = document.getElementById('learner-voice-lsc-bar');
     if (lvLscBar) lvLscBar.style.display = 'none';
     learnerVoiceFilter = 'All';
+    // Sales Pipeline quick report not relevant to LSC (pipeline has no LSC field)
+    const plPill = document.querySelector('.report-preset-pill[data-preset="pipeline"]');
+    if (plPill) plPill.style.display = 'none';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -1320,6 +1323,9 @@ function applyRolePermissions() {
     const lvLscBar = document.getElementById('learner-voice-lsc-bar');
     if (lvLscBar) lvLscBar.style.display = '';
     learnerVoiceFilter = 'All';
+    // Restore pipeline pill for all manager roles
+    const plPill = document.querySelector('.report-preset-pill[data-preset="pipeline"]');
+    if (plPill) plPill.style.display = '';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -3032,12 +3038,15 @@ function runReport(areaOverride, extraFilters) {
   const area    = areaOverride || document.getElementById('rf-area')?.value || 'all';
   const filters = { ...getReportFilters(), ...(extraFilters || {}) };
 
-  // Sales Manager can only access the sales pipeline
+  // Sales Manager: restricted to sales pipeline only
   if (currentUser.role === 'sales' && area !== 'pipeline') {
     const notice = document.getElementById('report-role-notice');
     if (notice) { notice.style.display = ''; return; }
     return;
   }
+  // LSC: sales pipeline is not relevant to their caseload (no lsc field in pipeline data)
+  if (currentUser.role === 'lsc' && area === 'pipeline') return;
+
   const notice = document.getElementById('report-role-notice');
   if (notice) notice.style.display = 'none';
 
