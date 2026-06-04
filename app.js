@@ -2140,7 +2140,14 @@ function renderKSB() {
 
   // Managers with no LSC filter: show only at-risk (not green)
   const managerAllView = !isLSC && !ksbLSCFilter;
-  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green' && r.status !== 'BIL');
+  if (managerAllView) {
+    const mo6 = new Date('2026-12-04');
+    rows = rows.filter(r =>
+      ksbRag(r) !== 'green' &&
+      r.status !== 'BIL' &&
+      new Date(r.plannedGateway) <= mo6
+    );
+  }
 
   if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
   if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
