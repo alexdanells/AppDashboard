@@ -1013,35 +1013,31 @@
           <div class="sr-grid">
             <button class="sr-card" data-report="caseload">
               <div class="sr-card-title">LSC Full Caseload</div>
-              <div class="sr-card-desc">All learners with optional KSB, Curriculum and LLDD columns</div>
-            </button>
-            <button class="sr-card" data-report="learner_status">
-              <div class="sr-card-title">Learner Status</div>
-              <div class="sr-card-desc">Pull learners by status: Live, BIL, At Gateway, OOF, Withdrawn</div>
+              <div class="sr-card-desc">Full learner list with OTJ, KSB, Curriculum, RAG, last meeting and LLDD</div>
             </button>
             <button class="sr-card" data-report="employer_report">
               <div class="sr-card-title">Standard Employer Report</div>
-              <div class="sr-card-desc">Management information: KSB and curriculum progress by employer</div>
+              <div class="sr-card-desc">Management information: KSB, curriculum and status, sorted by employer</div>
             </button>
             <button class="sr-card" data-report="touchpoints">
-              <div class="sr-card-title">Outstanding Touchpoints</div>
-              <div class="sr-card-desc">Learners with no contact recorded this calendar month</div>
+              <div class="sr-card-title">Learner Touchpoints</div>
+              <div class="sr-card-desc">All learners and their most recent contact date and meeting type</div>
             </button>
             <button class="sr-card" data-report="sla">
               <div class="sr-card-title">Progress Reviews</div>
-              <div class="sr-card-desc">Learners approaching or past the 10-week review threshold</div>
+              <div class="sr-card-desc">Last review date, next review due, and overdue/approaching status</div>
             </button>
             <button class="sr-card" data-report="otj">
               <div class="sr-card-title">OTJ Compliance</div>
-              <div class="sr-card-desc">Learners with no OTJ evidence recorded this month</div>
+              <div class="sr-card-desc">Learner, employer, LSC, OTJ completed, expected, last entry date</div>
             </button>
             <button class="sr-card" data-report="ksb_progress">
               <div class="sr-card-title">KSB Progress</div>
-              <div class="sr-card-desc">Knowledge, Skills and Behaviours completion data with RAG</div>
+              <div class="sr-card-desc">Knowledge, Skills and Behaviours completion with RAG — mirrors KSB Tracker</div>
             </button>
             <button class="sr-card" data-report="curriculum_progress">
               <div class="sr-card-title">Curriculum Progress</div>
-              <div class="sr-card-desc">Sprint-based learning progress and status tracking</div>
+              <div class="sr-card-desc">Sprint progress across all learners — mirrors Curriculum dashboard</div>
             </button>
           </div>
 
@@ -1089,16 +1085,6 @@
               </div>
             </div>
 
-            <!-- Extra columns — Full Caseload only -->
-            <div id="sr-extra-cols" style="display:none;margin-bottom:1rem;">
-              <div class="sr-extra-label">Include additional columns:</div>
-              <div class="sr-extra-grid">
-                <label class="sr-extra-option"><input type="checkbox" id="col-ksb" checked> KSB Progress</label>
-                <label class="sr-extra-option"><input type="checkbox" id="col-curriculum" checked> Curriculum Progress</label>
-                <label class="sr-extra-option"><input type="checkbox" id="col-lldd"> LLDD / Declared Need</label>
-              </div>
-            </div>
-
             <button class="btn-run-report" id="report-run-btn">Run Report</button>
           </div>
         </div>
@@ -1108,13 +1094,15 @@
       <div class="report-presets-bar" style="margin-bottom:1.25rem;">
         <span class="report-presets-label">Quick Reports</span>
         <div class="report-preset-pills">
+          <button class="report-preset-pill" data-preset="awaiting-meeting">Awaiting First Meeting</button>
+          <button class="report-preset-pill" data-preset="reviews-overdue">Progress Reviews Overdue</button>
+          <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
+          <button class="report-preset-pill" data-preset="oof-red">OOF Red Portfolio</button>
           <button class="report-preset-pill" data-preset="ksb-atrisk">KSB At-Risk</button>
           <button class="report-preset-pill" data-preset="curriculum-behind">Curriculum Off-Track</button>
           <button class="report-preset-pill" data-preset="gateway-red">Gateway Red Portfolio</button>
           <button class="report-preset-pill" data-preset="welfare-active">Active Safeguarding</button>
           <button class="report-preset-pill" data-preset="welfare-checkins">Welfare Check-ins Due</button>
-          <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
-          <button class="report-preset-pill" data-preset="oof-red">OOF Red Portfolio</button>
           <button class="report-preset-pill" data-preset="als-register">ALS Register</button>
           <button class="report-preset-pill" data-preset="pipeline">Sales Pipeline</button>
         </div>
@@ -1138,14 +1126,13 @@
           </div>
           <button class="btn-export" id="report-export-btn">⬇ Export CSV</button>
         </div>
-        <!-- Row limit notice -->
-        <div id="report-limit-notice" class="ksb-notice" style="display:none;margin:0.75rem 1.25rem 0;"></div>
         <div style="overflow-x:auto;">
           <table class="data-table dd-table" id="report-table">
             <thead id="report-thead"></thead>
             <tbody id="report-tbody"></tbody>
           </table>
         </div>
+        <div id="report-pagination" style="display:none;border-top:1px solid var(--border);"></div>
       </div>
 
     </section>
