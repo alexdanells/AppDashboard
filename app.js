@@ -848,7 +848,7 @@ let currentUser = USERS[0]; // default: Delivery Manager
 const NAV_ACCESS = {
   'page-overview':  ['delivery', 'compliance', 'quality', 'lsc'],
   'page-sales':     ['delivery', 'compliance', 'quality', 'sales'],
-  'page-smt':       ['delivery', 'compliance', 'quality'],
+  // 'page-smt' removed from nav for now
   'page-learners':  ['delivery', 'compliance', 'quality', 'lsc'],
   'page-gateway':   ['delivery', 'quality', 'lsc'],
   'page-reporting': ['delivery', 'compliance', 'quality', 'sales', 'lsc'],
@@ -2466,6 +2466,11 @@ function statusPill(status) {
   return `<span class="${map[status] || 'dd-status-current'}">${status}</span>`;
 }
 
+// ─── Reporting — extra column toggles for Full Caseload report ────────
+let rpExtraKsb  = true;
+let rpExtraCurr = true;
+let rpExtraLldd = false;
+
 // Helper: area badge for cross-provision view
 const _ab = t => `<span class="area-badge area-${t}">${{compliance:'Compliance',delivery:'Delivery',welfare:'Welfare',curriculum:'Curriculum',gateway:'Gateway'}[t]||t}</span>`;
 
@@ -2698,6 +2703,93 @@ const REPORT_CONFIGS = {
     }
   },
 
+  // ── Standard Reports ──────────────────────────────────────────────────
+
+  caseload: {
+    label: 'LSC Full Caseload Report',
+    get columns() {
+      const c = ['Learner','Employer','Standard','LSC','Start Date','Planned Gateway','Status'];
+      if (rpExtraKsb)  c.push('Knowledge','Skills','Behaviours','KSB RAG');
+      if (rpExtraCurr) c.push('Current Sprint','Parts Complete','Curriculum Status');
+      if (rpExtraLldd) c.push('LLDD / Declared Need');
+      return c;
+    },
+    getData(f) {
+      const ksbBase = reportFilterBy(AD.ksb, f);
+      const currMap = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
+      const alsMap  = Object.fromEntries(AD.als.map(r => [r.name, r.need]));
+      return ksbBase.sort((a,b) => a.lsc.localeCompare(b.lsc)||a.name.localeCompare(b.name)).map(r => {
+        const curr = currMap[r.name];
+        const _cols = [r.name, r.employer, r.standard, r.lsc, fmtDate(r.startDate), fmtDate(r.plannedGateway), ksbStatusPill(r.status)];
+        if (rpExtraKsb)  _cols.push(ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct), ksbRagBadge(ksbRag(r)));
+        if (rpExtraCurr) _cols.push(curr?.sprint||'—', curr?`${curr.partsComplete}/8`:'—', curr?curriculumStatusPill(curriculumStatus(curr)):'—');
+        if (rpExtraLldd) _cols.push(alsMap[r.name]||'—');
+        return { _cols, _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' };
+      });
+    }
+  },
+
+  learner_status: {
+    label: 'Learner Status Report',
+    columns: ['Learner','Employer','Standard','LSC','Status','Start Date','Planned Gateway','Detail'],
+    getData(f) {
+      const bilMap = Object.fromEntries(AD.bil.map(r => [r.name, r]));
+      return reportFilterBy(AD.ksb, f).map(r => {
+        const bil = bilMap[r.name];
+        const detail = r.status === 'BIL' && bil
+          ? `LDOL: ${fmtDate(bil.ldol)} · RTL: ${bil.expectedRtl ? fmtDate(bil.expectedRtl) : 'TBC'}`
+          : r.status === 'Gateway' ? 'At gateway — EPA pending'
+          : r.status === 'OOF'     ? 'Past planned end date'
+          : '';
+        return { _cols: [r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status), fmtDate(r.startDate), fmtDate(r.plannedGateway), detail] };
+      });
+    }
+  },
+
+  employer_report: {
+    label: 'Standard Employer Report',
+    columns: ['Learner','Employer','Standard','LSC','Status','KSB RAG','Knowledge','Skills','Behaviours','Sprint','Parts','Curriculum Status'],
+    getData(f) {
+      const currMap = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
+      return reportFilterBy(AD.ksb, f)
+        .sort((a,b) => a.employer.localeCompare(b.employer)||a.name.localeCompare(b.name))
+        .map(r => {
+          const curr = currMap[r.name];
+          return { _cols: [
+            r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status), ksbRagBadge(ksbRag(r)),
+            ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct),
+            curr?.sprint||'—', curr?`${curr.partsComplete}/8`:'—', curr?curriculumStatusPill(curriculumStatus(curr)):'—'
+          ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' };
+        });
+    }
+  },
+
+  ksb_progress: {
+    label: 'KSB Progress',
+    columns: ['Learner','Employer','Standard','LSC','Start Date','Planned Gateway','Status','Knowledge','Skills','Behaviours','RAG'],
+    getData(f) {
+      return reportFilterBy(AD.ksb, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.lsc, fmtDate(r.startDate), fmtDate(r.plannedGateway),
+        ksbStatusPill(r.status), ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct), ksbRagBadge(ksbRag(r))
+      ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' }));
+    }
+  },
+
+  curriculum_progress: {
+    label: 'Curriculum Progress',
+    columns: ['Learner','Employer','Standard','LSC','Current Sprint','Parts Complete','Last Activity','Status'],
+    getData(f) {
+      const so = {'No Activity':0,'Behind':1,'Off Track':2,'On Track':3};
+      return reportFilterBy(AD.curriculum, f)
+        .sort((a,b) => (so[curriculumStatus(a)]??3)-(so[curriculumStatus(b)]??3))
+        .map(r => {
+          const st = curriculumStatus(r);
+          return { _cols: [r.name, r.employer, r.standard, r.lsc, r.sprint, `${r.partsComplete}/8`, fmtDate(r.lastActivity), curriculumStatusPill(st)],
+                   _rowClass: ['Behind','No Activity'].includes(st) ? 'row-alert' : '' };
+        });
+    }
+  },
+
   // ── Sales ─────────────────────────────────────────────────────────────
   pipeline: {
     label: 'Sales Pipeline',
@@ -2711,24 +2803,17 @@ const REPORT_CONFIGS = {
   }
 };
 
+// Quick Reports — pre-filtered one-click reports
 const REPORT_PRESETS = [
-  // Compliance
-  { id: 'touchpoints',       area: 'touchpoints',       extra: {} },
-  { id: 'sla',               area: 'sla',               extra: {} },
-  { id: 'otj',               area: 'otj',               extra: {} },
-  { id: 'oof-red',           area: 'oof',               extra: { portfolioRag: 'red' } },
-  { id: 'bil-decision',      area: 'bil',               extra: { status: 'BIL Decision Needed' } },
-  // KSB / Curriculum
-  { id: 'ksb-atrisk',        area: 'ksb_tracker',       extra: {} },
-  { id: 'curriculum-behind', area: 'curriculum',        extra: {} },
-  // Gateway
-  { id: 'gateway-red',       area: 'gateway',           extra: { portfolioRag: 'red' } },
-  // Welfare
+  { id: 'ksb-atrisk',        area: 'ksb_tracker',          extra: {} },
+  { id: 'curriculum-behind', area: 'curriculum',           extra: {} },
+  { id: 'gateway-red',       area: 'gateway',              extra: { portfolioRag: 'red' } },
   { id: 'welfare-active',    area: 'welfare_safeguarding', extra: { status: 'active' } },
-  { id: 'welfare-checkins',  area: 'welfare_due',       extra: {} },
-  // Full lists
-  { id: 'learner-list',      area: 'learner_list',      extra: {} },
-  { id: 'pipeline',          area: 'pipeline',          extra: {} },
+  { id: 'welfare-checkins',  area: 'welfare_due',          extra: {} },
+  { id: 'bil-decision',      area: 'bil',                  extra: { status: 'BIL Decision Needed' } },
+  { id: 'oof-red',           area: 'oof',                  extra: { portfolioRag: 'red' } },
+  { id: 'als-register',      area: 'welfare_als',          extra: {} },
+  { id: 'pipeline',          area: 'pipeline',             extra: {} },
 ];
 
 let activeReportConfig = null;
@@ -2879,6 +2964,54 @@ document.addEventListener('click', e => {
 document.getElementById('report-run-btn')?.addEventListener('click', () => {
   document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
   runReport();
+});
+
+// ─── Standard Report selection ─────────────────────────────────────────
+function selectStandardReport(type) {
+  // Highlight selected card
+  document.querySelectorAll('.sr-card').forEach(c => c.classList.toggle('active', c.dataset.report === type));
+
+  // Set the hidden area select so getReportFilters/runReport pick it up
+  const areaEl = document.getElementById('rf-area');
+  if (areaEl) areaEl.value = type;
+
+  // Show filter area
+  const filtersEl = document.getElementById('sr-filters');
+  if (filtersEl) filtersEl.style.display = type ? '' : 'none';
+
+  // Show/hide specific filter groups based on report type
+  const show = (id, vis) => { const el = document.getElementById(id); if (el) el.style.display = vis ? '' : 'none'; };
+  const isLSCUser = currentUser.role === 'lsc';
+  show('sr-grp-lsc',    !isLSCUser); // LSC users never see this
+  show('sr-grp-std',    ['caseload','employer_report','ksb_progress','curriculum_progress','learner_status'].includes(type));
+  show('sr-grp-status', ['caseload','learner_status'].includes(type));
+  show('sr-grp-emp',    type === 'employer_report');
+  show('sr-extra-cols', type === 'caseload');
+
+  // Reset non-relevant filters
+  if (!['caseload','learner_status'].includes(type)) { const el = document.getElementById('rf-status'); if (el) el.value = ''; }
+  if (type !== 'employer_report') { const el = document.getElementById('rf-employer'); if (el) el.value = ''; }
+
+  // Hide results from previous run
+  const panel = document.getElementById('report-results-panel');
+  const expBtn = document.getElementById('report-export-btn');
+  if (panel)  panel.style.display  = 'none';
+  if (expBtn) expBtn.style.display = 'none';
+}
+
+// Extra column checkbox handlers
+['col-ksb','col-curriculum','col-lldd'].forEach(id => {
+  document.getElementById(id)?.addEventListener('change', function() {
+    if (id === 'col-ksb')        rpExtraKsb  = this.checked;
+    if (id === 'col-curriculum') rpExtraCurr = this.checked;
+    if (id === 'col-lldd')       rpExtraLldd = this.checked;
+  });
+});
+
+// SR card click delegation
+document.addEventListener('click', e => {
+  const card = e.target.closest('.sr-card');
+  if (card?.dataset?.report) selectStandardReport(card.dataset.report);
 });
 
 document.getElementById('report-clear-btn')?.addEventListener('click', () => {

@@ -34,7 +34,6 @@
     <nav class="header-nav">
       <a href="#" class="nav-link active" data-page="page-overview">Overview</a>
       <a href="#" class="nav-link" data-page="page-sales">Sales Pipeline</a>
-      <a href="#" class="nav-link" data-page="page-smt">SMT</a>
       <a href="#" class="nav-link" data-page="page-learners">Learners</a>
       <a href="#" class="nav-link" data-page="page-gateway">Gateway</a>
       <a href="#" class="nav-link" data-page="page-reporting">Reporting</a>
@@ -995,127 +994,140 @@
       <div class="page-heading">
         <div>
           <h1 class="page-title">Reporting</h1>
-          <p class="page-subtitle">Filter and export data across your full provision</p>
+          <p class="page-subtitle">Standard and ad-hoc reports across your full provision</p>
         </div>
-        <button class="btn-export" id="report-export-btn" style="display:none;">⬇ Export CSV</button>
       </div>
 
-      <div class="report-presets-bar">
-        <span class="report-presets-label">Quick reports</span>
+      <!-- Hidden selects kept for JS compatibility (rf-area drives runReport) -->
+      <select id="rf-area" style="display:none;"><option value="all">All Areas</option></select>
+      <select id="rf-rag" style="display:none;"><option value="">All</option><option value="green">Green</option><option value="amber">Amber</option><option value="red">Red</option></select>
+
+      <!-- ── Standard Reports ─────────────────────────────────────────── -->
+      <div class="panel" style="margin-bottom:1.25rem;">
+        <div class="panel-header">
+          <span class="panel-title">Standard Reports</span>
+        </div>
+        <div style="padding:1rem 1.25rem 0;">
+
+          <!-- Report type cards -->
+          <div class="sr-grid">
+            <button class="sr-card" data-report="caseload">
+              <div class="sr-card-title">LSC Full Caseload</div>
+              <div class="sr-card-desc">All learners with optional KSB, Curriculum and LLDD columns</div>
+            </button>
+            <button class="sr-card" data-report="learner_status">
+              <div class="sr-card-title">Learner Status</div>
+              <div class="sr-card-desc">Pull learners by status: Live, BIL, At Gateway, OOF, Withdrawn</div>
+            </button>
+            <button class="sr-card" data-report="employer_report">
+              <div class="sr-card-title">Standard Employer Report</div>
+              <div class="sr-card-desc">Management information: KSB and curriculum progress by employer</div>
+            </button>
+            <button class="sr-card" data-report="touchpoints">
+              <div class="sr-card-title">Outstanding Touchpoints</div>
+              <div class="sr-card-desc">Learners with no contact recorded this calendar month</div>
+            </button>
+            <button class="sr-card" data-report="sla">
+              <div class="sr-card-title">Progress Reviews</div>
+              <div class="sr-card-desc">Learners approaching or past the 10-week review threshold</div>
+            </button>
+            <button class="sr-card" data-report="otj">
+              <div class="sr-card-title">OTJ Compliance</div>
+              <div class="sr-card-desc">Learners with no OTJ evidence recorded this month</div>
+            </button>
+            <button class="sr-card" data-report="ksb_progress">
+              <div class="sr-card-title">KSB Progress</div>
+              <div class="sr-card-desc">Knowledge, Skills and Behaviours completion data with RAG</div>
+            </button>
+            <button class="sr-card" data-report="curriculum_progress">
+              <div class="sr-card-title">Curriculum Progress</div>
+              <div class="sr-card-desc">Sprint-based learning progress and status tracking</div>
+            </button>
+          </div>
+
+          <!-- Filters (shown when a report type is selected) -->
+          <div id="sr-filters" style="display:none;padding-bottom:1.25rem;">
+            <div class="filter-grid-3" style="margin-bottom:0.75rem;">
+              <div class="filter-group" id="sr-grp-lsc">
+                <label class="filter-label" for="rf-lsc">LSC</label>
+                <select class="filter-select" id="rf-lsc">
+                  <option value="">All Coaches</option>
+                  <option>Sarah Mitchell</option>
+                  <option>James Okafor</option>
+                  <option>Priya Sharma</option>
+                  <option>Tom Bradley</option>
+                  <option>Hannah Clarke</option>
+                </select>
+              </div>
+              <div class="filter-group" id="sr-grp-std" style="display:none;">
+                <label class="filter-label" for="rf-standard">Standard</label>
+                <select class="filter-select" id="rf-standard">
+                  <option value="">All Standards</option>
+                  <option>Data Technician</option>
+                  <option>Data Analyst</option>
+                  <option>Applied AI &amp; Automation</option>
+                  <option>Multi-Channel Marketer</option>
+                  <option>Assistant Accountant</option>
+                  <option>Professional Accounting Technician</option>
+                  <option>Digital Support Technician</option>
+                </select>
+              </div>
+              <div class="filter-group" id="sr-grp-status" style="display:none;">
+                <label class="filter-label" for="rf-status">Status</label>
+                <select class="filter-select" id="rf-status">
+                  <option value="">All Statuses</option>
+                  <option value="Live">Live</option>
+                  <option value="BIL">BIL</option>
+                  <option value="OOF">OOF</option>
+                  <option value="Gateway">At Gateway</option>
+                  <option value="Withdrawn">Withdrawn</option>
+                </select>
+              </div>
+              <div class="filter-group" id="sr-grp-emp" style="display:none;">
+                <label class="filter-label" for="rf-employer">Employer</label>
+                <select class="filter-select" id="rf-employer"><option value="">All Employers</option></select>
+              </div>
+            </div>
+
+            <!-- Extra columns — Full Caseload only -->
+            <div id="sr-extra-cols" style="display:none;margin-bottom:1rem;">
+              <div class="sr-extra-label">Include additional columns:</div>
+              <div class="sr-extra-grid">
+                <label class="sr-extra-option"><input type="checkbox" id="col-ksb" checked> KSB Progress</label>
+                <label class="sr-extra-option"><input type="checkbox" id="col-curriculum" checked> Curriculum Progress</label>
+                <label class="sr-extra-option"><input type="checkbox" id="col-lldd"> LLDD / Declared Need</label>
+              </div>
+            </div>
+
+            <button class="btn-run-report" id="report-run-btn">Run Report</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Quick Reports ────────────────────────────────────────────── -->
+      <div class="report-presets-bar" style="margin-bottom:1.25rem;">
+        <span class="report-presets-label">Quick Reports</span>
         <div class="report-preset-pills">
-          <button class="report-preset-pill" data-preset="touchpoints">Outstanding Touchpoints</button>
-          <button class="report-preset-pill" data-preset="sla">Progress Reviews</button>
-          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
-          <button class="report-preset-pill" data-preset="oof-red">Red Portfolio (OOF)</button>
-          <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
           <button class="report-preset-pill" data-preset="ksb-atrisk">KSB At-Risk</button>
           <button class="report-preset-pill" data-preset="curriculum-behind">Curriculum Off-Track</button>
           <button class="report-preset-pill" data-preset="gateway-red">Gateway Red Portfolio</button>
           <button class="report-preset-pill" data-preset="welfare-active">Active Safeguarding</button>
           <button class="report-preset-pill" data-preset="welfare-checkins">Welfare Check-ins Due</button>
-          <button class="report-preset-pill" data-preset="learner-list">Full Learner List</button>
+          <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
+          <button class="report-preset-pill" data-preset="oof-red">OOF Red Portfolio</button>
+          <button class="report-preset-pill" data-preset="als-register">ALS Register</button>
           <button class="report-preset-pill" data-preset="pipeline">Sales Pipeline</button>
-        </div>
-      </div>
-
-      <div class="panel report-filters-panel">
-        <div class="panel-header">
-          <span class="panel-title">Custom filters</span>
-          <button class="link-btn" id="report-clear-btn">Clear</button>
-        </div>
-        <div class="report-filter-bar">
-          <div class="filter-group">
-            <label class="filter-label" for="rf-area">Data area</label>
-            <select class="filter-select" id="rf-area">
-              <option value="all">All Areas</option>
-              <optgroup label="Compliance">
-                <option value="touchpoints">Outstanding Touchpoints</option>
-                <option value="sla">Progress Reviews (8+ weeks)</option>
-                <option value="otj">OTJ Compliance in Month</option>
-                <option value="starters">Awaiting First LSC Meeting</option>
-                <option value="oof">Out of Funding (OOF)</option>
-                <option value="bil">Break in Learning (BIL)</option>
-              </optgroup>
-              <optgroup label="Delivery / KSB">
-                <option value="ksb_tracker">KSB Tracker</option>
-                <option value="learner_list">Full Learner List</option>
-              </optgroup>
-              <optgroup label="Gateway">
-                <option value="gateway">Gateway Forecast (All Quarters)</option>
-              </optgroup>
-              <optgroup label="Curriculum">
-                <option value="curriculum">Curriculum Progress</option>
-              </optgroup>
-              <optgroup label="Welfare">
-                <option value="welfare_als">ALS Register</option>
-                <option value="welfare_safeguarding">Safeguarding &amp; Welfare Concerns</option>
-                <option value="welfare_due">Welfare Check-ins Due</option>
-              </optgroup>
-              <optgroup label="Sales">
-                <option value="pipeline">Sales Pipeline</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label class="filter-label" for="rf-lsc">LSC</label>
-            <select class="filter-select" id="rf-lsc">
-              <option value="">All LSCs</option>
-              <option>Sarah Mitchell</option>
-              <option>James Okafor</option>
-              <option>Priya Sharma</option>
-              <option>Tom Bradley</option>
-              <option>Hannah Clarke</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label class="filter-label" for="rf-standard">Standard</label>
-            <select class="filter-select" id="rf-standard">
-              <option value="">All standards</option>
-              <option>Data Technician</option>
-              <option>Data Analyst</option>
-              <option>Applied AI &amp; Automation</option>
-              <option>Multi-Channel Marketer</option>
-              <option>Assistant Accountant</option>
-              <option>Professional Accounting Technician</option>
-              <option>Digital Support Technician</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label class="filter-label" for="rf-employer">Employer</label>
-            <select class="filter-select" id="rf-employer">
-              <option value="">All employers</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label class="filter-label" for="rf-status">Status</label>
-            <select class="filter-select" id="rf-status">
-              <option value="">All statuses</option>
-              <option>Current</option><option>At Gateway</option><option>BIL</option>
-              <option>BIL Ongoing</option><option>BIL Decision Needed</option>
-              <option>RTL Confirmed</option><option>Withdrawn</option>
-              <option>active</option><option>closed</option>
-              <option>Cold Lead</option><option>In Scope</option><option>Proposal Sent</option>
-              <option>Contract Issued</option><option>Contract Signed</option><option>Enrolment</option>
-            </select>
-          </div>
-          <div class="filter-group">
-            <label class="filter-label" for="rf-rag">Portfolio RAG</label>
-            <select class="filter-select" id="rf-rag">
-              <option value="">All</option>
-              <option value="green">Green</option>
-              <option value="amber">Amber</option>
-              <option value="red">Red</option>
-            </select>
-          </div>
-        </div>
-        <div class="report-filter-footer">
-          <button class="btn-run-report" id="report-run-btn">Run Report</button>
         </div>
       </div>
 
       <!-- Sales Manager restriction notice -->
       <div id="report-role-notice" class="ksb-notice" style="display:none;">
-        ⓘ Your account only has access to the Sales Pipeline report. Select <strong>Sales Pipeline</strong> from the Data Area dropdown or use the preset button above.
+        ⓘ Your account only has access to the Sales Pipeline report. Use the Quick Report button above.
+      </div>
+
+      <!-- Clear button for convenience -->
+      <div style="margin-bottom:0.75rem;display:flex;justify-content:flex-end;">
+        <button class="link-btn" id="report-clear-btn">Clear results</button>
       </div>
 
       <div class="panel" id="report-results-panel" style="display:none;">
@@ -1124,6 +1136,7 @@
             <span class="panel-title" id="report-results-title">Results</span>
             <span class="panel-count" id="report-results-count">0 records</span>
           </div>
+          <button class="btn-export" id="report-export-btn">⬇ Export CSV</button>
         </div>
         <!-- Row limit notice -->
         <div id="report-limit-notice" class="ksb-notice" style="display:none;margin:0.75rem 1.25rem 0;"></div>
