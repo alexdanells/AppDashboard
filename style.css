@@ -1228,6 +1228,7 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   padding: 0.75rem 0 0;
+  margin-bottom: 1.25rem;
 }
 
 .sort-th {
