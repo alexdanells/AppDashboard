@@ -694,8 +694,8 @@ function applyRolePermissions() {
   // Overview card order — LSC: Delivery, Compliance, Gateway, Curriculum, Welfare
   //                      Managers: AAF, Sales, Delivery, Compliance, Gateway, Curriculum, Welfare
   const cardOrder = isLSC
-    ? { 'ov-delivery-card': 1, 'ov-compliance-card': 2, 'ov-gateway-card': 3, 'ov-curriculum-card': 4, 'ov-welfare-card': 5 }
-    : { 'ov-aaf-card': 1, 'ov-sales-card': 2, 'ov-delivery-card': 3, 'ov-compliance-card': 4, 'ov-gateway-card': 5, 'ov-curriculum-card': 6, 'ov-welfare-card': 7 };
+    ? { 'ov-compliance-card': 1, 'ov-delivery-card': 2, 'ov-ksb-card': 3, 'ov-gateway-card': 4, 'ov-gwf-card': 5, 'ov-curriculum-card': 6, 'ov-welfare-card': 7, 'ov-voice-card': 8 }
+    : { 'ov-aaf-card': 1, 'ov-sales-card': 2, 'ov-compliance-card': 3, 'ov-delivery-card': 4, 'ov-ksb-card': 5, 'ov-gateway-card': 6, 'ov-gwf-card': 7, 'ov-curriculum-card': 8, 'ov-welfare-card': 9, 'ov-voice-card': 10 };
   Object.entries(cardOrder).forEach(([id, order]) => {
     const el = document.getElementById(id);
     if (el) el.style.order = order;
@@ -862,8 +862,9 @@ function renderOverviewKPIs() {
     setKpiCard('kpi-on-track',    'Reviews Due',       c.reviewsDue     || '—');
     setKpiCard('kpi-at-risk',     'At Risk',           c.atRisk         || '—');
     setKpiCard('kpi-overdue',     'OTJ Compliance',    c.otjCompliance  || '—');
-    setKpiCard('kpi-employers',   'Employers',         '—');
-    setKpiCard('kpi-achievement', 'Achievement Rate',  '—');
+    const prov = DATA[currentSize];
+    setKpiCard('kpi-employers',   'Employers',         prov.employers);
+    setKpiCard('kpi-achievement', 'Achievement Rate',  prov.achievement);
   } else {
     const d = DATA[currentSize];
     setKpiCard('kpi-learners',    'Active Learners',   d.learners);
@@ -894,10 +895,14 @@ function renderOverviewSummary() {
   const alsSoon            = lscF(ALS_DATA).filter(r => alsReviewRag(r.nextReview).cls === 'warning').length;
   const safeguardingActive = lscF(SAFEGUARDING_DATA).filter(r => r.status === 'active').length;
   const welfareDue         = lscF(WELFARE_DUE_DATA).filter(r => r.daysSince > 14).length;
-  setText('ov-als-overdue',  alsOverdue);
-  setText('ov-als-soon',     alsSoon);
-  setText('ov-safeguarding', safeguardingActive);
-  setText('ov-welfare-due',  welfareDue);
+  const setOvColour = (id, value, cls) => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = value; el.className = 'ov-value' + (value > 0 ? ' ' + cls : ''); }
+  };
+  setOvColour('ov-als-overdue',  alsOverdue,         'ov-red');
+  setOvColour('ov-als-soon',     alsSoon,            'ov-amber');
+  setOvColour('ov-safeguarding', safeguardingActive, 'ov-red');
+  setOvColour('ov-welfare-due',  welfareDue,         'ov-amber');
 
   // — Delivery —
   const oofActive   = lscF(OOF_DATA).filter(r => r.status !== 'Withdrawn').length;
@@ -948,7 +953,7 @@ function renderOverviewSummary() {
     const redNamesEl = document.getElementById('ov-aaf-red-names');
     if (redNamesEl) redNamesEl.textContent = aafRed > 0
       ? `Red metrics: ${aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ')}`
-      : 'No red metrics';
+      : '';
   }
 
   // — Curriculum —
@@ -959,8 +964,41 @@ function renderOverviewSummary() {
   setText('ov-curr-off-track',   currStatuses.filter(s => s === 'Off Track' || s === 'Behind').length);
   setText('ov-curr-no-activity', currStatuses.filter(s => s === 'No Activity').length);
 
-  // — Urgent banner —
-  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
+  // — KSB Tracker (within 6 months of gateway) —
+  const mo6 = new Date('2026-12-04');
+  const ksbBase = isLSC ? KSB_DATA.filter(r => r.lsc === coach) : KSB_DATA;
+  const ksbW6   = ksbBase.filter(r => new Date(r.plannedGateway) <= mo6);
+  const ksbSuperRed = ksbW6.filter(r => ksbRag(r) === 'super-red').length;
+  setText('ov-ksb-sr', ksbSuperRed);
+  setText('ov-ksb-r',  ksbW6.filter(r => ksbRag(r) === 'red').length);
+  setText('ov-ksb-a',  ksbW6.filter(r => ksbRag(r) === 'amber').length);
+  setText('ov-ksb-g',  ksbW6.filter(r => ksbRag(r) === 'green').length);
+
+  // — Gateway Forecast (Q2/Q3/Q4) —
+  const gwLscF = r => !isLSC || r.lsc === coach;
+  const q2Rows = GW_Q2_DATA.filter(gwLscF);
+  const q3Rows = GW_Q3_DATA.filter(gwLscF);
+  const q4Rows = GW_Q4_DATA.filter(gwLscF);
+  setText('ov-gwf-q2',  q2Rows.length);
+  setText('ov-gwf-q3',  q3Rows.length);
+  setText('ov-gwf-q4',  q4Rows.length);
+  setText('ov-gwf-red', [...q2Rows, ...q3Rows, ...q4Rows].filter(r => r.portfolioRag === 'red').length);
+
+  // — Learner Voice —
+  const d = DATA[currentSize];
+  const setEnps = (id, score) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = score;
+    el.className = 'ov-value ' + (score >= 30 ? 'ov-green' : score >= 0 ? 'ov-amber' : 'ov-red');
+  };
+  setEnps('ov-lv-learner-enps',  d.learnerENPS);
+  setEnps('ov-lv-employer-enps', d.employerENPS);
+  setText('ov-lv-learner-comments',  isLSC ? LEARNER_COMMENTS_DATA.filter(r => r.lsc === coach).length : LEARNER_COMMENTS_DATA.length);
+  setText('ov-lv-employer-comments', isLSC ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === coach).length : EMPLOYER_COMMENTS_DATA.length);
+
+  // — Urgent banner (includes KSB super-red within 6 months) —
+  const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue + ksbSuperRed;
   setText('ov-total-actions', urgentTotal);
 }
 

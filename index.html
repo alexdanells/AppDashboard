@@ -127,17 +127,59 @@
           </div>
         </div>
 
-        <!-- Delivery -->
+        <!-- OOF & BIL -->
         <div class="ov-card" id="ov-delivery-card">
           <div class="ov-card-header">
-            <span class="ov-card-title">Delivery</span>
+            <span class="ov-card-title">OOF &amp; BIL</span>
             <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
           </div>
           <div class="ov-rows">
             <div class="ov-row"><span class="ov-label">Out of Funding (OOF)</span><span class="ov-value ov-amber" id="ov-oof">—</span></div>
             <div class="ov-row"><span class="ov-label">OOF — red portfolio</span><span class="ov-value ov-red" id="ov-oof-red">—</span></div>
-            <div class="ov-row"><span class="ov-label">BIL — decision needed</span><span class="ov-value" id="ov-bil-decision">—</span></div>
+            <div class="ov-row"><span class="ov-label">BIL — decision needed</span><span class="ov-value ov-amber" id="ov-bil-decision">—</span></div>
             <div class="ov-row"><span class="ov-label">Learners on BIL</span><span class="ov-value" id="ov-bil-total">—</span></div>
+          </div>
+        </div>
+
+        <!-- KSB Tracker -->
+        <div class="ov-card" id="ov-ksb-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">KSB Tracker <span class="ov-card-period">(6 month gateway)</span></span>
+            <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row"><span class="ov-label">Super Red (≥75% remaining)</span><span class="ov-value ov-red" id="ov-ksb-sr">—</span></div>
+            <div class="ov-row"><span class="ov-label">Red (51–74% remaining)</span><span class="ov-value ov-red" id="ov-ksb-r">—</span></div>
+            <div class="ov-row"><span class="ov-label">Amber (25–50% remaining)</span><span class="ov-value ov-amber" id="ov-ksb-a">—</span></div>
+            <div class="ov-row"><span class="ov-label">Green (≤24% remaining)</span><span class="ov-value ov-green" id="ov-ksb-g">—</span></div>
+          </div>
+        </div>
+
+        <!-- Gateway Forecast -->
+        <div class="ov-card" id="ov-gwf-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Gateway Forecast</span>
+            <button class="ov-nav-btn" data-goto-page="page-gateway">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row"><span class="ov-label">Q2 2026 (Apr–Jun)</span><span class="ov-value" id="ov-gwf-q2">—</span></div>
+            <div class="ov-row"><span class="ov-label">Q3 2026 (Jul–Sep)</span><span class="ov-value" id="ov-gwf-q3">—</span></div>
+            <div class="ov-row"><span class="ov-label">Q4 2026 (Oct–Dec)</span><span class="ov-value" id="ov-gwf-q4">—</span></div>
+            <div class="ov-row"><span class="ov-label">Red portfolio (all quarters)</span><span class="ov-value ov-red" id="ov-gwf-red">—</span></div>
+          </div>
+        </div>
+
+        <!-- Learner Voice -->
+        <div class="ov-card" id="ov-voice-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Learner Voice</span>
+            <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row"><span class="ov-label">Learner eNPS</span><span class="ov-value" id="ov-lv-learner-enps">—</span></div>
+            <div class="ov-row"><span class="ov-label">Employer eNPS</span><span class="ov-value" id="ov-lv-employer-enps">—</span></div>
+            <div class="ov-row"><span class="ov-label">Learner comments on record</span><span class="ov-value" id="ov-lv-learner-comments">—</span></div>
+            <div class="ov-row"><span class="ov-label">Employer comments on record</span><span class="ov-value" id="ov-lv-employer-comments">—</span></div>
           </div>
         </div>
 
