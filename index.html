@@ -35,6 +35,7 @@
       <a href="#" class="nav-link" data-page="page-welfare">Learner Welfare</a>
       <a href="#" class="nav-link" data-page="page-lsc">LSC</a>
       <a href="#" class="nav-link" data-page="page-gateway">Gateway Pipeline</a>
+      <a href="#" class="nav-link" data-page="page-reporting">Reporting</a>
     </nav>
   </header>
 
@@ -1150,6 +1151,138 @@
           <div id="gateway-container"></div>
         </div>
       </div>
+    </section>
+
+    <!-- ==================== REPORTING ==================== -->
+    <section id="page-reporting" class="page">
+      <div class="page-heading">
+        <div>
+          <h1 class="page-title">Reporting</h1>
+          <p class="page-subtitle">Filter and export data across your full provision</p>
+        </div>
+        <button class="btn-export" id="report-export-btn" style="display:none;">⬇ Export CSV</button>
+      </div>
+
+      <!-- Quick report presets -->
+      <div class="report-presets-bar">
+        <span class="report-presets-label">Quick reports</span>
+        <div class="report-preset-pills">
+          <button class="report-preset-pill" data-preset="otj">OTJ Compliance</button>
+          <button class="report-preset-pill" data-preset="sla">SLA Breaches</button>
+          <button class="report-preset-pill" data-preset="touchpoints">Outstanding Touchpoints</button>
+          <button class="report-preset-pill" data-preset="oof-red">Red Portfolio (OOF)</button>
+          <button class="report-preset-pill" data-preset="bil-decision">BIL Decisions Needed</button>
+          <button class="report-preset-pill" data-preset="welfare">Active Welfare Concerns</button>
+          <button class="report-preset-pill" data-preset="gateway">Gateway Pipeline</button>
+          <button class="report-preset-pill" data-preset="pipeline">Sales Pipeline</button>
+        </div>
+      </div>
+
+      <!-- Custom filters -->
+      <div class="panel report-filters-panel">
+        <div class="panel-header">
+          <span class="panel-title">Custom filters</span>
+          <button class="link-btn" id="report-clear-btn">Clear</button>
+        </div>
+        <div class="report-filter-bar">
+          <div class="filter-group">
+            <label class="filter-label" for="rf-area">Data area</label>
+            <select class="filter-select" id="rf-area">
+              <option value="all">All areas</option>
+              <option value="touchpoints">Outstanding Touchpoints</option>
+              <option value="sla">SLA Breaches</option>
+              <option value="otj">OTJ Compliance</option>
+              <option value="starters">Awaiting First Meeting</option>
+              <option value="oof">Out of Funding (OOF)</option>
+              <option value="bil">Break in Learning (BIL)</option>
+              <option value="gateway">Gateway Pipeline</option>
+              <option value="welfare_als">ALS Register</option>
+              <option value="welfare_safeguarding">Safeguarding &amp; Welfare</option>
+              <option value="pipeline">Sales Pipeline</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="rf-lsc">LSC</label>
+            <select class="filter-select" id="rf-lsc">
+              <option value="">All LSCs</option>
+              <option>Sarah Mitchell</option>
+              <option>James Okafor</option>
+              <option>Priya Sharma</option>
+              <option>Tom Bradley</option>
+              <option>Hannah Clarke</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="rf-standard">Standard</label>
+            <select class="filter-select" id="rf-standard">
+              <option value="">All standards</option>
+              <option>Data Technician</option>
+              <option>Data Analyst</option>
+              <option>Applied AI &amp; Automation</option>
+              <option>Multi-Channel Marketer</option>
+              <option>Assistant Accountant</option>
+              <option>Professional Accounting Technician</option>
+              <option>Digital Support Technician</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="rf-employer">Employer</label>
+            <select class="filter-select" id="rf-employer">
+              <option value="">All employers</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="rf-status">Status</label>
+            <select class="filter-select" id="rf-status">
+              <option value="">All statuses</option>
+              <option>Current</option>
+              <option>At Gateway</option>
+              <option>BIL</option>
+              <option>BIL Ongoing</option>
+              <option>BIL Decision Needed</option>
+              <option>RTL Confirmed</option>
+              <option>Withdrawn</option>
+              <option>active</option>
+              <option>closed</option>
+              <option>Cold Lead</option>
+              <option>In Scope</option>
+              <option>Proposal Sent</option>
+              <option>Contract Issued</option>
+              <option>Contract Signed</option>
+              <option>Enrolment</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="rf-rag">Portfolio RAG</label>
+            <select class="filter-select" id="rf-rag">
+              <option value="">All</option>
+              <option value="green">Green</option>
+              <option value="amber">Amber</option>
+              <option value="red">Red</option>
+            </select>
+          </div>
+        </div>
+        <div class="report-filter-footer">
+          <button class="btn-run-report" id="report-run-btn">Run Report</button>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div class="panel" id="report-results-panel" style="display:none;">
+        <div class="panel-header">
+          <div style="display:flex;align-items:center;gap:0.75rem;">
+            <span class="panel-title" id="report-results-title">Results</span>
+            <span class="panel-count" id="report-results-count">0 records</span>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table dd-table" id="report-table">
+            <thead id="report-thead"></thead>
+            <tbody id="report-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
     </section>
 
   </main>

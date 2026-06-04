@@ -965,6 +965,113 @@ body {
 .dd-status-withdrawn { background: #fee2e2; color: var(--red);     font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 .dd-status-bil       { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 
+/* ===================== Reporting ===================== */
+.report-presets-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.report-presets-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding-top: 0.45rem;
+  white-space: nowrap;
+}
+.report-preset-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.report-preset-pill {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.4rem 0.95rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--navy-mid);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.report-preset-pill:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+  background: #f1f5f9;
+}
+.report-preset-pill.active {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
+}
+
+.report-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+}
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 140px;
+  flex: 1;
+}
+.filter-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.filter-select {
+  font-size: 0.85rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--text-main);
+  cursor: pointer;
+  width: 100%;
+}
+.filter-select:focus {
+  outline: none;
+  border-color: var(--navy-mid);
+  box-shadow: 0 0 0 2px rgba(27, 47, 85, 0.1);
+}
+.report-filter-footer {
+  padding: 0 1.25rem 1.25rem;
+}
+.btn-run-report {
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.6rem 1.75rem;
+  border-radius: 8px;
+  border: none;
+  background: var(--navy);
+  color: var(--white);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-run-report:hover { background: var(--navy-mid); }
+
+.area-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.area-compliance { background: #eff6ff; color: #1d4ed8; }
+.area-delivery   { background: #fef3c7; color: #92400e; }
+.area-welfare    { background: #fdf4ff; color: #7e22ce; }
+
 /* ===================== Overview — urgent banner ===================== */
 .ov-banner {
   display: flex;
