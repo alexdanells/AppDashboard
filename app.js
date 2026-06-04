@@ -1803,7 +1803,8 @@ function renderGatewayForecast() {
 function renderOOFTable(lscFilter) {
   const tbody = document.getElementById('oof-tbody');
   if (!tbody) return;
-  const rows = lscFilter ? AD.oof.filter(r => r.lsc === lscFilter) : AD.oof;
+  const rows = (lscFilter ? AD.oof.filter(r => r.lsc === lscFilter) : AD.oof)
+    .slice().sort((a, b) => new Date(a.plannedGateway) - new Date(b.plannedGateway));
   const countEl = document.getElementById('oof-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No OOF learners for this coach.'); return; }
