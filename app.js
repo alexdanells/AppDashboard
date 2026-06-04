@@ -3025,7 +3025,8 @@ function getReportFilters() {
   };
 }
 
-const REPORT_MAX_ROWS = 500;
+const REPORT_PAGE_SIZE = 100;
+let _reportPage = 1;
 
 function runReport(areaOverride, extraFilters) {
   const area    = areaOverride || document.getElementById('rf-area')?.value || 'all';
@@ -3043,32 +3044,36 @@ function runReport(areaOverride, extraFilters) {
   const config = REPORT_CONFIGS[area];
   if (!config) return;
 
-  const allRows = config.getData(filters);
-  const truncated = allRows.length > REPORT_MAX_ROWS;
-  const rows = truncated ? allRows.slice(0, REPORT_MAX_ROWS) : allRows;
-
   activeReportConfig = config;
-  activeReportRows   = allRows; // export always uses full set
+  activeReportRows   = config.getData(filters); // full dataset — export uses all rows
+  _reportPage = 1;
 
   setText('report-results-title', config.label);
   const countEl = document.getElementById('report-results-count');
-  if (countEl) countEl.textContent = allRows.length + ' record' + (allRows.length !== 1 ? 's' : '');
-
-  // Row limit notice
-  const limitEl = document.getElementById('report-limit-notice');
-  if (limitEl) {
-    limitEl.style.display = truncated ? '' : 'none';
-    if (truncated) limitEl.textContent = `Showing first ${REPORT_MAX_ROWS} of ${allRows.length} records. Export CSV to see all.`;
-  }
+  if (countEl) countEl.textContent = activeReportRows.length + ' record' + (activeReportRows.length !== 1 ? 's' : '');
 
   const thead = document.getElementById('report-thead');
   if (thead) thead.innerHTML = `<tr>${config.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
 
+  renderReportPage();
+
+  const panel  = document.getElementById('report-results-panel');
+  const expBtn = document.getElementById('report-export-btn');
+  if (panel)  panel.style.display  = '';
+  if (expBtn) expBtn.style.display = '';
+}
+
+function renderReportPage() {
+  if (!activeReportConfig) return;
+  const start    = (_reportPage - 1) * REPORT_PAGE_SIZE;
+  const pageRows = activeReportRows.slice(start, start + REPORT_PAGE_SIZE);
+  const totalPages = Math.ceil(activeReportRows.length / REPORT_PAGE_SIZE);
+
   const tbody = document.getElementById('report-tbody');
   if (tbody) {
-    tbody.innerHTML = rows.length === 0
-      ? `<tr><td colspan="${config.columns.length}" class="empty-row">No records match the selected filters.</td></tr>`
-      : rows.map(r => {
+    tbody.innerHTML = pageRows.length === 0
+      ? `<tr><td colspan="${activeReportConfig.columns.length}" class="empty-row">No records match the selected filters.</td></tr>`
+      : pageRows.map(r => {
           const cls   = r._rowClass ? ` class="${r._rowClass}"` : '';
           const cells = r._cols.map((v, i) =>
             `<td${r._wideCol === i ? ' style="font-size:0.78rem;max-width:240px;white-space:normal;"' : ''}>${v}</td>`
@@ -3077,10 +3082,38 @@ function runReport(areaOverride, extraFilters) {
         }).join('');
   }
 
-  const panel  = document.getElementById('report-results-panel');
-  const expBtn = document.getElementById('report-export-btn');
-  if (panel)  panel.style.display  = '';
-  if (expBtn) expBtn.style.display = '';
+  // Pagination controls
+  const pag = document.getElementById('report-pagination');
+  if (!pag) return;
+  if (totalPages <= 1) { pag.style.display = 'none'; return; }
+  pag.style.display = '';
+
+  const pagBtns = () => {
+    const visible = new Set([1, totalPages, _reportPage - 1, _reportPage, _reportPage + 1].filter(p => p >= 1 && p <= totalPages));
+    const sorted  = [...visible].sort((a, b) => a - b);
+    let html = '', prev = 0;
+    sorted.forEach(p => {
+      if (prev && p - prev > 1) html += '<span class="rpag-ellipsis">…</span>';
+      html += `<button class="rpag-btn${p === _reportPage ? ' rpag-active' : ''}" onclick="goReportPage(${p})">${p}</button>`;
+      prev = p;
+    });
+    return html;
+  };
+
+  const showing = `${start + 1}–${Math.min(start + REPORT_PAGE_SIZE, activeReportRows.length)} of ${activeReportRows.length}`;
+  pag.innerHTML = `
+    <div class="rpag-wrap">
+      <button class="rpag-btn rpag-nav" onclick="goReportPage(${_reportPage - 1})" ${_reportPage <= 1 ? 'disabled' : ''}>← Prev</button>
+      ${pagBtns()}
+      <button class="rpag-btn rpag-nav" onclick="goReportPage(${_reportPage + 1})" ${_reportPage >= totalPages ? 'disabled' : ''}>Next →</button>
+      <span class="rpag-info">Showing ${showing} · Export downloads all ${activeReportRows.length}</span>
+    </div>`;
+}
+
+function goReportPage(page) {
+  _reportPage = page;
+  renderReportPage();
+  document.getElementById('report-results-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function exportReportCSV() {
