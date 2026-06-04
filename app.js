@@ -758,7 +758,7 @@ const SCALE_1000 = (function () {
   // Seasonal pattern: spring peak (Apr-Jun), summer flat (Jul-Aug), autumn peak (Sep-Nov), winter flat (Dec-Jan)
   const sl = gwMonthLearners;
   const gatewayMonths = {
-    '2026-05': GATEWAY_MONTHS_DATA['2026-05'], // keep hand-crafted 200-learner data
+    '2026-05': mkGwMonth('2026-05', 68, 55, sl.slice(0,  55)), // spring peak (1000-learner)
     '2026-06': mkGwMonth('2026-06', 62, 52, sl.slice(0,  52)), // spring peak
     '2026-07': mkGwMonth('2026-07', 32, 26, sl.slice(20, 46)), // summer flat
     '2026-08': mkGwMonth('2026-08', 28, 22, sl.slice(40, 62)), // summer flat
@@ -1276,8 +1276,9 @@ function renderOverviewSummary() {
   setText('ov-bil-decision', bilDecision);
   setText('ov-bil-total',    bilTotal);
 
-  // — Gateway Pipeline (May 2026 — filtered to LSC's group if applicable) —
-  const gwData = AD.gatewayMonths['2026-05'];
+  // — Gateway Pipeline (current month snapshot — May 2026 at 200, Jun 2026 at 1000) —
+  const _gwSnapshotKey = currentSize === 1000 ? '2026-06' : '2026-05';
+  const gwData = AD.gatewayMonths[_gwSnapshotKey];
   let gwLearners = [];
   if (gwData) {
     gwLearners = isLSC
