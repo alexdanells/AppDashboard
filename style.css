@@ -965,6 +965,120 @@ body {
 .dd-status-withdrawn { background: #fee2e2; color: var(--red);     font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 .dd-status-bil       { background: #f1f5f9; color: var(--text-muted); font-size: 0.72rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 99px; display: inline-block; }
 
+/* ===================== User Account Switcher ===================== */
+.user-switcher { position: relative; }
+
+.user-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--navy);
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.user-btn:hover { background: #f1f5f9; border-color: var(--navy-mid); }
+
+.user-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.65rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.user-name   { font-weight: 600; }
+.user-chevron { font-size: 0.75rem; color: var(--text-muted); }
+
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(15,30,60,0.13);
+  min-width: 230px;
+  z-index: 200;
+  display: none;
+  overflow: hidden;
+}
+.user-dropdown.open { display: block; }
+
+.user-dropdown-group { padding: 0.3rem 0; }
+.user-dropdown-group + .user-dropdown-group { border-top: 1px solid var(--border); }
+
+.user-dropdown-group-label {
+  font-size: 0.68rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  color: var(--text-muted);
+  padding: 0.45rem 0.9rem 0.2rem;
+}
+.user-dropdown-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  width: 100%; padding: 0.5rem 0.9rem;
+  border: none; background: none;
+  cursor: pointer; font-size: 0.85rem;
+  color: var(--text-main); text-align: left;
+  transition: background 0.1s;
+}
+.user-dropdown-item:hover  { background: #f1f5f9; }
+.user-dropdown-item.active { font-weight: 700; background: #eff6ff; color: var(--navy); }
+
+.user-avatar-sm {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: var(--navy-light);
+  color: var(--white);
+  font-size: 0.6rem; font-weight: 700;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ===================== Sub-navigation (Learners page) ===================== */
+.sub-nav {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  gap: 0;
+}
+.sub-nav-btn {
+  padding: 0.7rem 1.35rem;
+  border: none;
+  border-bottom: 3px solid transparent;
+  background: none;
+  font-size: 0.88rem; font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  margin-bottom: -2px;
+}
+.sub-nav-btn:hover  { color: var(--navy); }
+.sub-nav-btn.active { color: var(--navy); border-bottom-color: var(--navy); }
+
+.sub-page        { display: none; }
+.sub-page.active { display: block; }
+
+/* ===================== Overview — AAF subsection ===================== */
+#ov-aaf-section { margin-bottom: 1.5rem; }
+.section-subheader {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.section-subheader-title {
+  font-size: 0.8rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--navy-mid);
+}
+
 /* ===================== Reporting ===================== */
 .report-presets-bar {
   display: flex;
