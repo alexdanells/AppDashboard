@@ -100,7 +100,7 @@
       <div class="ov-grid">
 
         <!-- Compliance -->
-        <div class="ov-card">
+        <div class="ov-card" id="ov-compliance-card">
           <div class="ov-card-header">
             <span class="ov-card-title">Compliance</span>
             <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
@@ -114,7 +114,7 @@
         </div>
 
         <!-- Learner Welfare -->
-        <div class="ov-card">
+        <div class="ov-card" id="ov-welfare-card">
           <div class="ov-card-header">
             <span class="ov-card-title">Learner Welfare</span>
             <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
@@ -128,7 +128,7 @@
         </div>
 
         <!-- Delivery -->
-        <div class="ov-card">
+        <div class="ov-card" id="ov-delivery-card">
           <div class="ov-card-header">
             <span class="ov-card-title">Delivery</span>
             <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
@@ -142,7 +142,7 @@
         </div>
 
         <!-- Gateway Pipeline -->
-        <div class="ov-card">
+        <div class="ov-card" id="ov-gateway-card">
           <div class="ov-card-header">
             <span class="ov-card-title">Gateway Pipeline <span class="ov-card-period">(May 2026)</span></span>
             <button class="ov-nav-btn" data-goto-page="page-gateway">View →</button>
@@ -166,6 +166,20 @@
             <div class="ov-row"><span class="ov-label">Monthly target</span><span class="ov-value" id="ov-sales-target">—</span></div>
             <div class="ov-row"><span class="ov-label">In Scope or above</span><span class="ov-value ov-green" id="ov-sales-inscope">—</span></div>
             <div class="ov-row"><span class="ov-label">Cold leads only</span><span class="ov-value ov-amber" id="ov-sales-cold">—</span></div>
+          </div>
+        </div>
+
+        <!-- Curriculum -->
+        <div class="ov-card" id="ov-curriculum-card">
+          <div class="ov-card-header">
+            <span class="ov-card-title">Curriculum</span>
+            <button class="ov-nav-btn" data-goto-page="page-learners">View →</button>
+          </div>
+          <div class="ov-rows">
+            <div class="ov-row"><span class="ov-label">On curriculum</span><span class="ov-value" id="ov-curr-total">—</span></div>
+            <div class="ov-row"><span class="ov-label">On track</span><span class="ov-value ov-green" id="ov-curr-on-track">—</span></div>
+            <div class="ov-row"><span class="ov-label">Off track / behind</span><span class="ov-value ov-amber" id="ov-curr-off-track">—</span></div>
+            <div class="ov-row"><span class="ov-label">No activity (30+ days)</span><span class="ov-value ov-red" id="ov-curr-no-activity">—</span></div>
           </div>
         </div>
 
@@ -301,6 +315,7 @@
       <!-- Sub-navigation -->
       <div class="sub-nav">
         <button class="sub-nav-btn active" data-sub="sub-delivery">Delivery</button>
+        <button class="sub-nav-btn" data-sub="sub-curriculum">Curriculum</button>
         <button class="sub-nav-btn" data-sub="sub-compliance">Compliance</button>
         <button class="sub-nav-btn" data-sub="sub-welfare">Learner Welfare</button>
         <button class="sub-nav-btn" data-sub="sub-voice">Learner Voice</button>
@@ -574,6 +589,67 @@
           </div>
         </div>
 
+      </div>
+
+      <!-- ── Curriculum ────────────────────────────────────────────────── -->
+      <div id="sub-curriculum" class="sub-page">
+        <div class="page-heading">
+          <div>
+            <h1 class="page-title">Curriculum</h1>
+            <p class="page-subtitle">Learner progress through sprint-based learning programmes</p>
+          </div>
+          <button class="btn-export">⬇ Export</button>
+        </div>
+
+        <div class="lsc-selector-bar" id="curriculum-lsc-bar" style="flex-wrap:wrap;gap:0.75rem;">
+          <label class="lsc-selector-label" for="curr-lsc">Filter by LSC:</label>
+          <select class="filter-select" id="curr-lsc">
+            <option value="">All Coaches</option>
+            <option>Sarah Mitchell</option>
+            <option>James Okafor</option>
+            <option>Priya Sharma</option>
+            <option>Tom Bradley</option>
+            <option>Hannah Clarke</option>
+          </select>
+          <select class="filter-select" id="curr-standard">
+            <option value="">All Standards</option>
+            <option>Data Technician</option>
+            <option>Data Analyst</option>
+            <option>Applied AI &amp; Automation</option>
+          </select>
+          <select class="filter-select" id="curr-status">
+            <option value="">All Statuses</option>
+            <option>On Track</option>
+            <option>Off Track</option>
+            <option>Behind</option>
+            <option>No Activity</option>
+          </select>
+        </div>
+
+        <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="kpi-card"><span class="kpi-label">On Curriculum</span><span class="kpi-value" id="curr-total">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">On Track</span><span class="kpi-value green" id="curr-on-track">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Off Track / Behind</span><span class="kpi-value amber" id="curr-off-track">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">No Activity (30+ days)</span><span class="kpi-value red" id="curr-no-activity">—</span></div>
+        </div>
+
+        <div class="panel panel--span">
+          <div class="panel-header">
+            <h2 class="panel-title">Learner Progress</h2>
+            <span class="panel-count" id="curr-panel-count">—</span>
+          </div>
+          <div class="panel-body" style="padding: 0; overflow-x: auto;">
+            <table class="data-table dd-table">
+              <thead>
+                <tr>
+                  <th>Learner</th><th>Employer</th><th>Standard</th><th>LSC</th>
+                  <th>Current Sprint</th><th>Sprint Progress</th><th>Last Activity</th><th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="curr-tbody"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- ── Compliance ─────────────────────────────────────────────────── -->

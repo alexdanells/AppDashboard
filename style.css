@@ -1187,6 +1187,32 @@ body {
 .area-delivery   { background: #fef3c7; color: #92400e; }
 .area-welfare    { background: #fdf4ff; color: #7e22ce; }
 
+/* ===================== Curriculum ===================== */
+.curr-progress {
+  font-family: monospace;
+  font-size: 0.82rem;
+  color: var(--navy);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+.curr-progress-num {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+.curr-status-pill {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  display: inline-block;
+  white-space: nowrap;
+}
+.curr-pill-ok     { background: #dcfce7; color: var(--green-dark); }
+.curr-pill-amber  { background: #fef3c7; color: #92400e; }
+.curr-pill-red    { background: #fee2e2; color: var(--red); }
+.curr-pill-grey   { background: #f1f5f9; color: var(--text-muted); }
+
 /* ===================== Overview — urgent banner ===================== */
 .ov-banner {
   display: flex;
@@ -1205,9 +1231,13 @@ body {
 
 /* ===================== Overview — summary grid ===================== */
 .ov-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.25rem;
+}
+.ov-card {
+  flex: 1 1 calc(33.333% - 1.25rem);
+  min-width: 280px;
 }
 
 .ov-card {
@@ -1310,7 +1340,7 @@ body {
 @media (max-width: 1200px) {
   .aaf-grid { grid-template-columns: repeat(2, 1fr); }
   .kpi-bar  { grid-template-columns: repeat(3, 1fr); }
-  .ov-grid  { grid-template-columns: repeat(2, 1fr); }
+  .ov-card  { flex: 1 1 calc(50% - 1.25rem); }
 }
 
 @media (max-width: 900px) {
@@ -1318,7 +1348,7 @@ body {
   .aaf-grid       { grid-template-columns: 1fr; }
   .panel-stack    { grid-template-columns: 1fr; }
   .kpi-bar        { grid-template-columns: repeat(2, 1fr); }
-  .ov-grid        { grid-template-columns: repeat(2, 1fr); }
+  .ov-card        { flex: 1 1 100%; }
 }
 
 @media (max-width: 640px) {

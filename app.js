@@ -380,6 +380,59 @@ const GATEWAY_MONTHS_DATA = {
   },
 };
 
+// ─── Curriculum Data ───────────────────────────────────────────────────
+
+const CURRICULUM_STRUCTURE = {
+  'Data Technician': [
+    { sprint: 'AI Literacy',                   parts: ['Introduction to AI', 'Prompting for Best Outcomes'] },
+    { sprint: 'AI Applications in Business L3', parts: ['AI for Productivity & Spreadsheets', 'Automations with No-Code Tools', 'Python Programming with AI'] },
+    { sprint: 'AI for Data Analytics L3',       parts: ['AI as a SQL Database Assistant', 'AI for Analytical Insights'] },
+  ],
+  'Data Analyst': [
+    { sprint: 'Introduction to Data Analytics L4 v2', parts: ['Structured Approach to Data Analytics', 'Utilising Spreadsheets for Data Analytics', 'SQL & Databases'] },
+    { sprint: 'Python Foundations L4 v2',             parts: ['First Steps in Programming', 'Data Processing with Pandas'] },
+    { sprint: 'Module to be Selected',                parts: ['Visualising Data Using Tableau', 'Data Visualisation with Python'] },
+    { sprint: 'Main Analysis Types L4',               parts: ['Statistical Inference & A/B Testing'] },
+  ],
+  'Applied AI & Automation': [
+    { sprint: 'L4 AI Copilot AI Literacy',              parts: ['Introduction to AI', 'Prompting for Best Outcomes', 'Responsible AI Adoption & Stakeholder Enablement'] },
+    { sprint: 'L4 AI Copilot No Code AI Applications',  parts: ['AI for Productivity', 'Automations with No-Code Tools', 'Building AI-Native Apps', 'Problem-Solution Discovery and Alignment'] },
+    { sprint: 'L4 AI Copilot Low Code AI Applications', parts: ['Python Programming with AI', 'AI-Assisted Development', 'Evaluating Consistency, Scalability and Security of AI solutions'] },
+  ],
+};
+
+const CURRICULUM_DATA = [
+  // ─── Data Technician ─────────────────────────────────────────────────
+  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  standard: 'Data Technician',         lsc: 'Sarah Mitchell', sprint: 'AI Literacy',                        partsComplete: 6, partsExpected: 7, lastActivity: '2026-05-28' },
+  { name: 'Isla Thomson',   employer: 'TechCore UK',            standard: 'Data Technician',         lsc: 'Sarah Mitchell', sprint: 'AI for Data Analytics L3',            partsComplete: 7, partsExpected: 6, lastActivity: '2026-06-02' },
+  { name: 'Ethan Brooks',   employer: 'DataSphere Analytics',   standard: 'Data Technician',         lsc: 'James Okafor',   sprint: 'AI Literacy',                        partsComplete: 4, partsExpected: 4, lastActivity: '2026-05-30' },
+  { name: 'Grace Adeniran', employer: 'DataSphere Analytics',   standard: 'Data Technician',         lsc: 'James Okafor',   sprint: 'AI Applications in Business L3',      partsComplete: 3, partsExpected: 5, lastActivity: '2026-05-12' },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  standard: 'Data Technician',         lsc: 'Priya Sharma',   sprint: 'AI Applications in Business L3',      partsComplete: 3, partsExpected: 5, lastActivity: '2026-05-15' },
+  { name: 'George Baker',   employer: 'Urban Digital Ltd',      standard: 'Data Technician',         lsc: 'Tom Bradley',    sprint: 'AI Applications in Business L3',      partsComplete: 5, partsExpected: 5, lastActivity: '2026-06-01' },
+  { name: 'Victor Marsh',   employer: 'Greenfield Consulting',  standard: 'Data Technician',         lsc: 'Tom Bradley',    sprint: 'AI Applications in Business L3',      partsComplete: 7, partsExpected: 6, lastActivity: '2026-06-03' },
+  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       standard: 'Data Technician',         lsc: 'Hannah Clarke',  sprint: 'AI Applications in Business L3',      partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-10' },
+  { name: 'Reuben Adeyemi', employer: 'Bloom Marketing Co.',    standard: 'Data Technician',         lsc: 'Hannah Clarke',  sprint: 'AI for Data Analytics L3',            partsComplete: 1, partsExpected: 4, lastActivity: '2026-04-01' },
+  // ─── Data Analyst ────────────────────────────────────────────────────
+  { name: 'Jordan Ellis',    employer: 'Apex Digital Ltd',       standard: 'Data Analyst',            lsc: 'Tom Bradley',    sprint: 'Introduction to Data Analytics L4 v2', partsComplete: 5, partsExpected: 5, lastActivity: '2026-05-29' },
+  { name: 'Tara Collins',    employer: 'Sterling Accounts',      standard: 'Data Analyst',            lsc: 'Tom Bradley',    sprint: 'Module to be Selected',                partsComplete: 6, partsExpected: 5, lastActivity: '2026-06-02' },
+  { name: 'Olivia Fraser',   employer: 'Meridian Consulting',    standard: 'Data Analyst',            lsc: 'James Okafor',   sprint: 'Introduction to Data Analytics L4 v2', partsComplete: 7, partsExpected: 6, lastActivity: '2026-06-01' },
+  { name: 'Riya Sharma',     employer: 'DataSphere Analytics',   standard: 'Data Analyst',            lsc: 'James Okafor',   sprint: 'Python Foundations L4 v2',             partsComplete: 3, partsExpected: 4, lastActivity: '2026-05-20' },
+  { name: 'Luca Ferretti',   employer: 'NovaTech Solutions',     standard: 'Data Analyst',            lsc: 'Priya Sharma',   sprint: 'Introduction to Data Analytics L4 v2', partsComplete: 6, partsExpected: 6, lastActivity: '2026-06-01' },
+  { name: 'Fatima Malik',    employer: 'DataSphere Analytics',   standard: 'Data Analyst',            lsc: 'Priya Sharma',   sprint: 'Python Foundations L4 v2',             partsComplete: 2, partsExpected: 5, lastActivity: '2026-04-18' },
+  { name: 'Yasmin Al-Hassan',employer: 'Clarity Finance Ltd',    standard: 'Data Analyst',            lsc: 'Sarah Mitchell', sprint: 'Main Analysis Types L4',               partsComplete: 4, partsExpected: 6, lastActivity: '2026-05-05' },
+  { name: 'Nathan Brooks',   employer: 'TechCore UK',            standard: 'Data Analyst',            lsc: 'Hannah Clarke',  sprint: 'Python Foundations L4 v2',             partsComplete: 1, partsExpected: 5, lastActivity: '2026-03-28' },
+  { name: 'Sam Davies',      employer: 'Sterling Accounts',      standard: 'Data Analyst',            lsc: 'Hannah Clarke',  sprint: 'Main Analysis Types L4',               partsComplete: 2, partsExpected: 5, lastActivity: '2026-04-22' },
+  // ─── Applied AI & Automation ─────────────────────────────────────────
+  { name: 'Tasha Morris',    employer: 'Apex Digital Ltd',       standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 6, partsExpected: 5, lastActivity: '2026-06-03' },
+  { name: 'Kira Patel',      employer: 'Future Tech Services',   standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', sprint: 'L4 AI Copilot AI Literacy',               partsComplete: 5, partsExpected: 4, lastActivity: '2026-05-25' },
+  { name: 'Quinn Andrews',   employer: 'TechCore UK',            standard: 'Applied AI & Automation', lsc: 'James Okafor',   sprint: 'L4 AI Copilot AI Literacy',               partsComplete: 3, partsExpected: 6, lastActivity: '2026-04-20' },
+  { name: 'Patrick Marsh',   employer: 'Pinnacle Finance Group', standard: 'Applied AI & Automation', lsc: 'James Okafor',   sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 3, partsExpected: 5, lastActivity: '2026-05-10' },
+  { name: 'Maya Patel',      employer: 'Greenfield Consulting',  standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   sprint: 'L4 AI Copilot AI Literacy',               partsComplete: 4, partsExpected: 4, lastActivity: '2026-05-28' },
+  { name: 'Xena Park',       employer: 'Urban Digital Ltd',      standard: 'Applied AI & Automation', lsc: 'Tom Bradley',    sprint: 'L4 AI Copilot Low Code AI Applications',  partsComplete: 5, partsExpected: 5, lastActivity: '2026-06-01' },
+  { name: 'Freddie Marsh',   employer: 'Pinnacle Finance Group', standard: 'Applied AI & Automation', lsc: 'Tom Bradley',    sprint: 'L4 AI Copilot Low Code AI Applications',  partsComplete: 1, partsExpected: 4, lastActivity: '2026-04-12' },
+  { name: 'Will Thornton',   employer: 'Clarity Finance Ltd',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-05' },
+];
+
 // ─── Users ─────────────────────────────────────────────────────────────
 const USERS = [
   { id: 'delivery',   name: 'Delivery Manager',   role: 'delivery',   initials: 'DM' },
@@ -545,6 +598,16 @@ function applyRolePermissions() {
   if (ovSalesCard) ovSalesCard.style.display = isLSC ? 'none' : '';
   if (ovAafCard)   ovAafCard.style.display   = isLSC ? 'none' : '';
 
+  // Overview card order — LSC: Delivery, Compliance, Gateway, Curriculum, Welfare
+  //                      Managers: AAF, Sales, Delivery, Compliance, Gateway, Curriculum, Welfare
+  const cardOrder = isLSC
+    ? { 'ov-delivery-card': 1, 'ov-compliance-card': 2, 'ov-gateway-card': 3, 'ov-curriculum-card': 4, 'ov-welfare-card': 5 }
+    : { 'ov-aaf-card': 1, 'ov-sales-card': 2, 'ov-delivery-card': 3, 'ov-compliance-card': 4, 'ov-gateway-card': 5, 'ov-curriculum-card': 6, 'ov-welfare-card': 7 };
+  Object.entries(cardOrder).forEach(([id, order]) => {
+    const el = document.getElementById(id);
+    if (el) el.style.order = order;
+  });
+
   // Delivery: show manager view or LSC caseload view
   const mgView  = document.getElementById('delivery-manager-view');
   const lscView = document.getElementById('lsc-caseload-view');
@@ -566,6 +629,8 @@ function applyRolePermissions() {
 
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = 'none';
+    const currLscBar = document.getElementById('curriculum-lsc-bar');
+    if (currLscBar) currLscBar.style.display = 'none';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -578,6 +643,8 @@ function applyRolePermissions() {
 
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = '';
+    const currLscBar = document.getElementById('curriculum-lsc-bar');
+    if (currLscBar) currLscBar.style.display = '';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -641,6 +708,7 @@ function renderAll() {
   renderENPS();
   renderDeliveryTables();
   renderLSCTables();
+  renderCurriculum();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -747,6 +815,14 @@ function renderOverviewSummary() {
       ? `Red metrics: ${aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ')}`
       : 'No red metrics';
   }
+
+  // — Curriculum —
+  const currBase     = isLSC ? CURRICULUM_DATA.filter(r => r.lsc === coach) : CURRICULUM_DATA;
+  const currStatuses = currBase.map(r => curriculumStatus(r));
+  setText('ov-curr-total',       currBase.length);
+  setText('ov-curr-on-track',    currStatuses.filter(s => s === 'On Track').length);
+  setText('ov-curr-off-track',   currStatuses.filter(s => s === 'Off Track' || s === 'Behind').length);
+  setText('ov-curr-no-activity', currStatuses.filter(s => s === 'No Activity').length);
 
   // — Urgent banner —
   const urgentTotal = lscF(SLA_DATA).length + bilDecision + oofRed + alsOverdue + safeguardingActive + welfareDue;
@@ -1454,6 +1530,84 @@ function renderGateway() {
 
   container.innerHTML = html;
 }
+
+// ─── Curriculum ────────────────────────────────────────────────────────
+
+function curriculumStatus(r) {
+  const today = new Date('2026-06-04');
+  const daysSince = Math.floor((today - new Date(r.lastActivity)) / 86400000);
+  if (daysSince > 30) return 'No Activity';
+  const gap = r.partsExpected - r.partsComplete;
+  if (gap <= 0)  return 'On Track';
+  if (gap === 1) return 'Off Track';
+  return 'Behind';
+}
+
+function curriculumProgressBar(complete, total) {
+  const filled = Math.min(complete, total);
+  const bars = '█'.repeat(filled) + '░'.repeat(Math.max(0, total - filled));
+  return `<span class="curr-progress">${bars}&nbsp;<span class="curr-progress-num">${complete}/${total}</span></span>`;
+}
+
+function curriculumStatusPill(status) {
+  const cls = { 'On Track': 'curr-pill-ok', 'Off Track': 'curr-pill-amber', 'Behind': 'curr-pill-red', 'No Activity': 'curr-pill-grey' }[status] || '';
+  return `<span class="curr-status-pill ${cls}">${status}</span>`;
+}
+
+function renderCurriculum() {
+  const isLSC    = currentUser.role === 'lsc';
+  const lscVal   = isLSC ? currentUser.coach : (document.getElementById('curr-lsc')?.value     || '');
+  const stdVal   = document.getElementById('curr-standard')?.value || '';
+  const statVal  = document.getElementById('curr-status')?.value   || '';
+
+  const base = isLSC ? CURRICULUM_DATA.filter(r => r.lsc === currentUser.coach) : CURRICULUM_DATA;
+
+  // KPI counts from base (before status filter)
+  const statuses     = base.map(r => curriculumStatus(r));
+  const onTrackCnt   = statuses.filter(s => s === 'On Track').length;
+  const offTrackCnt  = statuses.filter(s => s === 'Off Track' || s === 'Behind').length;
+  const noActCnt     = statuses.filter(s => s === 'No Activity').length;
+  setText('curr-total',       base.length);
+  setText('curr-on-track',    onTrackCnt);
+  setText('curr-off-track',   offTrackCnt);
+  setText('curr-no-activity', noActCnt);
+
+  // Apply additional filters for table
+  let rows = base;
+  if (!isLSC && lscVal) rows = rows.filter(r => r.lsc === lscVal);
+  if (stdVal)            rows = rows.filter(r => r.standard === stdVal);
+  if (statVal)           rows = rows.filter(r => curriculumStatus(r) === statVal);
+
+  const countEl = document.getElementById('curr-panel-count');
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+
+  const tbody = document.getElementById('curr-tbody');
+  if (!tbody) return;
+  if (rows.length === 0) {
+    tbody.innerHTML = emptyRow(8, 'No learners match the selected filters.');
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    const status = curriculumStatus(r);
+    const rowCls = (status === 'Behind' || status === 'No Activity') ? ' class="row-alert"' : '';
+    return `<tr${rowCls}>
+      <td>${r.name}</td>
+      <td>${r.employer}</td>
+      <td>${r.standard}</td>
+      <td>${r.lsc}</td>
+      <td style="font-size:0.8rem;">${r.sprint}</td>
+      <td>${curriculumProgressBar(r.partsComplete, 8)}</td>
+      <td>${fmtDate(r.lastActivity)}</td>
+      <td>${curriculumStatusPill(status)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Curriculum filter listeners
+document.getElementById('curr-lsc')?.addEventListener('change',      renderCurriculum);
+document.getElementById('curr-standard')?.addEventListener('change', renderCurriculum);
+document.getElementById('curr-status')?.addEventListener('change',   renderCurriculum);
 
 // ─── Reporting ─────────────────────────────────────────────────────────
 
