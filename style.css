@@ -1246,6 +1246,16 @@ body {
 .welfare-type-sg    { background: #fee2e2; color: var(--red); }
 .welfare-type-check { background: #fef3c7; color: #92400e; }
 
+.ksb-status-oof {
+  background: #fee2e2;
+  color: var(--red);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  display: inline-block;
+}
+
 .ksb-status-bil {
   background: #fef3c7;
   color: #92400e;

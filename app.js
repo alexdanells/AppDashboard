@@ -465,11 +465,11 @@ const EMPLOYER_COMMENTS_DATA = [
 ];
 
 const EXIT_REVIEW_DATA = [
-  { name: 'Callum Nash',   standard: 'Applied AI & Automation', lsc: 'Tom Bradley',   comment: "Left due to personal reasons unrelated to the programme. Spoke highly of the learning content and LSC support throughout his time on programme." },
-  { name: 'Willow James',  standard: 'Assistant Accountant',    lsc: 'Hannah Clarke', comment: "Employer ceased trading. Learner expressed strong interest in continuing with a new employer but family circumstances prevented a transfer being arranged in time." },
-  { name: 'Noah Williams', standard: 'Data Analyst',            lsc: 'Hannah Clarke', comment: "Withdrew following ongoing mental health challenges. Received full welfare and safeguarding support throughout. Left on positive terms with the programme team." },
-  { name: 'Destiny Osei',  standard: 'Multi-Channel Marketer',  lsc: 'Hannah Clarke', comment: "Employer ceased trading mid-programme. Learner was performing well and expressed genuine disappointment at being unable to complete her qualification." },
-  { name: 'Callum Fraser', standard: 'Assistant Accountant',    lsc: 'Tom Bradley',   comment: "Financial hardship concerns were successfully resolved with external signposting. Learner subsequently secured a higher-paid role and chose to withdraw voluntarily." },
+  { name: 'Callum Nash',   standard: 'Applied AI & Automation', lsc: 'Tom Bradley',   exitStatus: 'Withdrawn', comment: "Left due to personal reasons unrelated to the programme. Spoke highly of the learning content and LSC support throughout his time on programme." },
+  { name: 'Willow James',  standard: 'Assistant Accountant',    lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Employer ceased trading. Learner expressed strong interest in continuing with a new employer but family circumstances prevented a transfer being arranged in time." },
+  { name: 'Noah Williams', standard: 'Data Analyst',            lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Withdrew following ongoing mental health challenges. Received full welfare and safeguarding support throughout. Left on positive terms with the programme team." },
+  { name: 'Destiny Osei',  standard: 'Multi-Channel Marketer',  lsc: 'Hannah Clarke', exitStatus: 'Withdrawn', comment: "Employer ceased trading mid-programme. Learner was performing well and expressed genuine disappointment at being unable to complete her qualification." },
+  { name: 'Callum Fraser', standard: 'Assistant Accountant',    lsc: 'Tom Bradley',   exitStatus: 'Withdrawn', comment: "Financial hardship concerns were successfully resolved with external signposting. Learner subsequently secured a higher-paid role and chose to withdraw voluntarily." },
 ];
 
 // ─── KSB Tracker Data ──────────────────────────────────────────────────
@@ -486,6 +486,7 @@ const KSB_DATA = [
   { employer: 'Apex Digital Ltd',       name: 'Tasha Morris',     standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-01-06', plannedGateway: '2026-07-10', status: 'Live',    knowledgePct: 45, skillsPct: 40, behavioursPct: 50  },
   { employer: 'Future Tech Services',   name: 'Kira Patel',       standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-03-10', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
   { employer: 'Clarity Finance Ltd',    name: 'Yasmin Al-Hassan', standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-12-02', plannedGateway: '2026-12-10', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  { employer: 'Meridian Consulting',    name: 'Felix Huang',      standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-08-14', plannedGateway: '2026-06-30', status: 'OOF',     knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
   // ─── James Okafor ─────────────────────────────────────────────────────
   { employer: 'TechCore UK',            name: 'Quinn Andrews',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2024-09-15', plannedGateway: '2026-06-10', status: 'Gateway', knowledgePct: 90, skillsPct: 85, behavioursPct: 95  },
   { employer: 'Clarity Finance Ltd',    name: 'Leo Okafor',       standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2024-10-01', plannedGateway: '2026-06-25', status: 'Gateway', knowledgePct: 85, skillsPct: 80, behavioursPct: 90  },
@@ -499,6 +500,7 @@ const KSB_DATA = [
   { employer: 'Greenfield Consulting',  name: 'Maya Patel',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-01-01', plannedGateway: '2026-07-01', status: 'Live',    knowledgePct: 75, skillsPct: 70, behavioursPct: 80  },
   { employer: 'Bloom Marketing Co.',    name: 'Uma Sharma',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-04-01', plannedGateway: '2026-11-01', status: 'BIL',     knowledgePct: 25, skillsPct: 20, behavioursPct: 30  },
   // ─── Tom Bradley ──────────────────────────────────────────────────────
+  { employer: 'Pinnacle Finance Group', name: 'Harry Singh',      standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-08-01', plannedGateway: '2026-07-30', status: 'OOF',     knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
   { employer: 'Urban Digital Ltd',      name: 'George Baker',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2025-05-01', plannedGateway: '2026-11-18', status: 'Live',    knowledgePct: 35, skillsPct: 30, behavioursPct: 40  },
   { employer: 'Greenfield Consulting',  name: 'Victor Marsh',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-12-18', plannedGateway: '2026-07-18', status: 'Live',    knowledgePct: 60, skillsPct: 55, behavioursPct: 65  },
   { employer: 'Apex Digital Ltd',       name: 'Jordan Ellis',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2025-02-28', plannedGateway: '2026-08-28', status: 'Live',    knowledgePct: 55, skillsPct: 50, behavioursPct: 55  },
@@ -1711,12 +1713,18 @@ function renderLearnerVoice() {
   const erTbody = document.getElementById('exit-review-tbody');
   if (erTbody) {
     erTbody.innerHTML = erRows.length
-      ? erRows.map(r => `<tr>
-          <td>${r.name}</td>
-          <td>${r.standard}</td>
-          <td style="font-size:0.82rem;white-space:normal;max-width:420px;font-style:italic;">"${r.comment}"</td>
-        </tr>`).join('')
-      : emptyRow(3, 'No exit reviews for this coach.');
+      ? erRows.map(r => {
+          const statusPill = r.exitStatus === 'Achieved'
+            ? '<span class="dd-status-gateway">Achieved</span>'
+            : '<span class="dd-status-withdrawn">Withdrawn</span>';
+          return `<tr>
+            <td>${r.name}</td>
+            <td>${r.standard}</td>
+            <td>${statusPill}</td>
+            <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+          </tr>`;
+        }).join('')
+      : emptyRow(4, 'No exit reviews for this coach.');
   }
 }
 
@@ -1750,6 +1758,7 @@ function ksbRagBadge(rag) {
 function ksbStatusPill(status) {
   if (status === 'Live')    return `<span class="dd-status-current">Live</span>`;
   if (status === 'BIL')     return `<span class="ksb-status-bil">BIL</span>`;
+  if (status === 'OOF')     return `<span class="ksb-status-oof">OOF</span>`;
   if (status === 'Gateway') return `<span class="dd-status-gateway">Gateway</span>`;
   return status;
 }
@@ -1779,7 +1788,7 @@ function renderKSB() {
 
   // Managers with no LSC filter: show only at-risk (not green)
   const managerAllView = !isLSC && !ksbLSCFilter;
-  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green');
+  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green' && r.status !== 'BIL');
 
   if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
   if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
@@ -1914,6 +1923,15 @@ function renderCurriculum() {
   if (!isLSC && lscVal) rows = rows.filter(r => r.lsc === lscVal);
   if (stdVal)            rows = rows.filter(r => r.standard === stdVal);
   if (statVal)           rows = rows.filter(r => curriculumStatus(r) === statVal);
+
+  // Sort: furthest behind first (largest gap between expected and complete)
+  const statusOrder = {'No Activity': 0, 'Behind': 1, 'Off Track': 2, 'On Track': 3};
+  rows.sort((a, b) => {
+    const sa = statusOrder[curriculumStatus(a)] ?? 3;
+    const sb = statusOrder[curriculumStatus(b)] ?? 3;
+    if (sa !== sb) return sa - sb;
+    return (b.partsExpected - b.partsComplete) - (a.partsExpected - a.partsComplete);
+  });
 
   const countEl = document.getElementById('curr-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
