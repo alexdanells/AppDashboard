@@ -206,11 +206,19 @@ Click a card → relevant filters appear → Run Report
 - Results paginate at **100 rows per page** with prev/next/numbered controls at bottom
 - **Export CSV always exports the full result set** regardless of current page
 
-#### Quick Reports (11 preset pills)
-One-click pre-filtered reports: Awaiting First Meeting · Progress Reviews Overdue · BIL Decisions Needed · OOF Red Portfolio · KSB At-Risk · Curriculum Off-Track · Gateway Red Portfolio · Active Safeguarding · Welfare Check-ins Due · ALS Register · Sales Pipeline
+#### Quick Reports (10 preset pills for LSC / 11 for managers)
+One-click pre-filtered reports: Awaiting First Meeting · Progress Reviews Overdue · BIL Decisions Needed · OOF Red Portfolio · KSB At-Risk · Curriculum Off-Track · Gateway Red Portfolio · Active Safeguarding · Welfare Check-ins Due · ALS Register · Sales Pipeline *(managers only)*
 
-- Sales Manager can only access Sales Pipeline in Reporting (notice shown for other attempts)
-- LSC `rf-lsc` filter is locked to their coach name when role is `lsc`
+#### Reporting Permissions
+| Role | Access |
+|---|---|
+| Delivery / Compliance / Quality Manager | Full access to all 7 standard reports and all 11 quick reports |
+| Sales Manager | Sales Pipeline only (notice shown for all other areas) |
+| LSC | All 7 standard reports + 10 quick reports (Sales Pipeline hidden); `rf-lsc` locked to their coach, all `reportFilterBy()` calls automatically filter to their caseload |
+
+**Why Sales Pipeline is hidden for LSC:** `PIPELINE_ENTRIES` has no `lsc` field — the LSC filter would be silently ignored and return all sales data, which is both incorrect and not relevant to an LSC's caseload.
+
+All other data sources (`AD.masters`, `AD.ksb`, `AD.sla`, `AD.otj`, `AD.curriculum`, `AD.als`, `AD.safeguarding`, `AD.welfareDue`, `AD.gwQ2/Q3/Q4`, `AD.oof`, `AD.bil`, `AD.starters`) have an `lsc` field and filter correctly.
 
 ---
 
