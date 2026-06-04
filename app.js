@@ -981,8 +981,14 @@ function renderOverviewSummary() {
 
   // — Learner Voice —
   const d = DATA[currentSize];
-  setText('ov-lv-learner-enps',      d.learnerENPS);
-  setText('ov-lv-employer-enps',     d.employerENPS);
+  const setEnps = (id, score) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = score;
+    el.className = 'ov-value ' + (score >= 30 ? 'ov-green' : score >= 0 ? 'ov-amber' : 'ov-red');
+  };
+  setEnps('ov-lv-learner-enps',  d.learnerENPS);
+  setEnps('ov-lv-employer-enps', d.employerENPS);
   setText('ov-lv-learner-comments',  isLSC ? LEARNER_COMMENTS_DATA.filter(r => r.lsc === coach).length : LEARNER_COMMENTS_DATA.length);
   setText('ov-lv-employer-comments', isLSC ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === coach).length : EMPLOYER_COMMENTS_DATA.length);
 
