@@ -1223,6 +1223,37 @@ body {
 .ksb-pct--green { color: var(--green-dark); }
 .ksb-pct--red   { color: var(--red); }
 
+/* ===================== Standard Reports card grid ===================== */
+.sr-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.sr-card {
+  padding: 0.9rem 1rem;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+.sr-card:hover { border-color: var(--navy-mid); background: #f8fafc; }
+.sr-card.active { border-color: var(--navy); background: #eff6ff; }
+.sr-card-title { font-size: 0.82rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+.sr-card-desc  { font-size: 0.7rem; color: var(--text-muted); line-height: 1.35; }
+.sr-card.active .sr-card-title { color: var(--navy); }
+
+.sr-extra-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.5rem; }
+.sr-extra-grid  { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.sr-extra-option { display: flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; font-weight: 500; }
+.sr-extra-option input { cursor: pointer; }
+
+@media (max-width: 1100px) { .sr-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px)  { .sr-grid { grid-template-columns: 1fr; } }
+
 .filter-grid-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
