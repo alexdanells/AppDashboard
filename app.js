@@ -742,19 +742,25 @@ const SCALE_1000 = (function () {
 
   // ── Gateway Monthly Pipeline ────────────────────────────────────────
   const gwMonthLearners = masters.filter(m => m.status === 'Gateway');
-  const mkGwMonth = (monthStr, forecast, expected, pool) => ({
-    forecast, expected,
-    groups: COACHES_1000.map(coach => ({
-      lsc: coach,
-      learners: pool.filter(m => m.lsc === coach).map(m => ({
-        name: m.name, standard: m.standard,
-        prepDate: pr(0.7) ? _isoAdd(TODAY, -ri(14, 60)) : null,
-        atGateway: pr(0.5), monthsCarried: pr(0.2) ? ri(1, 3) : 0,
-        carryOverNext: pr(0.15), withdrawn: pr(0.05),
-        notes: '',
-      })),
-    })).filter(g => g.learners.length > 0),
-  });
+  const mkGwMonth = (monthStr, forecast, expected, pool) => {
+    // Only past/current months have real gateway activity — future months are forecasts only
+    const isPastOrCurrent = new Date(monthStr + '-01') <= new Date('2026-06-01');
+    return {
+      forecast, expected,
+      groups: COACHES_1000.map(coach => ({
+        lsc: coach,
+        learners: pool.filter(m => m.lsc === coach).map(m => ({
+          name: m.name, standard: m.standard,
+          prepDate: isPastOrCurrent && pr(0.7) ? _isoAdd(TODAY, -ri(14, 60)) : null,
+          atGateway:    isPastOrCurrent ? pr(0.5)  : false,
+          monthsCarried: isPastOrCurrent && pr(0.2) ? ri(1, 3) : 0,
+          carryOverNext: isPastOrCurrent ? pr(0.15) : false,
+          withdrawn:     isPastOrCurrent ? pr(0.05) : false,
+          notes: '',
+        })),
+      })).filter(g => g.learners.length > 0),
+    };
+  };
   // Seasonal pattern: spring peak (Apr-Jun), summer flat (Jul-Aug), autumn peak (Sep-Nov), winter flat (Dec-Jan)
   const sl = gwMonthLearners;
   const gatewayMonths = {
