@@ -2802,14 +2802,21 @@ const REPORT_CONFIGS = {
 
 // Quick Reports — pre-filtered one-click reports
 const REPORT_PRESETS = [
-  { id: 'ksb-atrisk',        area: 'ksb_tracker',          extra: {} },
-  { id: 'curriculum-behind', area: 'curriculum',           extra: {} },
-  { id: 'gateway-red',       area: 'gateway',              extra: { portfolioRag: 'red' } },
-  { id: 'welfare-active',    area: 'welfare_safeguarding', extra: { status: 'active' } },
-  { id: 'welfare-checkins',  area: 'welfare_due',          extra: {} },
+  // Compliance
+  { id: 'awaiting-meeting',  area: 'starters',             extra: {} },
+  { id: 'reviews-overdue',   area: 'sla',                  extra: {} },
   { id: 'bil-decision',      area: 'bil',                  extra: { status: 'BIL Decision Needed' } },
   { id: 'oof-red',           area: 'oof',                  extra: { portfolioRag: 'red' } },
+  // Delivery
+  { id: 'ksb-atrisk',        area: 'ksb_progress',         extra: {} },
+  { id: 'curriculum-behind', area: 'curriculum_progress',  extra: {} },
+  // Gateway
+  { id: 'gateway-red',       area: 'gateway',              extra: { portfolioRag: 'red' } },
+  // Welfare
+  { id: 'welfare-active',    area: 'welfare_safeguarding', extra: { status: 'active' } },
+  { id: 'welfare-checkins',  area: 'welfare_due',          extra: {} },
   { id: 'als-register',      area: 'welfare_als',          extra: {} },
+  // Sales
   { id: 'pipeline',          area: 'pipeline',             extra: {} },
 ];
 
@@ -2946,6 +2953,8 @@ document.addEventListener('click', e => {
   if (!btn) return;
   const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
   if (!preset) return;
+  // Clear previous results and deselect any SR card
+  document.querySelectorAll('.sr-card').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const areaEl = document.getElementById('rf-area');
