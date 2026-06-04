@@ -2967,19 +2967,20 @@ document.addEventListener('click', e => {
   runReport(preset.area, preset.extra);
 });
 
+// Tracks the currently selected standard report type
+let _currentSrType = '';
+
 document.getElementById('report-run-btn')?.addEventListener('click', () => {
   document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
-  runReport();
+  runReport(_currentSrType || undefined); // use stored type, not the broken hidden select
 });
 
 // ─── Standard Report selection ─────────────────────────────────────────
 function selectStandardReport(type) {
+  _currentSrType = type;
+
   // Highlight selected card
   document.querySelectorAll('.sr-card').forEach(c => c.classList.toggle('active', c.dataset.report === type));
-
-  // Set the hidden area select so getReportFilters/runReport pick it up
-  const areaEl = document.getElementById('rf-area');
-  if (areaEl) areaEl.value = type;
 
   // Show filter area
   const filtersEl = document.getElementById('sr-filters');
