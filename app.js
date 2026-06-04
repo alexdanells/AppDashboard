@@ -913,6 +913,51 @@ document.querySelectorAll('.nav-link').forEach(link => {
   });
 });
 
+// ─── Generic table sort (Compliance / Curriculum / Welfare) ───────────
+const _tblSort = {};
+
+function _doTblSort(rows, tid, defaultFn) {
+  const s = _tblSort[tid];
+  if (!s) return defaultFn ? rows.slice().sort(defaultFn) : rows;
+  return rows.slice().sort((a, b) => {
+    let av = a[s.col] ?? '', bv = b[s.col] ?? '';
+    if (typeof av === 'number' || typeof bv === 'number') { av = +av || 0; bv = +bv || 0; }
+    else if (typeof av === 'boolean') { av = av ? 1 : 0; bv = bv ? 1 : 0; }
+    else { av = String(av).toLowerCase(); bv = String(bv).toLowerCase(); }
+    return (av < bv ? -1 : av > bv ? 1 : 0) * (s.asc ? 1 : -1);
+  });
+}
+
+function _tblIcons(tid) {
+  const s = _tblSort[tid];
+  document.querySelectorAll(`th[data-sort-table="${tid}"]`).forEach(th => {
+    const ic = th.querySelector('.sort-icon');
+    if (!ic) return;
+    const on = s && th.dataset.col === s.col;
+    ic.textContent = on ? (s.asc ? '↑' : '↓') : '⇅';
+    th.classList.toggle('sort-active', !!on);
+  });
+}
+
+document.addEventListener('click', e => {
+  const th = e.target.closest('th[data-sort-table]');
+  if (!th || !th.dataset.col) return;
+  const tid = th.dataset.sortTable, col = th.dataset.col;
+  const cur = _tblSort[tid];
+  _tblSort[tid] = { col, asc: cur?.col === col ? !cur.asc : true };
+  ({
+    'starter-tbody':          renderDeliveryTables,
+    'touchpoint-tbody':       renderDeliveryTables,
+    'sla-tbody':              renderDeliveryTables,
+    'otj-tbody':              renderDeliveryTables,
+    'oof-tbody':              renderDeliveryTables,
+    'bil-tbody':              renderDeliveryTables,
+    'curr-tbody':             renderCurriculum,
+    'als-tbody':              renderWelfare,
+    'welfare-combined-tbody': renderWelfare,
+  })[tid]?.();
+});
+
 // ─── Sub-navigation (scoped to each section's own nav) ─────────────────
 document.querySelectorAll('.sub-nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1380,8 +1425,8 @@ function renderAAF() {
 function renderTouchpoints(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = (lscFilter ? AD.touchpoints.filter(r => r.lsc === lscFilter) : AD.touchpoints)
-    .slice().sort((a, b) => new Date(a.lastMeeting) - new Date(b.lastMeeting));
+  const _src = lscFilter ? AD.touchpoints.filter(r => r.lsc === lscFilter) : AD.touchpoints;
+  const rows = _doTblSort(_src, tbodyId, (a, b) => new Date(a.lastMeeting) - new Date(b.lastMeeting));
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No outstanding touchpoints for this coach.');
     return;
@@ -1395,13 +1440,14 @@ function renderTouchpoints(tbodyId, lscFilter) {
       <td><span class="status-pill">${r.meetingType}</span></td>
     </tr>
   `).join('');
+  _tblIcons(tbodyId);
 }
 
 function renderSLATable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = (lscFilter ? AD.sla.filter(r => r.lsc === lscFilter) : AD.sla)
-    .slice().sort((a, b) => b.weeksSince - a.weeksSince);
+  const _src = lscFilter ? AD.sla.filter(r => r.lsc === lscFilter) : AD.sla;
+  const rows = _doTblSort(_src, tbodyId, (a, b) => b.weeksSince - a.weeksSince);
   if (!rows.length) {
     tbody.innerHTML = emptyRow(5, 'No reviews approaching or overdue.');
     return;
@@ -1421,13 +1467,14 @@ function renderSLATable(tbodyId, lscFilter) {
       <td>${pill}</td>
     </tr>`;
   }).join('');
+  _tblIcons(tbodyId);
 }
 
 function renderOTJTable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = (lscFilter ? AD.otj.filter(r => r.lsc === lscFilter) : AD.otj)
-    .slice().sort((a, b) => new Date(a.lastEntry) - new Date(b.lastEntry));
+  const _src = lscFilter ? AD.otj.filter(r => r.lsc === lscFilter) : AD.otj;
+  const rows = _doTblSort(_src, tbodyId, (a, b) => new Date(a.lastEntry) - new Date(b.lastEntry));
   if (!rows.length) {
     tbody.innerHTML = emptyRow(6, 'No missing OTJ entries for this coach.');
     return;
@@ -1446,6 +1493,7 @@ function renderOTJTable(tbodyId, lscFilter) {
       </tr>
     `;
   }).join('');
+  _tblIcons(tbodyId);
 }
 
 function renderStarterTable(tbodyId, lscFilter) {
@@ -1453,8 +1501,9 @@ function renderStarterTable(tbodyId, lscFilter) {
   if (!tbody) return;
 
   // Only show learners where onboarding is incomplete (not both FDOL + checklist done)
-  const base = lscFilter ? AD.starters.filter(r => r.lsc === lscFilter) : AD.starters;
-  const rows = base.filter(r => !(r.firstDayDone && r.checklistDone));
+  const _base = (lscFilter ? AD.starters.filter(r => r.lsc === lscFilter) : AD.starters)
+    .filter(r => !(r.firstDayDone && r.checklistDone));
+  const rows = _doTblSort(_base, tbodyId, (a, b) => new Date(a.plannedStart) - new Date(b.plannedStart));
   if (!rows.length) {
     tbody.innerHTML = emptyRow(7, 'No new starters awaiting first meeting for this coach.');
     return;
@@ -1474,6 +1523,7 @@ function renderStarterTable(tbodyId, lscFilter) {
       </td>
     </tr>
   `).join('');
+  _tblIcons(tbodyId);
 }
 
 // ─── Delivery tables (uses deliveryLSCFilter state) ────────────────────
@@ -1692,6 +1742,7 @@ function renderALSTable(lscFilter) {
       <td style="font-size:0.78rem;">${r.adjustments}</td>
     </tr>
   `).join('');
+  _tblIcons('als-tbody');
 }
 
 function renderCombinedWelfareTable(lscFilter) {
@@ -1728,6 +1779,7 @@ function renderCombinedWelfareTable(lscFilter) {
     </tr>`;
   });
   tbody.innerHTML = [...sgHtml, ...wdHtml].join('');
+  _tblIcons('welfare-combined-tbody');
 }
 
 document.getElementById('welfare-lsc')?.addEventListener('change', function() {
@@ -1803,8 +1855,8 @@ function renderGatewayForecast() {
 function renderOOFTable(lscFilter) {
   const tbody = document.getElementById('oof-tbody');
   if (!tbody) return;
-  const rows = (lscFilter ? AD.oof.filter(r => r.lsc === lscFilter) : AD.oof)
-    .slice().sort((a, b) => new Date(a.plannedGateway) - new Date(b.plannedGateway));
+  const _src = lscFilter ? AD.oof.filter(r => r.lsc === lscFilter) : AD.oof;
+  const rows = _doTblSort(_src, 'oof-tbody', (a, b) => new Date(a.plannedGateway) - new Date(b.plannedGateway));
   const countEl = document.getElementById('oof-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No OOF learners for this coach.'); return; }
@@ -1827,18 +1879,20 @@ function renderOOFTable(lscFilter) {
         <td style="font-size:0.78rem;" title="${r.notes}">${r.notes}</td>
       </tr>`;
   }).join('');
+  _tblIcons('oof-tbody');
 }
 
 function renderBILTable(lscFilter) {
   const tbody = document.getElementById('bil-tbody');
   if (!tbody) return;
-  const rows = (lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil)
-    .slice().sort((a, b) => {
-      if (!a.expectedRtl && !b.expectedRtl) return 0;
-      if (!a.expectedRtl) return -1; // not confirmed → top
-      if (!b.expectedRtl) return 1;
-      return new Date(a.expectedRtl) - new Date(b.expectedRtl); // soonest return first
-    });
+  const _src = lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil;
+  const _defBil = (a, b) => {
+    if (!a.expectedRtl && !b.expectedRtl) return 0;
+    if (!a.expectedRtl) return -1;
+    if (!b.expectedRtl) return 1;
+    return new Date(a.expectedRtl) - new Date(b.expectedRtl);
+  };
+  const rows = _doTblSort(_src, 'bil-tbody', _defBil);
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
@@ -1858,6 +1912,7 @@ function renderBILTable(lscFilter) {
         <td style="font-size:0.78rem;" title="${r.notes}">${r.notes}</td>
       </tr>`;
   }).join('');
+  _tblIcons('bil-tbody');
 }
 
 function renderGWQuarterTable(tbodyId, panelCountId, data, lscFilter) {
@@ -2238,9 +2293,8 @@ document.getElementById('ksb-status')?.addEventListener('change', function() {
 // ─── Curriculum ────────────────────────────────────────────────────────
 
 function curriculumStatus(r) {
-  const today = new Date('2026-06-04');
-  const daysSince = Math.floor((today - new Date(r.lastActivity)) / 86400000);
-  if (daysSince > 30) return 'No Activity';
+  // No Activity = zero parts completed (genuinely not started)
+  if (r.partsComplete === 0) return 'No Activity';
   const gap = r.partsExpected - r.partsComplete;
   if (gap <= 0)  return 'On Track';
   if (gap === 1) return 'Off Track';
@@ -2315,6 +2369,7 @@ function renderCurriculum() {
       <td>${curriculumStatusPill(status)}</td>
     </tr>`;
   }).join('');
+  _tblIcons('curr-tbody');
 }
 
 // Curriculum filter listeners

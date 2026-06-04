@@ -508,8 +508,11 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Learner</th><th>Standard</th><th>LSC</th>
-                    <th>Declared Need</th><th>Adjustments in Place</th>
+                    <th class="sort-th" data-sort-table="als-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-sort-table="als-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-sort-table="als-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-sort-table="als-tbody" data-col="need">Declared Need <span class="sort-icon">⇅</span></th>
+                    <th>Adjustments in Place</th>
                   </tr>
                 </thead>
                 <tbody id="als-tbody"></tbody>
@@ -529,7 +532,9 @@
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Learner</th><th>LSC</th><th>Type</th><th>Category / Reason</th>
+                    <th class="sort-th" data-sort-table="welfare-combined-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                    <th class="sort-th" data-sort-table="welfare-combined-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                    <th>Type</th><th>Category / Reason</th>
                     <th>Status / Days Since</th><th>Last Action / Check-in</th><th>Notes</th>
                   </tr>
                 </thead>
@@ -686,8 +691,14 @@
             <table class="data-table dd-table">
               <thead>
                 <tr>
-                  <th>Learner</th><th>Employer</th><th>Standard</th><th>LSC</th>
-                  <th>Current Sprint</th><th>Sprint Progress</th><th>Last Activity</th><th>Status</th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="sprint">Current Sprint <span class="sort-icon">⇅</span></th>
+                  <th>Sprint Progress</th>
+                  <th class="sort-th" data-sort-table="curr-tbody" data-col="lastActivity">Last Activity <span class="sort-icon">⇅</span></th>
+                  <th>Status</th>
                 </tr>
               </thead>
               <tbody id="curr-tbody"></tbody>
@@ -734,7 +745,15 @@
             <div class="panel-header"><div><h2 class="panel-title">Awaiting First LSC Meeting</h2><p class="panel-desc">New starters yet to have their first coach meeting — starter checklist must be completed</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table">
-                <thead><tr><th>Learner</th><th>Employer</th><th>Standard</th><th>LSC</th><th>Planned Start</th><th>30-Day Window</th><th>FDOL Entry</th></tr></thead>
+                <thead><tr>
+                  <th class="sort-th" data-sort-table="starter-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="starter-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="starter-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="starter-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="starter-tbody" data-col="plannedStart">Planned Start <span class="sort-icon">⇅</span></th>
+                  <th>30-Day Window</th>
+                  <th>FDOL Entry</th>
+                </tr></thead>
                 <tbody id="starter-tbody"></tbody>
               </table>
             </div>
@@ -743,21 +762,40 @@
           <div class="panel">
             <div class="panel-header"><div><h2 class="panel-title">Outstanding Monthly Touchpoints</h2><p class="panel-desc">Learners with no 1-2-1 or progress review recorded this calendar month</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Date of Last Meeting</th><th>Type of Last Meeting</th></tr></thead><tbody id="touchpoint-tbody"></tbody></table>
+              <table class="data-table"><thead><tr>
+                  <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="lastMeeting">Date of Last Meeting <span class="sort-icon">↑</span></th>
+                  <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="meetingType">Type <span class="sort-icon">⇅</span></th>
+                </tr></thead><tbody id="touchpoint-tbody"></tbody></table>
             </div>
           </div>
 
           <div class="panel">
             <div class="panel-header"><div><h2 class="panel-title">Progress Reviews</h2><p class="panel-desc">Amber — approaching 10 weeks &nbsp;|&nbsp; Red — exceeded 10-week review threshold</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>Review Due By</th><th>Weeks Since Last Review</th></tr></thead><tbody id="sla-tbody"></tbody></table>
+              <table class="data-table"><thead><tr>
+                  <th class="sort-th" data-sort-table="sla-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="sla-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="sla-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th>Review Due By</th>
+                  <th class="sort-th" data-sort-table="sla-tbody" data-col="weeksSince">Weeks Since Last Review <span class="sort-icon">↓</span></th>
+                </tr></thead><tbody id="sla-tbody"></tbody></table>
             </div>
           </div>
 
           <div class="panel panel--span">
             <div class="panel-header"><div><h2 class="panel-title">OTJ Compliance in Month</h2><p class="panel-desc">Learners with no OTJ evidence recorded this month — longest since last entry at top</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table"><thead><tr><th>Learner</th><th>Employer</th><th>LSC</th><th>OTJ Completed</th><th>OTJ Expected</th><th>Last Entry Date</th></tr></thead><tbody id="otj-tbody"></tbody></table>
+              <table class="data-table"><thead><tr>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="otjPct">OTJ Completed <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="otjExpected">OTJ Expected <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="otj-tbody" data-col="lastEntry">Last Entry Date <span class="sort-icon">↑</span></th>
+                </tr></thead><tbody id="otj-tbody"></tbody></table>
             </div>
           </div>
 
@@ -765,7 +803,17 @@
             <div class="panel-header"><div><h2 class="panel-title">Out of Funding (OOF)</h2></div><span class="panel-count" id="oof-panel-count">—</span><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
-                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th><th>Notes</th></tr></thead>
+                <thead><tr>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="plannedGateway">Planned Gateway <span class="sort-icon">↑</span></th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="monthExpected">Month Expected <span class="sort-icon">⇅</span></th>
+                  <th>GW &rarr; EPA</th>
+                  <th class="sort-th" data-sort-table="oof-tbody" data-col="portfolioRag">Portfolio RAG <span class="sort-icon">⇅</span></th>
+                  <th>Notes</th>
+                </tr></thead>
                 <tbody id="oof-tbody"></tbody>
               </table>
             </div>
@@ -775,7 +823,16 @@
             <div class="panel-header"><div><h2 class="panel-title">Break in Learning (BIL)</h2></div><span class="panel-count" id="bil-panel-count">—</span><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table dd-table">
-                <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>LSC</th><th>Status</th><th>LDOL</th><th>Expected RTL</th><th>Notes</th></tr></thead>
+                <thead><tr>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="status">Status <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="ldol">LDOL <span class="sort-icon">⇅</span></th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="expectedRtl">Expected RTL <span class="sort-icon">↑</span></th>
+                  <th>Notes</th>
+                </tr></thead>
                 <tbody id="bil-tbody"></tbody>
               </table>
             </div>
