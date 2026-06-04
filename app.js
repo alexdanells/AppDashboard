@@ -1426,9 +1426,8 @@ function renderSLATable(tbodyId, lscFilter) {
 function renderOTJTable(tbodyId, lscFilter) {
   const tbody = document.getElementById(tbodyId);
   if (!tbody) return;
-  const rows = lscFilter
-    ? AD.otj.filter(r => r.lsc === lscFilter)
-    : AD.otj;
+  const rows = (lscFilter ? AD.otj.filter(r => r.lsc === lscFilter) : AD.otj)
+    .slice().sort((a, b) => new Date(a.lastEntry) - new Date(b.lastEntry));
   if (!rows.length) {
     tbody.innerHTML = emptyRow(6, 'No missing OTJ entries for this coach.');
     return;
