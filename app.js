@@ -467,6 +467,7 @@ let pipelineOffset     = 0;
 let gatewayOffset      = 0; // 0 = June 2026
 let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
+let gwForecastFilter   = 'All';
 let lscPageCoach       = 'James Okafor';
 
 // ─── Utility ───────────────────────────────────────────────────────────
@@ -518,12 +519,15 @@ document.querySelectorAll('.nav-link').forEach(link => {
   });
 });
 
-// ─── Sub-navigation (Learners page) ────────────────────────────────────
+// ─── Sub-navigation (scoped to each section's own nav) ─────────────────
 document.querySelectorAll('.sub-nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
+    const nav       = btn.closest('.sub-nav');
+    const container = nav?.parentElement;
+    if (!nav || !container) return;
+    nav.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+    container.querySelectorAll(':scope > .sub-page').forEach(p => p.classList.remove('active'));
     document.getElementById(btn.dataset.sub)?.classList.add('active');
   });
 });
@@ -573,6 +577,7 @@ function switchUser(userId) {
   renderAll();
   renderPipeline();
   renderGateway();
+  renderGatewayForecast();
   renderWelfare();
   renderDeliveryDash();
 }
@@ -639,6 +644,8 @@ function applyRolePermissions() {
     if (compOtjCard)     compOtjCard.style.display     = '';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = 'none';
+    const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
+    if (gwFcLscBar) gwFcLscBar.style.display = 'none';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -657,6 +664,8 @@ function applyRolePermissions() {
     if (compOtjCard)     compOtjCard.style.display     = 'none';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = '';
+    const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
+    if (gwFcLscBar) gwFcLscBar.style.display = '';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -692,6 +701,12 @@ document.getElementById('delivery-dash-lsc')?.addEventListener('change', functio
   renderDeliveryDash();
 });
 
+// ─── Gateway Forecast LSC filter ───────────────────────────────────────
+document.getElementById('gw-forecast-lsc')?.addEventListener('change', function () {
+  gwForecastFilter = this.value;
+  renderGatewayForecast();
+});
+
 // ─── LSC page coach selector ───────────────────────────────────────────
 document.getElementById('lsc-coach')?.addEventListener('change', function () {
   lscPageCoach = this.value;
@@ -721,6 +736,7 @@ function renderAll() {
   renderDeliveryTables();
   renderLSCTables();
   renderCurriculum();
+  renderGatewayForecast();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -1293,51 +1309,41 @@ function bilStatusPill(status) {
 
 function renderDeliveryDash() {
   const f = deliveryDashFilter === 'All' ? null : deliveryDashFilter;
-  renderDeliveryDashKPIs(f);
-  renderOOFTable(f);
-  renderBILTable(f);
-  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
-  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
-  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
-}
-
-function renderDeliveryDashKPIs(lscFilter) {
-  const filterFn = r => !lscFilter || r.lsc === lscFilter;
-
-  const oofRows    = OOF_DATA.filter(filterFn);
-  const bilRows    = BIL_DATA.filter(filterFn);
-  const q2Rows     = GW_Q2_DATA.filter(filterFn);
-  const q3Rows     = GW_Q3_DATA.filter(filterFn);
-  const q4Rows     = GW_Q4_DATA.filter(filterFn);
-
-  const oofRed     = oofRows.filter(r => r.portfolioRag === 'red').length;
-  const bilNeeded  = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
-  const q2AtGw     = q2Rows.filter(r => r.status === 'At Gateway').length;
-
-  setText('dd-oof-total',  oofRows.length);
-  setText('dd-oof-sub',    oofRed > 0 ? `${oofRed} red portfolio` : 'No red portfolios');
+  const filterFn  = r => !f || r.lsc === f;
+  const bilRows   = BIL_DATA.filter(filterFn);
+  const bilNeeded = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
   setText('dd-bil-total',  bilRows.length);
   setText('dd-bil-sub',    `${bilNeeded} decision${bilNeeded !== 1 ? 's' : ''} needed`);
   setText('dd-bil-action', bilNeeded);
-  setText('dd-q2-total',   q2Rows.length);
-  setText('dd-q2-sub',     `${q2AtGw} at gateway`);
-  setText('dd-q3-total',   q3Rows.length);
-  setText('dd-q3-sub',     `${q3Rows.filter(r => r.status === 'Current').length} current`);
-  setText('dd-q4-total',   q4Rows.length);
-  setText('dd-q4-sub',     `${q4Rows.filter(r => r.status === 'Current').length} current`);
-
-  // Portfolio RAG across all quarters
-  const allQRows   = [...q2Rows, ...q3Rows, ...q4Rows];
-  const ragGreen   = allQRows.filter(r => r.portfolioRag === 'green').length;
-  const ragAmber   = allQRows.filter(r => r.portfolioRag === 'amber').length;
-  const ragRed     = allQRows.filter(r => r.portfolioRag === 'red').length;
-  setText('dd-rag-green', `${ragGreen} Green`);
-  setText('dd-rag-amber', `${ragAmber} Amber`);
-  setText('dd-rag-red',   `${ragRed} Red`);
-
-  // Highlight BIL action card if decisions needed
   const card = document.getElementById('dd-bil-action-card');
   if (card) card.classList.toggle('kpi-card--active-alert', bilNeeded > 0);
+}
+
+// ─── Gateway Forecast ─────────────────────────────────────────────────
+function renderGatewayForecast() {
+  const isLSC = currentUser.role === 'lsc';
+  const f = isLSC ? currentUser.coach : (gwForecastFilter === 'All' ? null : gwForecastFilter);
+
+  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
+  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
+  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
+
+  const filterFn = r => !f || r.lsc === f;
+  const q2Rows   = GW_Q2_DATA.filter(filterFn);
+  const q3Rows   = GW_Q3_DATA.filter(filterFn);
+  const q4Rows   = GW_Q4_DATA.filter(filterFn);
+  const q2AtGw   = q2Rows.filter(r => r.status === 'At Gateway').length;
+  setText('dd-q2-total', q2Rows.length);
+  setText('dd-q2-sub',   `${q2AtGw} at gateway`);
+  setText('dd-q3-total', q3Rows.length);
+  setText('dd-q3-sub',   `${q3Rows.filter(r => r.status === 'Current').length} current`);
+  setText('dd-q4-total', q4Rows.length);
+  setText('dd-q4-sub',   `${q4Rows.filter(r => r.status === 'Current').length} current`);
+
+  const allQRows = [...q2Rows, ...q3Rows, ...q4Rows];
+  setText('dd-rag-green', `${allQRows.filter(r => r.portfolioRag === 'green').length} Green`);
+  setText('dd-rag-amber', `${allQRows.filter(r => r.portfolioRag === 'amber').length} Amber`);
+  setText('dd-rag-red',   `${allQRows.filter(r => r.portfolioRag === 'red').length} Red`);
 }
 
 function renderOOFTable(lscFilter) {
@@ -1453,17 +1459,24 @@ function renderGateway() {
     return;
   }
 
+  // Filter groups for LSC users
+  const isLSCView  = currentUser.role === 'lsc';
+  const gwGroups   = isLSCView
+    ? monthData.groups.filter(g => g.lsc === currentUser.coach)
+    : monthData.groups;
+
   // Totals
-  const allLearners = monthData.groups.flatMap(g => g.learners);
+  const allLearners = gwGroups.flatMap(g => g.learners);
   const atGateway   = allLearners.filter(l => l.atGateway).length;
   const carryOver   = allLearners.filter(l => l.carryOverNext).length;
-  const pct         = monthData.expected > 0
-    ? Math.min(100, Math.round((atGateway / monthData.expected) * 100))
+  const expected    = isLSCView ? allLearners.filter(l => !l.withdrawn).length : monthData.expected;
+  const pct         = expected > 0
+    ? Math.min(100, Math.round((atGateway / expected) * 100))
     : 0;
 
   // Progress bar + metrics
   setText('gw-forecast',    monthData.forecast);
-  setText('gw-expected',    monthData.expected);
+  setText('gw-expected',    expected);
   setText('gw-at-gateway',  atGateway);
   setText('gw-carry-over',  carryOver);
   setText('gw-pct',         pct + '%');
@@ -1494,7 +1507,7 @@ function renderGateway() {
 
   let html = '';
 
-  monthData.groups.forEach(group => {
+  gwGroups.forEach(group => {
     const active    = group.learners.filter(l => !l.withdrawn);
     const groupAt   = group.learners.filter(l => l.atGateway).length;
     const groupExp  = active.length;
@@ -1934,6 +1947,7 @@ applyRolePermissions();
 renderAll();
 renderPipeline();
 renderGateway();
+renderGatewayForecast();
 renderWelfare();
 renderDeliveryDash();
 
