@@ -380,6 +380,30 @@ const GATEWAY_MONTHS_DATA = {
   },
 };
 
+// ─── Users ─────────────────────────────────────────────────────────────
+const USERS = [
+  { id: 'delivery',   name: 'Delivery Manager',   role: 'delivery',   initials: 'DM' },
+  { id: 'compliance', name: 'Compliance Manager',  role: 'compliance', initials: 'CM' },
+  { id: 'quality',    name: 'Quality Manager',     role: 'quality',    initials: 'QM' },
+  { id: 'sales',      name: 'Sales Manager',       role: 'sales',      initials: 'SM' },
+  { id: 'sarah',      name: 'Sarah Mitchell',      role: 'lsc',        initials: 'SM', coach: 'Sarah Mitchell' },
+  { id: 'james',      name: 'James Okafor',        role: 'lsc',        initials: 'JO', coach: 'James Okafor'   },
+  { id: 'priya',      name: 'Priya Sharma',        role: 'lsc',        initials: 'PS', coach: 'Priya Sharma'   },
+  { id: 'tom',        name: 'Tom Bradley',         role: 'lsc',        initials: 'TB', coach: 'Tom Bradley'    },
+  { id: 'hannah',     name: 'Hannah Clarke',       role: 'lsc',        initials: 'HC', coach: 'Hannah Clarke'  },
+];
+
+let currentUser = USERS[0]; // default: Delivery Manager
+
+const NAV_ACCESS = {
+  'page-overview':  ['delivery', 'compliance', 'quality', 'lsc'],
+  'page-sales':     ['delivery', 'compliance', 'quality', 'sales'],
+  'page-smt':       ['delivery', 'compliance', 'quality'],
+  'page-learners':  ['delivery', 'compliance', 'quality', 'lsc'],
+  'page-gateway':   ['delivery'],
+  'page-reporting': ['delivery', 'compliance', 'quality', 'sales', 'lsc'],
+};
+
 // ─── State ─────────────────────────────────────────────────────────────
 let currentSize        = 200;
 let pipelineOffset     = 0;
@@ -436,6 +460,130 @@ document.querySelectorAll('.nav-link').forEach(link => {
     document.getElementById(target)?.classList.add('active');
   });
 });
+
+// ─── Sub-navigation (Learners page) ────────────────────────────────────
+document.querySelectorAll('.sub-nav-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+    document.getElementById(btn.dataset.sub)?.classList.add('active');
+  });
+});
+
+// ─── User switcher ─────────────────────────────────────────────────────
+function renderUserSwitcher() {
+  const avatarEl = document.getElementById('user-avatar');
+  const nameEl   = document.getElementById('user-name-display');
+  const dropdown = document.getElementById('user-dropdown');
+  if (avatarEl) avatarEl.textContent = currentUser.initials;
+  if (nameEl)   nameEl.textContent   = currentUser.name;
+  if (!dropdown) return;
+  const groups = [
+    { label: 'Management',            users: USERS.filter(u => u.role !== 'lsc') },
+    { label: 'Learning Skills Coaches', users: USERS.filter(u => u.role === 'lsc')  },
+  ];
+  dropdown.innerHTML = groups.map(g => `
+    <div class="user-dropdown-group">
+      <div class="user-dropdown-group-label">${g.label}</div>
+      ${g.users.map(u => `
+        <button class="user-dropdown-item${u.id === currentUser.id ? ' active' : ''}" data-user-id="${u.id}">
+          <span class="user-avatar-sm">${u.initials}</span>${u.name}
+        </button>`).join('')}
+    </div>`).join('');
+}
+
+document.getElementById('user-btn')?.addEventListener('click', e => {
+  e.stopPropagation();
+  document.getElementById('user-dropdown')?.classList.toggle('open');
+});
+document.addEventListener('click', () => {
+  document.getElementById('user-dropdown')?.classList.remove('open');
+});
+document.getElementById('user-dropdown')?.addEventListener('click', e => {
+  const btn = e.target.closest('[data-user-id]');
+  if (!btn) return;
+  switchUser(btn.dataset.userId);
+});
+
+function switchUser(userId) {
+  const user = USERS.find(u => u.id === userId);
+  if (!user || user.id === currentUser.id) return;
+  currentUser = user;
+  document.getElementById('user-dropdown')?.classList.remove('open');
+  renderUserSwitcher();
+  applyRolePermissions();
+  renderAll();
+  renderPipeline();
+  renderGateway();
+  renderWelfare();
+  renderDeliveryDash();
+}
+
+function applyRolePermissions() {
+  const role  = currentUser.role;
+  const isLSC = role === 'lsc';
+
+  // Nav visibility
+  document.querySelectorAll('.nav-link[data-page]').forEach(link => {
+    const allowed = NAV_ACCESS[link.dataset.page] || [];
+    link.style.display = allowed.includes(role) ? '' : 'none';
+  });
+
+  // If active page is no longer accessible, navigate to first accessible
+  const activePageId = document.querySelector('.page.active')?.id;
+  if (activePageId && !(NAV_ACCESS[activePageId] || []).includes(role)) {
+    const firstPage = Object.keys(NAV_ACCESS).find(p => NAV_ACCESS[p].includes(role));
+    document.querySelector(`.nav-link[data-page="${firstPage}"]`)?.click();
+  }
+
+  // DfE AAF section on Overview (hidden for LSC)
+  const aafSection = document.getElementById('ov-aaf-section');
+  if (aafSection) aafSection.style.display = isLSC ? 'none' : '';
+
+  // Delivery: show manager view or LSC caseload view
+  const mgView  = document.getElementById('delivery-manager-view');
+  const lscView = document.getElementById('lsc-caseload-view');
+  if (mgView)  mgView.style.display  = isLSC ? 'none' : '';
+  if (lscView) lscView.style.display = isLSC ? '' : 'none';
+
+  if (isLSC) {
+    const coach = currentUser.coach;
+    lscPageCoach       = coach;
+    deliveryDashFilter = coach;
+    deliveryLSCFilter  = coach;
+
+    const lscCoachEl = document.getElementById('lsc-coach');
+    if (lscCoachEl) lscCoachEl.value = coach;
+    const ddLscEl = document.getElementById('delivery-dash-lsc');
+    if (ddLscEl) ddLscEl.value = coach;
+    const dLscEl = document.getElementById('delivery-lsc');
+    if (dLscEl) dLscEl.value = coach;
+
+    const compLscBar = document.getElementById('compliance-lsc-bar');
+    if (compLscBar) compLscBar.style.display = 'none';
+
+    const rfLsc = document.getElementById('rf-lsc');
+    if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
+
+    setText('lsc-caseload-subtitle', coach + ' — Learner Success Coach');
+  } else {
+    lscPageCoach       = 'James Okafor';
+    deliveryDashFilter = 'All';
+    deliveryLSCFilter  = 'All';
+
+    const compLscBar = document.getElementById('compliance-lsc-bar');
+    if (compLscBar) compLscBar.style.display = '';
+
+    const rfLsc = document.getElementById('rf-lsc');
+    if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
+
+    const ddLscEl = document.getElementById('delivery-dash-lsc');
+    if (ddLscEl) ddLscEl.value = 'All';
+    const dLscEl = document.getElementById('delivery-lsc');
+    if (dLscEl) dLscEl.value = 'All';
+  }
+}
 
 // ─── Size toggle ───────────────────────────────────────────────────────
 document.querySelectorAll('.toggle-btn').forEach(btn => {
@@ -1581,6 +1729,8 @@ document.getElementById('report-export-btn')?.addEventListener('click', exportRe
 populateEmployerDropdown();
 
 // ─── Init ──────────────────────────────────────────────────────────────
+renderUserSwitcher();
+applyRolePermissions();
 renderAll();
 renderPipeline();
 renderGateway();
