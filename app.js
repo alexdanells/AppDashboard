@@ -2466,10 +2466,7 @@ function statusPill(status) {
   return `<span class="${map[status] || 'dd-status-current'}">${status}</span>`;
 }
 
-// ─── Reporting — extra column toggles for Full Caseload report ────────
-let rpExtraKsb  = true;
-let rpExtraCurr = true;
-let rpExtraLldd = false;
+// ─── Reporting state ───────────────────────────────────────────────────
 
 // Helper: area badge for cross-provision view
 const _ab = t => `<span class="area-badge area-${t}">${{compliance:'Compliance',delivery:'Delivery',welfare:'Welfare',curriculum:'Curriculum',gateway:'Gateway'}[t]||t}</span>`;
@@ -2521,45 +2518,49 @@ const REPORT_CONFIGS = {
 
   // ── Compliance ────────────────────────────────────────────────────────
   touchpoints: {
-    label: 'Outstanding Touchpoints',
-    columns: ['Learner', 'Employer', 'LSC', 'Last Meeting', 'Meeting Type', 'Days Since'],
+    label: 'Learner Touchpoints',
+    columns: ['Learner', 'Employer', 'LSC', 'Date of Last Meeting', 'Meeting Type'],
     getData(f) {
-      return reportFilterBy(AD.touchpoints, f)
-        .sort((a,b) => new Date(a.lastMeeting) - new Date(b.lastMeeting))
-        .map(r => ({ _cols: [
-          r.name, r.employer, r.lsc, fmtDate(r.lastMeeting), r.meetingType,
-          Math.floor((new Date('2026-06-04') - new Date(r.lastMeeting)) / 86400000) + ' days'
-        ]}));
+      const touchMap = Object.fromEntries(AD.touchpoints.map(r => [r.name, r]));
+      return reportFilterBy(AD.ksb, f)
+        .sort((a,b) => {
+          const ta = touchMap[a.name], tb = touchMap[b.name];
+          if (!ta && !tb) return 0; if (!ta) return 1; if (!tb) return -1;
+          return new Date(ta.lastMeeting) - new Date(tb.lastMeeting);
+        })
+        .map(r => {
+          const t = touchMap[r.name];
+          return { _cols: [r.name, r.employer, r.lsc, t ? fmtDate(t.lastMeeting) : '—', t ? t.meetingType : '—'],
+                   _rowClass: !t ? '' : '' };
+        });
     }
   },
   sla: {
-    label: 'Progress Reviews — 8+ Weeks Since Last Review',
-    columns: ['Learner', 'Employer', 'LSC', 'Last Review', 'Weeks Since', 'Status'],
+    label: 'Progress Reviews',
+    columns: ['Learner', 'Employer', 'LSC', 'Last Progress Review', 'Review Due By', 'Weeks Since Last Review', 'Status'],
     getData(f) {
       return reportFilterBy(AD.sla, f)
         .sort((a,b) => b.weeksSince - a.weeksSince)
         .map(r => {
           const over = r.weeksSince >= 10;
           return { _cols: [
-            r.name, r.employer, r.lsc, fmtDate(r.lastReview), r.weeksSince + ' weeks',
+            r.name, r.employer, r.lsc,
+            fmtDate(r.lastReview), addDays(r.lastReview, 70),
+            r.weeksSince + ' weeks',
             over ? `<span class="weeks-pill urgent">${r.weeksSince} wks overdue</span>` : `<span class="weeks-pill warning">Approaching</span>`
           ], _rowClass: over ? 'row-alert' : '' };
         });
     }
   },
   otj: {
-    label: 'OTJ Compliance in Month',
-    columns: ['Learner', 'Employer', 'LSC', 'OTJ %', 'Expected %', 'Gap', 'Last Entry'],
+    label: 'OTJ Compliance',
+    columns: ['Learner', 'Employer', 'LSC', 'OTJ Completed', 'OTJ Expected', 'Last Entry Date'],
     getData(f) {
       return reportFilterBy(AD.otj, f)
         .sort((a,b) => new Date(a.lastEntry) - new Date(b.lastEntry))
-        .map(r => {
-          const gap = r.otjExpected - r.otjPct;
-          return { _cols: [
-            r.name, r.employer, r.lsc, r.otjPct + '%', r.otjExpected + '%',
-            gap > 0 ? `−${gap}%` : '✓', fmtDate(r.lastEntry)
-          ], _rowClass: gap > 15 ? 'row-alert' : '' };
-        });
+        .map(r => ({ _cols: [
+          r.name, r.employer, r.lsc, r.otjPct + '%', r.otjExpected + '%', fmtDate(r.lastEntry)
+        ], _rowClass: (r.otjExpected - r.otjPct) > 15 ? 'row-alert' : '' }));
     }
   },
   starters: {
@@ -2707,69 +2708,65 @@ const REPORT_CONFIGS = {
 
   caseload: {
     label: 'LSC Full Caseload Report',
-    get columns() {
-      const c = ['Learner','Employer','Standard','LSC','Start Date','Planned Gateway','Status'];
-      if (rpExtraKsb)  c.push('Knowledge','Skills','Behaviours','KSB RAG');
-      if (rpExtraCurr) c.push('Current Sprint','Parts Complete','Curriculum Status');
-      if (rpExtraLldd) c.push('LLDD / Declared Need');
-      return c;
-    },
+    columns: ['Learner Name','Employer Name','Standard','LSC','Status','Learning Start Date','Planned Gateway Date','OTJ Actual','OTJ Expected','Learning End Date','KSB Progress','Curriculum Progress','Overall RAG','Date of Last Meeting','Meeting Type','LLDD / Declared'],
     getData(f) {
-      const ksbBase = reportFilterBy(AD.ksb, f);
-      const currMap = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
-      const alsMap  = Object.fromEntries(AD.als.map(r => [r.name, r.need]));
+      const ksbBase  = reportFilterBy(AD.ksb, f);
+      const otjMap   = Object.fromEntries(AD.otj.map(r => [r.name, r]));
+      const touchMap = Object.fromEntries(AD.touchpoints.map(r => [r.name, r]));
+      const currMap  = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
+      const alsMap   = Object.fromEntries(AD.als.map(r => [r.name, r.need]));
       return ksbBase.sort((a,b) => a.lsc.localeCompare(b.lsc)||a.name.localeCompare(b.name)).map(r => {
-        const curr = currMap[r.name];
-        const _cols = [r.name, r.employer, r.standard, r.lsc, fmtDate(r.startDate), fmtDate(r.plannedGateway), ksbStatusPill(r.status)];
-        if (rpExtraKsb)  _cols.push(ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct), ksbRagBadge(ksbRag(r)));
-        if (rpExtraCurr) _cols.push(curr?.sprint||'—', curr?`${curr.partsComplete}/8`:'—', curr?curriculumStatusPill(curriculumStatus(curr)):'—');
-        if (rpExtraLldd) _cols.push(alsMap[r.name]||'—');
-        return { _cols, _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' };
-      });
-    }
-  },
-
-  learner_status: {
-    label: 'Learner Status Report',
-    columns: ['Learner','Employer','Standard','LSC','Status','Start Date','Planned Gateway','Detail'],
-    getData(f) {
-      const bilMap = Object.fromEntries(AD.bil.map(r => [r.name, r]));
-      return reportFilterBy(AD.ksb, f).map(r => {
-        const bil = bilMap[r.name];
-        const detail = r.status === 'BIL' && bil
-          ? `LDOL: ${fmtDate(bil.ldol)} · RTL: ${bil.expectedRtl ? fmtDate(bil.expectedRtl) : 'TBC'}`
-          : r.status === 'Gateway' ? 'At gateway — EPA pending'
-          : r.status === 'OOF'     ? 'Past planned end date'
-          : '';
-        return { _cols: [r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status), fmtDate(r.startDate), fmtDate(r.plannedGateway), detail] };
+        const otj   = otjMap[r.name];
+        const touch = touchMap[r.name];
+        const curr  = currMap[r.name];
+        const rag   = ksbRag(r);
+        const endDate   = r.plannedGateway ? fmtDate(_isoAdd(r.plannedGateway, 90)) : '—';
+        const ksbProg   = `K:${r.knowledgePct}% | S:${r.skillsPct}% | B:${r.behavioursPct}%`;
+        const currProg  = curr ? `${curr.sprint} (${curr.partsComplete}/8)` : '—';
+        return { _cols: [
+          r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status),
+          fmtDate(r.startDate), fmtDate(r.plannedGateway),
+          otj ? otj.otjPct + '%' : '—', otj ? otj.otjExpected + '%' : '—',
+          endDate, ksbProg, currProg, ksbRagBadge(rag),
+          touch ? fmtDate(touch.lastMeeting) : '—',
+          touch ? touch.meetingType : '—',
+          alsMap[r.name] || '—'
+        ], _rowClass: rag === 'super-red' ? 'row-alert' : '' };
       });
     }
   },
 
   employer_report: {
     label: 'Standard Employer Report',
-    columns: ['Learner','Employer','Standard','LSC','Status','KSB RAG','Knowledge','Skills','Behaviours','Sprint','Parts','Curriculum Status'],
+    columns: ['Learner Name','Employer Name','Standard','LSC','Status','Learning Start Date','Planned Gateway Date','OTJ Actual','OTJ Expected','Learning End Date','KSB Progress','Curriculum Progress','Overall RAG','LSC Commentary'],
     getData(f) {
+      const otjMap  = Object.fromEntries(AD.otj.map(r => [r.name, r]));
       const currMap = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
       return reportFilterBy(AD.ksb, f)
         .sort((a,b) => a.employer.localeCompare(b.employer)||a.name.localeCompare(b.name))
         .map(r => {
+          const otj  = otjMap[r.name];
           const curr = currMap[r.name];
+          const rag  = ksbRag(r);
+          const endDate  = r.plannedGateway ? fmtDate(_isoAdd(r.plannedGateway, 90)) : '—';
+          const ksbProg  = `K:${r.knowledgePct}% | S:${r.skillsPct}% | B:${r.behavioursPct}%`;
+          const currProg = curr ? `${curr.sprint} (${curr.partsComplete}/8)` : '—';
           return { _cols: [
-            r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status), ksbRagBadge(ksbRag(r)),
-            ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct),
-            curr?.sprint||'—', curr?`${curr.partsComplete}/8`:'—', curr?curriculumStatusPill(curriculumStatus(curr)):'—'
-          ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' };
+            r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status),
+            fmtDate(r.startDate), fmtDate(r.plannedGateway),
+            otj ? otj.otjPct + '%' : '—', otj ? otj.otjExpected + '%' : '—',
+            endDate, ksbProg, currProg, ksbRagBadge(rag), '—'
+          ], _rowClass: rag === 'super-red' ? 'row-alert' : '' };
         });
     }
   },
 
   ksb_progress: {
     label: 'KSB Progress',
-    columns: ['Learner','Employer','Standard','LSC','Start Date','Planned Gateway','Status','Knowledge','Skills','Behaviours','RAG'],
+    columns: ['Employer','Learner','Standard','LSC','Start Date','Planned Gateway','Status','Knowledge','Skills','Behaviours','RAG'],
     getData(f) {
       return reportFilterBy(AD.ksb, f).map(r => ({ _cols: [
-        r.name, r.employer, r.standard, r.lsc, fmtDate(r.startDate), fmtDate(r.plannedGateway),
+        r.employer, r.name, r.standard, r.lsc, fmtDate(r.startDate), fmtDate(r.plannedGateway),
         ksbStatusPill(r.status), ksbPctCell(r.knowledgePct), ksbPctCell(r.skillsPct), ksbPctCell(r.behavioursPct), ksbRagBadge(ksbRag(r))
       ], _rowClass: ksbRag(r) === 'super-red' ? 'row-alert' : '' }));
     }
@@ -2777,14 +2774,14 @@ const REPORT_CONFIGS = {
 
   curriculum_progress: {
     label: 'Curriculum Progress',
-    columns: ['Learner','Employer','Standard','LSC','Current Sprint','Parts Complete','Last Activity','Status'],
+    columns: ['Learner','Employer','Standard','LSC','Current Sprint','Sprint Progress','Last Activity','Status'],
     getData(f) {
       const so = {'No Activity':0,'Behind':1,'Off Track':2,'On Track':3};
       return reportFilterBy(AD.curriculum, f)
         .sort((a,b) => (so[curriculumStatus(a)]??3)-(so[curriculumStatus(b)]??3))
         .map(r => {
           const st = curriculumStatus(r);
-          return { _cols: [r.name, r.employer, r.standard, r.lsc, r.sprint, `${r.partsComplete}/8`, fmtDate(r.lastActivity), curriculumStatusPill(st)],
+          return { _cols: [r.name, r.employer, r.standard, r.lsc, r.sprint, curriculumProgressBar(r.partsComplete, 8), fmtDate(r.lastActivity), curriculumStatusPill(st)],
                    _rowClass: ['Behind','No Activity'].includes(st) ? 'row-alert' : '' };
         });
     }
@@ -2983,10 +2980,10 @@ function selectStandardReport(type) {
   const show = (id, vis) => { const el = document.getElementById(id); if (el) el.style.display = vis ? '' : 'none'; };
   const isLSCUser = currentUser.role === 'lsc';
   show('sr-grp-lsc',    !isLSCUser); // LSC users never see this
-  show('sr-grp-std',    ['caseload','employer_report','ksb_progress','curriculum_progress','learner_status'].includes(type));
-  show('sr-grp-status', ['caseload','learner_status'].includes(type));
+  show('sr-grp-std',    ['caseload','employer_report','ksb_progress','curriculum_progress'].includes(type));
+  show('sr-grp-status', type === 'caseload');
   show('sr-grp-emp',    type === 'employer_report');
-  show('sr-extra-cols', type === 'caseload');
+  // no extra-cols section any more
 
   // Reset non-relevant filters
   if (!['caseload','learner_status'].includes(type)) { const el = document.getElementById('rf-status'); if (el) el.value = ''; }
@@ -2999,14 +2996,6 @@ function selectStandardReport(type) {
   if (expBtn) expBtn.style.display = 'none';
 }
 
-// Extra column checkbox handlers
-['col-ksb','col-curriculum','col-lldd'].forEach(id => {
-  document.getElementById(id)?.addEventListener('change', function() {
-    if (id === 'col-ksb')        rpExtraKsb  = this.checked;
-    if (id === 'col-curriculum') rpExtraCurr = this.checked;
-    if (id === 'col-lldd')       rpExtraLldd = this.checked;
-  });
-});
 
 // SR card click delegation
 document.addEventListener('click', e => {
