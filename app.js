@@ -121,14 +121,14 @@ const OTJ_DATA = [
 
 // Table 4: Awaiting First LSC Meeting — sorted by plannedStart asc
 const STARTER_DATA = [
-  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', plannedStart: '2026-05-05', firstDayDone: true,  checklistDone: true  },
-  { name: 'Ethan Brooks',   employer: 'Pinnacle Finance Group', lsc: 'James Okafor',   plannedStart: '2026-05-12', firstDayDone: true,  checklistDone: true  },
-  { name: 'Fatima Malik',   employer: 'DataSphere Analytics',   lsc: 'Priya Sharma',   plannedStart: '2026-05-12', firstDayDone: false, checklistDone: false },
-  { name: 'George Baker',   employer: 'Urban Digital Ltd',      lsc: 'Tom Bradley',    plannedStart: '2026-05-19', firstDayDone: true,  checklistDone: false },
-  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       lsc: 'Hannah Clarke',  plannedStart: '2026-05-19', firstDayDone: false, checklistDone: false },
-  { name: 'Isaac Rivera',   employer: 'Clarity Finance Ltd',    lsc: 'Sarah Mitchell', plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
-  { name: 'Jade Thompson',  employer: 'Nova Solutions',         lsc: 'James Okafor',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
-  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  standard: 'Data Technician',         lsc: 'Sarah Mitchell', plannedStart: '2026-05-05', firstDayDone: true,  checklistDone: true  },
+  { name: 'Ethan Brooks',   employer: 'Pinnacle Finance Group', standard: 'Data Analyst',            lsc: 'James Okafor',   plannedStart: '2026-05-12', firstDayDone: true,  checklistDone: true  },
+  { name: 'Fatima Malik',   employer: 'DataSphere Analytics',   standard: 'Data Analyst',            lsc: 'Priya Sharma',   plannedStart: '2026-05-12', firstDayDone: false, checklistDone: false },
+  { name: 'George Baker',   employer: 'Urban Digital Ltd',      standard: 'Data Technician',         lsc: 'Tom Bradley',    plannedStart: '2026-05-19', firstDayDone: true,  checklistDone: false },
+  { name: 'Holly Nguyen',   employer: 'Apex Digital Ltd',       standard: 'Data Technician',         lsc: 'Hannah Clarke',  plannedStart: '2026-05-19', firstDayDone: false, checklistDone: false },
+  { name: 'Isaac Rivera',   employer: 'Clarity Finance Ltd',    standard: 'Data Analyst',            lsc: 'Sarah Mitchell', plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Jade Thompson',  employer: 'Nova Solutions',         standard: 'Multi-Channel Marketer',  lsc: 'James Okafor',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  standard: 'Data Technician',         lsc: 'Priya Sharma',   plannedStart: '2026-05-26', firstDayDone: false, checklistDone: false },
 ];
 
 // ─── Sales Pipeline Data ───────────────────────────────────────────────
@@ -1055,13 +1055,14 @@ function renderStarterTable(tbodyId, lscFilter) {
     ? STARTER_DATA.filter(r => r.lsc === lscFilter)
     : STARTER_DATA;
   if (!rows.length) {
-    tbody.innerHTML = emptyRow(7, 'No new starters awaiting first meeting for this coach.');
+    tbody.innerHTML = emptyRow(8, 'No new starters awaiting first meeting for this coach.');
     return;
   }
   tbody.innerHTML = rows.map(r => `
     <tr>
       <td title="${r.name}">${r.name}</td>
       <td title="${r.employer}">${r.employer}</td>
+      <td title="${r.standard || ''}">${r.standard || '—'}</td>
       <td title="${r.lsc}">${r.lsc}</td>
       <td>${fmtDate(r.plannedStart)}</td>
       <td>${addDays(r.plannedStart, 30)}</td>
@@ -1407,7 +1408,7 @@ function renderOOFTable(lscFilter) {
   const rows = lscFilter ? OOF_DATA.filter(r => r.lsc === lscFilter) : OOF_DATA;
   const countEl = document.getElementById('oof-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
-  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No OOF learners for this coach.'); return; }
+  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No OOF learners for this coach.'); return; }
   tbody.innerHTML = rows.map(r => {
     const isWithdrawn = r.status === 'Withdrawn';
     const isRed       = r.portfolioRag === 'red';
@@ -1421,7 +1422,6 @@ function renderOOFTable(lscFilter) {
         <td title="${r.standard}">${r.standard}</td>
         <td>${fmtDate(r.plannedGateway)}</td>
         <td>${r.lsc}</td>
-        <td>${oofStatusPill(r.status)}</td>
         <td>${monthCell}</td>
         <td>${prepCell}</td>
         <td style="text-align:center;">${portfolioRagBadge(r.portfolioRag)}</td>
@@ -1436,18 +1436,16 @@ function renderBILTable(lscFilter) {
   const rows = lscFilter ? BIL_DATA.filter(r => r.lsc === lscFilter) : BIL_DATA;
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
-  if (!rows.length) { tbody.innerHTML = emptyRow(9, 'No BIL learners for this coach.'); return; }
+  if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
   tbody.innerHTML = rows.map(r => {
     const isNeeded = r.status === 'BIL Decision Needed';
     const rowClass = isNeeded ? 'row-alert' : '';
     const rtlCell  = r.expectedRtl ? fmtDate(r.expectedRtl) : '<span class="cell-alert">Not confirmed</span>';
-    const gwCell   = r.plannedGateway ? fmtDate(r.plannedGateway) : '<span style="color:var(--text-muted)">—</span>';
     return `
       <tr class="${rowClass}">
         <td title="${r.employer}">${r.employer}</td>
         <td title="${r.name}">${r.name}</td>
         <td title="${r.standard}">${r.standard}</td>
-        <td>${gwCell}</td>
         <td>${r.lsc}</td>
         <td>${bilStatusPill(r.status)}</td>
         <td>${fmtDate(r.ldol)}</td>
