@@ -2468,6 +2468,40 @@ function statusPill(status) {
 
 // ─── Reporting state ───────────────────────────────────────────────────
 
+// Builds a comprehensive last-meeting lookup for all KSB learners.
+// Flagged learners (in TOUCHPOINT_DATA) get their actual overdue date.
+// Compliant learners get a realistic recent date derived from their name
+// (deterministic so results are consistent across runs).
+function _buildMeetingLookup() {
+  const map = {};
+  AD.touchpoints.forEach(r => { map[r.name] = { lastMeeting: r.lastMeeting, meetingType: r.meetingType }; });
+  const types = ['Progress Review', 'Interim Review', 'Learning Review'];
+  AD.ksb.forEach(r => {
+    if (!map[r.name]) {
+      const h = Math.abs(r.name.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0));
+      map[r.name] = { lastMeeting: _isoAdd('2026-06-04', -(1 + h % 28)), meetingType: types[h % 3] };
+    }
+  });
+  return map;
+}
+
+// Builds a comprehensive OTJ lookup for all KSB learners.
+// Flagged learners (in OTJ_DATA) get their actual behind values.
+// Compliant learners get synthesized on-track values.
+function _buildOtjLookup() {
+  const map = {};
+  AD.otj.forEach(r => { map[r.name] = { otjPct: r.otjPct, otjExpected: r.otjExpected }; });
+  AD.ksb.forEach(r => {
+    if (!map[r.name]) {
+      const h = Math.abs(r.name.split('').reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 0));
+      const expected = 40 + (h % 35); // 40–74% expected (varies by programme stage)
+      const actual   = Math.min(expected, expected - 1 + (h % 5)); // 0–4% below expected (on track)
+      map[r.name] = { otjPct: actual, otjExpected: expected };
+    }
+  });
+  return map;
+}
+
 // Helper: area badge for cross-provision view
 const _ab = t => `<span class="area-badge area-${t}">${{compliance:'Compliance',delivery:'Delivery',welfare:'Welfare',curriculum:'Curriculum',gateway:'Gateway'}[t]||t}</span>`;
 
@@ -2521,17 +2555,17 @@ const REPORT_CONFIGS = {
     label: 'Learner Touchpoints',
     columns: ['Learner', 'Employer', 'LSC', 'Date of Last Meeting', 'Meeting Type'],
     getData(f) {
-      const touchMap = Object.fromEntries(AD.touchpoints.map(r => [r.name, r]));
+      const touchMap = _buildMeetingLookup();
       return reportFilterBy(AD.ksb, f)
         .sort((a,b) => {
           const ta = touchMap[a.name], tb = touchMap[b.name];
-          if (!ta && !tb) return 0; if (!ta) return 1; if (!tb) return -1;
+          if (!ta?.lastMeeting && !tb?.lastMeeting) return 0;
+          if (!ta?.lastMeeting) return 1; if (!tb?.lastMeeting) return -1;
           return new Date(ta.lastMeeting) - new Date(tb.lastMeeting);
         })
         .map(r => {
           const t = touchMap[r.name];
-          return { _cols: [r.name, r.employer, r.lsc, t ? fmtDate(t.lastMeeting) : '—', t ? t.meetingType : '—'],
-                   _rowClass: !t ? '' : '' };
+          return { _cols: [r.name, r.employer, r.lsc, t?.lastMeeting ? fmtDate(t.lastMeeting) : '—', t?.meetingType || '—'] };
         });
     }
   },
@@ -2711,25 +2745,26 @@ const REPORT_CONFIGS = {
     columns: ['Learner Name','Employer Name','Standard','LSC','Status','Learning Start Date','Planned Gateway Date','OTJ Actual','OTJ Expected','Learning End Date','KSB Progress','Curriculum Progress','Overall RAG','Date of Last Meeting','Meeting Type','LLDD / Declared'],
     getData(f) {
       const ksbBase  = reportFilterBy(AD.ksb, f);
-      const otjMap   = Object.fromEntries(AD.otj.map(r => [r.name, r]));
-      const touchMap = Object.fromEntries(AD.touchpoints.map(r => [r.name, r]));
+      const otjMap   = _buildOtjLookup();
+      const touchMap = _buildMeetingLookup();
       const currMap  = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
       const alsMap   = Object.fromEntries(AD.als.map(r => [r.name, r.need]));
       return ksbBase.sort((a,b) => a.lsc.localeCompare(b.lsc)||a.name.localeCompare(b.name)).map(r => {
-        const otj   = otjMap[r.name];
-        const touch = touchMap[r.name];
+        const otj   = otjMap[r.name] || {};
+        const touch = touchMap[r.name] || {};
         const curr  = currMap[r.name];
         const rag   = ksbRag(r);
-        const endDate   = r.plannedGateway ? fmtDate(_isoAdd(r.plannedGateway, 90)) : '—';
-        const ksbProg   = `K:${r.knowledgePct}% | S:${r.skillsPct}% | B:${r.behavioursPct}%`;
-        const currProg  = curr ? `${curr.sprint} (${curr.partsComplete}/8)` : '—';
+        const endDate  = r.plannedGateway ? fmtDate(_isoAdd(r.plannedGateway, 90)) : '—';
+        const ksbProg  = `K:${r.knowledgePct}% | S:${r.skillsPct}% | B:${r.behavioursPct}%`;
+        const currProg = curr ? `${curr.sprint} (${curr.partsComplete}/8)` : '—';
         return { _cols: [
           r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status),
           fmtDate(r.startDate), fmtDate(r.plannedGateway),
-          otj ? otj.otjPct + '%' : '—', otj ? otj.otjExpected + '%' : '—',
+          otj.otjPct != null ? otj.otjPct + '%' : '—',
+          otj.otjExpected != null ? otj.otjExpected + '%' : '—',
           endDate, ksbProg, currProg, ksbRagBadge(rag),
-          touch ? fmtDate(touch.lastMeeting) : '—',
-          touch ? touch.meetingType : '—',
+          touch.lastMeeting ? fmtDate(touch.lastMeeting) : '—',
+          touch.meetingType || '—',
           alsMap[r.name] || '—'
         ], _rowClass: rag === 'super-red' ? 'row-alert' : '' };
       });
@@ -2740,12 +2775,12 @@ const REPORT_CONFIGS = {
     label: 'Standard Employer Report',
     columns: ['Learner Name','Employer Name','Standard','LSC','Status','Learning Start Date','Planned Gateway Date','OTJ Actual','OTJ Expected','Learning End Date','KSB Progress','Curriculum Progress','Overall RAG','LSC Commentary'],
     getData(f) {
-      const otjMap  = Object.fromEntries(AD.otj.map(r => [r.name, r]));
+      const otjMap  = _buildOtjLookup();
       const currMap = Object.fromEntries(AD.curriculum.map(r => [r.name, r]));
       return reportFilterBy(AD.ksb, f)
         .sort((a,b) => a.employer.localeCompare(b.employer)||a.name.localeCompare(b.name))
         .map(r => {
-          const otj  = otjMap[r.name];
+          const otj  = otjMap[r.name] || {};
           const curr = currMap[r.name];
           const rag  = ksbRag(r);
           const endDate  = r.plannedGateway ? fmtDate(_isoAdd(r.plannedGateway, 90)) : '—';
@@ -2754,7 +2789,8 @@ const REPORT_CONFIGS = {
           return { _cols: [
             r.name, r.employer, r.standard, r.lsc, ksbStatusPill(r.status),
             fmtDate(r.startDate), fmtDate(r.plannedGateway),
-            otj ? otj.otjPct + '%' : '—', otj ? otj.otjExpected + '%' : '—',
+            otj.otjPct != null ? otj.otjPct + '%' : '—',
+            otj.otjExpected != null ? otj.otjExpected + '%' : '—',
             endDate, ksbProg, currProg, ksbRagBadge(rag), '—'
           ], _rowClass: rag === 'super-red' ? 'row-alert' : '' };
         });
