@@ -2817,7 +2817,8 @@ const REPORT_CONFIGS = {
         .sort((a,b) => (so[curriculumStatus(a)]??3)-(so[curriculumStatus(b)]??3))
         .map(r => {
           const st = curriculumStatus(r);
-          return { _cols: [r.name, r.employer, r.standard, r.lsc, r.sprint, curriculumProgressBar(r.partsComplete, 8), fmtDate(r.lastActivity), curriculumStatusPill(st)],
+          const pct = Math.round(r.partsComplete / 8 * 100) + '%';
+          return { _cols: [r.name, r.employer, r.standard, r.lsc, r.sprint, pct, fmtDate(r.lastActivity), curriculumStatusPill(st)],
                    _rowClass: ['Behind','No Activity'].includes(st) ? 'row-alert' : '' };
         });
     }
@@ -2929,7 +2930,14 @@ function runReport(areaOverride, extraFilters) {
 
 function exportReportCSV() {
   if (!activeReportConfig || !activeReportRows.length) return;
-  const strip = s => String(s).replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/−/g, '-').replace(/—/g, '-').replace(/✓/g, 'Yes');
+  const strip = s => String(s)
+    .replace(/<[^>]*>/g, '')   // strip HTML tags
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&rarr;/g, '->').replace(/&mdash;/g, '-')
+    .replace(/[█░▓▒]/g, '')   // remove block/progress bar chars
+    .replace(/−/g, '-').replace(/—/g, '-')
+    .replace(/✓/g, 'Yes').replace(/[✗✘]/g, 'No')
+    .replace(/[↑↓⇅]/g, '')   // remove sort icons
+    .trim();
   const esc   = s => `"${strip(s).replace(/"/g, '""')}"`;
   const csv   = [
     activeReportConfig.columns.map(esc).join(','),
