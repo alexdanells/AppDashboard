@@ -1278,6 +1278,308 @@ function renderGateway() {
   container.innerHTML = html;
 }
 
+// ─── Reporting ─────────────────────────────────────────────────────────
+
+function reportFilterBy(data, filters) {
+  return data.filter(r => {
+    if (filters.lsc          && r.lsc          && r.lsc          !== filters.lsc)          return false;
+    if (filters.employer     && r.employer     && r.employer     !== filters.employer)     return false;
+    if (filters.standard     && r.standard     && r.standard     !== filters.standard)     return false;
+    if (filters.status       && r.status       && r.status       !== filters.status)       return false;
+    if (filters.portfolioRag && r.portfolioRag && r.portfolioRag !== filters.portfolioRag) return false;
+    return true;
+  });
+}
+
+function statusPill(status) {
+  const map = {
+    'Current':             'dd-status-current',
+    'At Gateway':          'dd-status-gateway',
+    'Withdrawn':           'dd-status-withdrawn',
+    'BIL':                 'dd-status-bil',
+    'BIL Ongoing':         'dd-status-bil',
+    'BIL Decision Needed': 'dd-status-withdrawn',
+    'RTL Confirmed':       'dd-status-gateway',
+  };
+  return `<span class="${map[status] || 'dd-status-current'}">${status}</span>`;
+}
+
+const REPORT_CONFIGS = {
+  all: {
+    label: 'All Areas — Cross-Provision View',
+    columns: ['Area', 'Learner', 'Employer', 'LSC', 'Issue / Status', 'Detail'],
+    getData(f) {
+      const rows = [];
+      reportFilterBy(TOUCHPOINT_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
+        'Outstanding touchpoint', `Last: ${fmtDate(r.lastMeeting)}`
+      ]}));
+      reportFilterBy(SLA_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
+        'SLA breach', `${r.weeksSince} weeks since last review`
+      ]}));
+      reportFilterBy(OTJ_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-compliance">Compliance</span>', r.name, r.employer, r.lsc,
+        'No OTJ evidence', `${r.otjPct}% / ${r.otjExpected}% expected`
+      ]}));
+      reportFilterBy(OOF_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
+        statusPill(r.status), portfolioRagBadge(r.portfolioRag)
+      ], _rowClass: r.portfolioRag === 'red' ? 'row-alert' : '' }));
+      reportFilterBy(BIL_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-delivery">Delivery</span>', r.name, r.employer, r.lsc,
+        statusPill(r.status), r.expectedRtl ? `RTL: ${fmtDate(r.expectedRtl)}` : 'RTL TBC'
+      ]}));
+      reportFilterBy(SAFEGUARDING_DATA, f).forEach(r => rows.push({ _cols: [
+        '<span class="area-badge area-welfare">Welfare</span>', r.name, '—', r.lsc,
+        `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
+        r.category
+      ]}));
+      return rows;
+    }
+  },
+  touchpoints: {
+    label: 'Outstanding Touchpoints',
+    columns: ['Learner', 'Employer', 'LSC', 'Last Meeting', 'Meeting Type', 'Days Since'],
+    getData(f) {
+      return reportFilterBy(TOUCHPOINT_DATA, f).map(r => ({ _cols: [
+        r.name, r.employer, r.lsc, fmtDate(r.lastMeeting), r.meetingType,
+        Math.floor((new Date('2026-06-04') - new Date(r.lastMeeting)) / 86400000) + ' days'
+      ]}));
+    }
+  },
+  sla: {
+    label: 'SLA Breaches — Progress Reviews >10 Weeks',
+    columns: ['Learner', 'Employer', 'LSC', 'Last Review', 'Weeks Since'],
+    getData(f) {
+      return reportFilterBy(SLA_DATA, f).map(r => ({ _cols: [
+        r.name, r.employer, r.lsc, fmtDate(r.lastReview), r.weeksSince + ' weeks'
+      ]}));
+    }
+  },
+  otj: {
+    label: 'OTJ Compliance',
+    columns: ['Learner', 'Employer', 'LSC', 'OTJ %', 'Expected %', 'Gap', 'Last Entry'],
+    getData(f) {
+      return reportFilterBy(OTJ_DATA, f).map(r => {
+        const gap = r.otjExpected - r.otjPct;
+        return { _cols: [
+          r.name, r.employer, r.lsc,
+          r.otjPct + '%', r.otjExpected + '%',
+          gap > 0 ? `−${gap}%` : '✓',
+          fmtDate(r.lastEntry)
+        ], _rowClass: gap > 15 ? 'row-alert' : '' };
+      });
+    }
+  },
+  starters: {
+    label: 'Awaiting First LSC Meeting',
+    columns: ['Learner', 'Employer', 'LSC', 'Planned Start', 'FDOL Entry', 'Starter Checklist'],
+    getData(f) {
+      return reportFilterBy(STARTER_DATA, f).map(r => ({ _cols: [
+        r.name, r.employer, r.lsc, fmtDate(r.plannedStart),
+        r.firstDayDone  ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
+        r.checklistDone ? '<span class="check-yes">✓</span>' : '<span class="check-no">—</span>',
+      ]}));
+    }
+  },
+  oof: {
+    label: 'Out of Funding (OOF)',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'Portfolio RAG', 'Month Expected', 'Notes'],
+    getData(f) {
+      return reportFilterBy(OOF_DATA, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.lsc,
+        statusPill(r.status), portfolioRagBadge(r.portfolioRag),
+        r.monthExpected || '—', r.notes
+      ], _wideCol: 7 }));
+    }
+  },
+  bil: {
+    label: 'Break in Learning (BIL)',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Status', 'LDOL', 'Expected RTL', 'Notes'],
+    getData(f) {
+      return reportFilterBy(BIL_DATA, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.lsc,
+        statusPill(r.status), fmtDate(r.ldol),
+        r.expectedRtl ? fmtDate(r.expectedRtl) : '—', r.notes
+      ], _wideCol: 7 }));
+    }
+  },
+  gateway: {
+    label: 'Gateway Pipeline — All Quarters',
+    columns: ['Learner', 'Employer', 'Standard', 'LSC', 'Quarter', 'Status', 'Planned Gateway', 'Month Expected', 'Portfolio RAG'],
+    getData(f) {
+      const q = (src, label) => reportFilterBy(src, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.lsc, label,
+        statusPill(r.status), fmtDate(r.plannedGateway),
+        r.monthExpected || '—', portfolioRagBadge(r.portfolioRag)
+      ]}));
+      return [...q(GW_Q2_DATA, 'Q2 2026'), ...q(GW_Q3_DATA, 'Q3 2026'), ...q(GW_Q4_DATA, 'Q4 2026')];
+    }
+  },
+  welfare_als: {
+    label: 'ALS Register',
+    columns: ['Learner', 'Standard', 'LSC', 'Need', 'Last Review', 'Next Review', 'Status'],
+    getData(f) {
+      return reportFilterBy(ALS_DATA, f).map(r => {
+        const rag = alsReviewRag(r.nextReview);
+        return { _cols: [
+          r.name, r.standard, r.lsc, r.need,
+          fmtDate(r.lastReview), fmtDate(r.nextReview),
+          `<span class="weeks-pill ${rag.cls}">${rag.label}</span>`
+        ], _rowClass: rag.cls === 'urgent' ? 'row-alert' : '' };
+      });
+    }
+  },
+  welfare_safeguarding: {
+    label: 'Safeguarding & Welfare Concerns',
+    columns: ['Learner', 'LSC', 'Category', 'Status', 'Date Raised', 'Last Action', 'Notes'],
+    getData(f) {
+      return reportFilterBy(SAFEGUARDING_DATA, f).map(r => ({ _cols: [
+        r.name, r.lsc, r.category,
+        `<span class="${r.status === 'active' ? 'status-active' : 'status-closed'}">${r.status}</span>`,
+        fmtDate(r.dateRaised), fmtDate(r.lastAction), r.notes
+      ], _wideCol: 6 }));
+    }
+  },
+  pipeline: {
+    label: 'Sales Pipeline',
+    columns: ['Learner', 'Employer', 'Standard', 'AM', 'Probability', 'Expected Start', 'Status'],
+    getData(f) {
+      return reportFilterBy(PIPELINE_ENTRIES, f).map(r => ({ _cols: [
+        r.name, r.employer, r.standard, r.am,
+        r.prob + '%', fmtDate(r.start), salesStatusPill(r.status)
+      ]}));
+    }
+  }
+};
+
+const REPORT_PRESETS = [
+  { id: 'otj',          area: 'otj',                  extra: {} },
+  { id: 'sla',          area: 'sla',                  extra: {} },
+  { id: 'touchpoints',  area: 'touchpoints',          extra: {} },
+  { id: 'oof-red',      area: 'oof',                  extra: { portfolioRag: 'red' } },
+  { id: 'bil-decision', area: 'bil',                  extra: { status: 'BIL Decision Needed' } },
+  { id: 'welfare',      area: 'welfare_safeguarding',  extra: { status: 'active' } },
+  { id: 'gateway',      area: 'gateway',              extra: {} },
+  { id: 'pipeline',     area: 'pipeline',             extra: {} },
+];
+
+let activeReportConfig = null;
+let activeReportRows   = [];
+
+function getReportFilters() {
+  return {
+    lsc:          document.getElementById('rf-lsc')?.value      || '',
+    standard:     document.getElementById('rf-standard')?.value || '',
+    employer:     document.getElementById('rf-employer')?.value || '',
+    status:       document.getElementById('rf-status')?.value   || '',
+    portfolioRag: document.getElementById('rf-rag')?.value      || '',
+  };
+}
+
+function runReport(areaOverride, extraFilters) {
+  const area   = areaOverride || document.getElementById('rf-area')?.value || 'all';
+  const filters = { ...getReportFilters(), ...(extraFilters || {}) };
+  const config  = REPORT_CONFIGS[area];
+  if (!config) return;
+
+  const rows = config.getData(filters);
+  activeReportConfig = config;
+  activeReportRows   = rows;
+
+  setText('report-results-title', config.label);
+  const countEl = document.getElementById('report-results-count');
+  if (countEl) countEl.textContent = rows.length + ' record' + (rows.length !== 1 ? 's' : '');
+
+  const thead = document.getElementById('report-thead');
+  if (thead) thead.innerHTML = `<tr>${config.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+
+  const tbody = document.getElementById('report-tbody');
+  if (tbody) {
+    tbody.innerHTML = rows.length === 0
+      ? `<tr><td colspan="${config.columns.length}" class="empty-row">No records match the selected filters.</td></tr>`
+      : rows.map(r => {
+          const cls   = r._rowClass ? ` class="${r._rowClass}"` : '';
+          const cells = r._cols.map((v, i) =>
+            `<td${r._wideCol === i ? ' style="font-size:0.78rem;max-width:240px;white-space:normal;"' : ''}>${v}</td>`
+          ).join('');
+          return `<tr${cls}>${cells}</tr>`;
+        }).join('');
+  }
+
+  const panel  = document.getElementById('report-results-panel');
+  const expBtn = document.getElementById('report-export-btn');
+  if (panel)  panel.style.display  = '';
+  if (expBtn) expBtn.style.display = '';
+}
+
+function exportReportCSV() {
+  if (!activeReportConfig || !activeReportRows.length) return;
+  const strip = s => String(s).replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/−/g, '-').replace(/—/g, '-').replace(/✓/g, 'Yes');
+  const esc   = s => `"${strip(s).replace(/"/g, '""')}"`;
+  const csv   = [
+    activeReportConfig.columns.map(esc).join(','),
+    ...activeReportRows.map(r => r._cols.map(esc).join(','))
+  ].join('\n');
+  const a = Object.assign(document.createElement('a'), {
+    href:     URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+    download: 'boom-report.csv',
+  });
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function populateEmployerDropdown() {
+  const sel = document.getElementById('rf-employer');
+  if (!sel) return;
+  const employers = new Set(
+    [TOUCHPOINT_DATA, SLA_DATA, OTJ_DATA, STARTER_DATA, OOF_DATA, BIL_DATA,
+     GW_Q2_DATA, GW_Q3_DATA, GW_Q4_DATA, PIPELINE_ENTRIES]
+      .flatMap(arr => arr.map(r => r.employer).filter(Boolean))
+  );
+  [...employers].sort().forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = e;
+    sel.appendChild(opt);
+  });
+}
+
+document.querySelectorAll('.report-preset-pill').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const preset = REPORT_PRESETS.find(p => p.id === btn.dataset.preset);
+    if (!preset) return;
+    document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const areaEl = document.getElementById('rf-area');
+    if (areaEl) areaEl.value = preset.area;
+    if (preset.extra.portfolioRag) { const el = document.getElementById('rf-rag');    if (el) el.value = preset.extra.portfolioRag; }
+    if (preset.extra.status)       { const el = document.getElementById('rf-status'); if (el) el.value = preset.extra.status; }
+    runReport(preset.area, preset.extra);
+  });
+});
+
+document.getElementById('report-run-btn')?.addEventListener('click', () => {
+  document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
+  runReport();
+});
+
+document.getElementById('report-clear-btn')?.addEventListener('click', () => {
+  ['rf-lsc', 'rf-standard', 'rf-employer', 'rf-status', 'rf-rag'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const areaEl = document.getElementById('rf-area'); if (areaEl) areaEl.value = 'all';
+  document.querySelectorAll('.report-preset-pill').forEach(b => b.classList.remove('active'));
+  const panel  = document.getElementById('report-results-panel');
+  const expBtn = document.getElementById('report-export-btn');
+  if (panel)  panel.style.display  = 'none';
+  if (expBtn) expBtn.style.display = 'none';
+});
+
+document.getElementById('report-export-btn')?.addEventListener('click', exportReportCSV);
+
+populateEmployerDropdown();
+
 // ─── Init ──────────────────────────────────────────────────────────────
 renderAll();
 renderPipeline();
