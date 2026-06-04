@@ -1832,7 +1832,13 @@ function renderOOFTable(lscFilter) {
 function renderBILTable(lscFilter) {
   const tbody = document.getElementById('bil-tbody');
   if (!tbody) return;
-  const rows = lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil;
+  const rows = (lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil)
+    .slice().sort((a, b) => {
+      if (!a.expectedRtl && !b.expectedRtl) return 0;
+      if (!a.expectedRtl) return -1; // not confirmed → top
+      if (!b.expectedRtl) return 1;
+      return new Date(a.expectedRtl) - new Date(b.expectedRtl); // soonest return first
+    });
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
   if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
