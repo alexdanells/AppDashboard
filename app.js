@@ -437,6 +437,41 @@ const CURRICULUM_DATA = [
   { name: 'Will Thornton',   employer: 'Clarity Finance Ltd',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-05' },
 ];
 
+// ─── Learner Voice Data ────────────────────────────────────────────────
+
+const LEARNER_COMMENTS_DATA = [
+  { name: 'Amara Osei',     employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', lastReview: '2026-05-20', comment: "I'm really enjoying the Python modules — they've already helped me at work. I'd love more practice exercises alongside the theory." },
+  { name: 'Isla Thomson',   employer: 'TechCore UK',            lsc: 'Sarah Mitchell', lastReview: '2026-05-15', comment: "The SQL content has been challenging but really relevant to my day job. My LSC is always on hand when I get stuck, which makes a big difference." },
+  { name: 'Quinn Andrews',  employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-04-30', comment: "Feeling confident about gateway now. The AI modules have been the most engaging part of the programme for me by far." },
+  { name: 'Grace Adeniran', employer: 'DataSphere Analytics',   lsc: 'James Okafor',   lastReview: '2026-04-10', comment: "The BIL period has been difficult but I appreciate the support from my LSC throughout. Looking forward to returning in August." },
+  { name: 'Kyle Patterson', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-12', comment: "Really engaged with the automation content. My employer has already started using some of the tools I've introduced from the programme." },
+  { name: 'Maya Patel',     employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-28', comment: "Brilliant programme overall. The practical elements are well-designed and directly relevant to my role. Gateway prep is going really well." },
+  { name: 'Victor Marsh',   employer: 'Greenfield Consulting',  lsc: 'Tom Bradley',    lastReview: '2026-05-22', comment: "Good progress this month. The data analytics content is stretching me but I can clearly see the improvement I'm making week on week." },
+  { name: 'Tara Collins',   employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastReview: '2026-05-18', comment: "Really positive experience throughout. My line manager is fully supportive and allocates protected time for learning activities." },
+  { name: 'Nathan Brooks',  employer: 'TechCore UK',            lsc: 'Hannah Clarke',  lastReview: '2026-05-05', comment: "Finding the statistics module hard going but I know it's important for the EPA. My LSC has been very patient and provides great resources." },
+  { name: 'Reuben Adeyemi', employer: 'Bloom Marketing Co.',    lsc: 'Hannah Clarke',  lastReview: '2026-04-28', comment: "Thoroughly enjoying the programme. The blend of theory and practical application works really well for how I learn." },
+];
+
+const EMPLOYER_COMMENTS_DATA = [
+  { name: 'Amara Osei',     lineManager: 'James Thornton',  employer: 'Bright Digital Agency',  lsc: 'Sarah Mitchell', lastReview: '2026-05-20', comment: "Amara is applying her learning immediately. We've seen real improvement in how she approaches data tasks. Excellent programme and great support from the coach." },
+  { name: 'Isla Thomson',   lineManager: 'Rebecca Walsh',   employer: 'TechCore UK',            lsc: 'Sarah Mitchell', lastReview: '2026-05-15', comment: "Isla is growing in confidence week on week. The SQL skills she's developing are already being used in live client projects." },
+  { name: 'Quinn Andrews',  lineManager: 'David Park',      employer: 'TechCore UK',            lsc: 'James Okafor',   lastReview: '2026-04-30', comment: "Quinn is one of our strongest apprentices. His AI and automation work has already saved the team several hours a week on repetitive tasks." },
+  { name: 'Kyle Patterson', lineManager: 'Fiona Greenwood', employer: 'Greenfield Consulting',  lsc: 'Priya Sharma',   lastReview: '2026-05-12', comment: "Kyle's enthusiasm is infectious. We've been genuinely impressed by how proactively he shares his learning with the wider team." },
+  { name: 'Luca Ferretti',  lineManager: 'Marco Rossi',     employer: 'NovaTech Solutions',     lsc: 'Priya Sharma',   lastReview: '2026-05-08', comment: "Good progress overall. Luca occasionally needs prompting to submit OTJ evidence but his practical skills are developing strongly." },
+  { name: 'Victor Marsh',   lineManager: 'Sarah Connelly',  employer: 'Greenfield Consulting',  lsc: 'Tom Bradley',    lastReview: '2026-05-22', comment: "Victor has added real value to the team. The data skills he's gaining are immediately applicable to our everyday work." },
+  { name: 'Jordan Ellis',   lineManager: 'Chris Hamilton',  employer: 'Apex Digital Ltd',       lsc: 'Tom Bradley',    lastReview: '2026-05-19', comment: "Jordan is progressing well and is popular with the team. We're fully committed to supporting him throughout the apprenticeship journey." },
+  { name: 'Nathan Brooks',  lineManager: 'Helen Yates',     employer: 'TechCore UK',            lsc: 'Hannah Clarke',  lastReview: '2026-05-05', comment: "Nathan is a committed learner. He finds the academic writing element challenging but he is steadily improving with support." },
+  { name: 'Reuben Adeyemi', lineManager: 'Tony Okonkwo',    employer: 'Bloom Marketing Co.',    lsc: 'Hannah Clarke',  lastReview: '2026-04-28', comment: "Reuben is an asset to the team. His willingness to apply his learning in real-world scenarios immediately is outstanding." },
+];
+
+const EXIT_REVIEW_DATA = [
+  { name: 'Callum Nash',   standard: 'Applied AI & Automation', lsc: 'Tom Bradley',   comment: "Left due to personal reasons unrelated to the programme. Spoke highly of the learning content and LSC support throughout his time on programme." },
+  { name: 'Willow James',  standard: 'Assistant Accountant',    lsc: 'Hannah Clarke', comment: "Employer ceased trading. Learner expressed strong interest in continuing with a new employer but family circumstances prevented a transfer being arranged in time." },
+  { name: 'Noah Williams', standard: 'Data Analyst',            lsc: 'Hannah Clarke', comment: "Withdrew following ongoing mental health challenges. Received full welfare and safeguarding support throughout. Left on positive terms with the programme team." },
+  { name: 'Destiny Osei',  standard: 'Multi-Channel Marketer',  lsc: 'Hannah Clarke', comment: "Employer ceased trading mid-programme. Learner was performing well and expressed genuine disappointment at being unable to complete her qualification." },
+  { name: 'Callum Fraser', standard: 'Assistant Accountant',    lsc: 'Tom Bradley',   comment: "Financial hardship concerns were successfully resolved with external signposting. Learner subsequently secured a higher-paid role and chose to withdraw voluntarily." },
+];
+
 // ─── KSB Tracker Data ──────────────────────────────────────────────────
 const KSB_STANDARDS = {
   'Data Technician':         { knowledge: 52, skills: 32, behaviours: 8  },
@@ -509,6 +544,7 @@ let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
 let gwForecastFilter   = 'All';
 let welfareFilter      = 'All';
+let learnerVoiceFilter = 'All';
 let lscPageCoach       = 'James Okafor';
 let ksbLSCFilter       = '';
 let ksbStandardFilter  = '';
@@ -704,6 +740,9 @@ function applyRolePermissions() {
     const welfareLscBar = document.getElementById('welfare-lsc-bar');
     if (welfareLscBar) welfareLscBar.style.display = 'none';
     welfareFilter = 'All';
+    const lvLscBar = document.getElementById('learner-voice-lsc-bar');
+    if (lvLscBar) lvLscBar.style.display = 'none';
+    learnerVoiceFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -727,6 +766,9 @@ function applyRolePermissions() {
     const welfareLscBar = document.getElementById('welfare-lsc-bar');
     if (welfareLscBar) welfareLscBar.style.display = '';
     welfareFilter = 'All';
+    const lvLscBar = document.getElementById('learner-voice-lsc-bar');
+    if (lvLscBar) lvLscBar.style.display = '';
+    learnerVoiceFilter = 'All';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -799,6 +841,7 @@ function renderAll() {
   renderCurriculum();
   renderGatewayForecast();
   renderKSB();
+  renderLearnerVoice();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -1623,6 +1666,65 @@ function renderGateway() {
   container.innerHTML = html;
 }
 
+// ─── Learner Voice ─────────────────────────────────────────────────────
+
+function renderLearnerVoice() {
+  const isLSC = currentUser.role === 'lsc';
+  const f     = isLSC ? currentUser.coach : (learnerVoiceFilter === 'All' ? null : learnerVoiceFilter);
+
+  const lcRows = f ? LEARNER_COMMENTS_DATA.filter(r => r.lsc === f)  : LEARNER_COMMENTS_DATA;
+  const ecRows = f ? EMPLOYER_COMMENTS_DATA.filter(r => r.lsc === f) : EMPLOYER_COMMENTS_DATA;
+  const erRows = f ? EXIT_REVIEW_DATA.filter(r => r.lsc === f)       : EXIT_REVIEW_DATA;
+
+  const lcCount = document.getElementById('learner-comments-count');
+  const ecCount = document.getElementById('employer-comments-count');
+  const erCount = document.getElementById('exit-review-count');
+  if (lcCount) lcCount.textContent = lcRows.length + ' comment' + (lcRows.length !== 1 ? 's' : '');
+  if (ecCount) ecCount.textContent = ecRows.length + ' comment' + (ecRows.length !== 1 ? 's' : '');
+  if (erCount) erCount.textContent = erRows.length + ' review' + (erRows.length !== 1 ? 's' : '');
+
+  const lcTbody = document.getElementById('learner-comments-tbody');
+  if (lcTbody) {
+    lcTbody.innerHTML = lcRows.length
+      ? lcRows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.employer}</td>
+          <td>${fmtDate(r.lastReview)}</td>
+          <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+        </tr>`).join('')
+      : emptyRow(4, 'No learner comments for this coach.');
+  }
+
+  const ecTbody = document.getElementById('employer-comments-tbody');
+  if (ecTbody) {
+    ecTbody.innerHTML = ecRows.length
+      ? ecRows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.lineManager}</td>
+          <td>${r.employer}</td>
+          <td>${fmtDate(r.lastReview)}</td>
+          <td style="font-size:0.82rem;white-space:normal;max-width:380px;font-style:italic;">"${r.comment}"</td>
+        </tr>`).join('')
+      : emptyRow(5, 'No employer comments for this coach.');
+  }
+
+  const erTbody = document.getElementById('exit-review-tbody');
+  if (erTbody) {
+    erTbody.innerHTML = erRows.length
+      ? erRows.map(r => `<tr>
+          <td>${r.name}</td>
+          <td>${r.standard}</td>
+          <td style="font-size:0.82rem;white-space:normal;max-width:420px;font-style:italic;">"${r.comment}"</td>
+        </tr>`).join('')
+      : emptyRow(3, 'No exit reviews for this coach.');
+  }
+}
+
+document.getElementById('learner-voice-lsc')?.addEventListener('change', function() {
+  learnerVoiceFilter = this.value;
+  renderLearnerVoice();
+});
+
 // ─── KSB Tracker ───────────────────────────────────────────────────────
 
 function ksbRag(r) {
@@ -1710,6 +1812,14 @@ function renderKSB() {
 
   const notice = document.getElementById('ksb-manager-notice');
   if (notice) notice.style.display = managerAllView ? '' : 'none';
+
+  // Update subtitle based on role
+  const subtitle = document.querySelector('#delivery-manager-view .page-subtitle');
+  if (subtitle) {
+    subtitle.textContent = isLSC
+      ? 'Knowledge, Skills and Behaviours across your caseload'
+      : 'Knowledge, Skills and Behaviours progress across your provision';
+  }
 
   const tbody = document.getElementById('ksb-tbody');
   if (!tbody) return;

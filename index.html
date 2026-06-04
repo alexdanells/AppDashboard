@@ -331,6 +331,18 @@
           <button class="btn-export">⬇ Export</button>
         </div>
 
+        <div class="lsc-selector-bar" id="learner-voice-lsc-bar">
+          <label class="lsc-selector-label" for="learner-voice-lsc">Filter by LSC:</label>
+          <select class="filter-select" id="learner-voice-lsc">
+            <option value="All">All Coaches</option>
+            <option>Sarah Mitchell</option>
+            <option>James Okafor</option>
+            <option>Priya Sharma</option>
+            <option>Tom Bradley</option>
+            <option>Hannah Clarke</option>
+          </select>
+        </div>
+
         <div class="enps-hero" id="enps-hero">
           <div class="enps-score-block">
             <span class="enps-label">Learner eNPS</span>
@@ -358,11 +370,57 @@
           </div>
         </div>
 
-        <div class="dashboard-grid">
-          <div class="panel"><div class="panel-header"><h2 class="panel-title">Recent Learner Comments</h2></div><div class="panel-body placeholder-body">Verbatim feedback from progress reviews — sentiment-tagged positive / neutral / negative.</div></div>
-          <div class="panel"><div class="panel-header"><h2 class="panel-title">Recent Employer Comments</h2></div><div class="panel-body placeholder-body">Employer feedback from review sign-offs — flagged concerns and praise.</div></div>
-          <div class="panel panel--wide"><div class="panel-header"><h2 class="panel-title">Exit Review Summary</h2><button class="btn-export">⬇ Export</button></div><div class="panel-body placeholder-body">Themes from exit reviews — reason for leaving, satisfaction score, NPS at exit.</div></div>
-          <div class="panel panel--wide"><div class="panel-header"><h2 class="panel-title">Survey Results by Standard</h2></div><div class="panel-body placeholder-body">Aggregated survey scores per apprenticeship standard — satisfaction, teaching quality, relevance.</div></div>
+        <div class="panel-stack">
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Learner Comments</h2>
+              <span class="panel-count" id="learner-comments-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Employer</th><th>Last Progress Review</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="learner-comments-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Employer Comments</h2>
+              <span class="panel-count" id="employer-comments-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Line Manager</th><th>Employer</th><th>Last Progress Review</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="employer-comments-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">Exit Review Summary</h2>
+              <span class="panel-count" id="exit-review-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Learner</th><th>Standard</th><th>Commentary</th>
+                  </tr>
+                </thead>
+                <tbody id="exit-review-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -501,7 +559,7 @@
           </div>
 
           <div id="ksb-manager-notice" class="ksb-notice" style="display:none;">
-            ⓘ Showing at-risk learners only (Super Red, Red, Amber). Filter by LSC above to see the full caseload for a specific coach.
+            ⓘ Showing at-risk learners only (Super Red, Red, Amber) with gateway within 6 months. Filter by LSC above to see the full caseload for a specific coach.
           </div>
 
           <div class="panel panel--span">
