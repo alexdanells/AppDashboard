@@ -948,7 +948,7 @@ function renderOverviewSummary() {
     const redNamesEl = document.getElementById('ov-aaf-red-names');
     if (redNamesEl) redNamesEl.textContent = aafRed > 0
       ? `Red metrics: ${aafMetrics.filter(m => m.rag === 'red').map(m => m.name).join(', ')}`
-      : 'No red metrics';
+      : '';
   }
 
   // — Curriculum —
