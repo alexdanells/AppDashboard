@@ -437,6 +437,46 @@ const CURRICULUM_DATA = [
   { name: 'Will Thornton',   employer: 'Clarity Finance Ltd',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-05' },
 ];
 
+// ─── KSB Tracker Data ──────────────────────────────────────────────────
+const KSB_STANDARDS = {
+  'Data Technician':         { knowledge: 52, skills: 32, behaviours: 8  },
+  'Applied AI & Automation': { knowledge: 58, skills: 58, behaviours: 12 },
+  'Data Analyst':            { knowledge: 30, skills: 30, behaviours: 14 },
+};
+
+const KSB_DATA = [
+  // ─── Sarah Mitchell ───────────────────────────────────────────────────
+  { employer: 'Bright Digital Agency',  name: 'Amara Osei',      standard: 'Data Technician',         lsc: 'Sarah Mitchell', startDate: '2024-09-02', plannedGateway: '2026-06-15', status: 'Gateway', knowledgePct: 95, skillsPct: 88, behavioursPct: 100 },
+  { employer: 'TechCore UK',            name: 'Isla Thomson',     standard: 'Data Technician',         lsc: 'Sarah Mitchell', startDate: '2024-11-04', plannedGateway: '2026-08-20', status: 'Live',    knowledgePct: 70, skillsPct: 65, behavioursPct: 75  },
+  { employer: 'Apex Digital Ltd',       name: 'Tasha Morris',     standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-01-06', plannedGateway: '2026-07-10', status: 'Live',    knowledgePct: 45, skillsPct: 40, behavioursPct: 50  },
+  { employer: 'Future Tech Services',   name: 'Kira Patel',       standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-03-10', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
+  { employer: 'Clarity Finance Ltd',    name: 'Yasmin Al-Hassan', standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-12-02', plannedGateway: '2026-12-10', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  // ─── James Okafor ─────────────────────────────────────────────────────
+  { employer: 'TechCore UK',            name: 'Quinn Andrews',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2024-09-15', plannedGateway: '2026-06-10', status: 'Gateway', knowledgePct: 90, skillsPct: 85, behavioursPct: 95  },
+  { employer: 'Clarity Finance Ltd',    name: 'Leo Okafor',       standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2024-10-01', plannedGateway: '2026-06-25', status: 'Gateway', knowledgePct: 85, skillsPct: 80, behavioursPct: 90  },
+  { employer: 'DataSphere Analytics',   name: 'Grace Adeniran',   standard: 'Data Technician',         lsc: 'James Okafor',   startDate: '2025-02-01', plannedGateway: '2026-09-15', status: 'BIL',     knowledgePct: 55, skillsPct: 50, behavioursPct: 60  },
+  { employer: 'DataSphere Analytics',   name: 'Riya Sharma',      standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2025-03-01', plannedGateway: '2026-09-23', status: 'Live',    knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
+  { employer: 'Pinnacle Finance Group', name: 'Patrick Marsh',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2025-01-01', plannedGateway: '2026-12-01', status: 'Live',    knowledgePct: 20, skillsPct: 15, behavioursPct: 25  },
+  // ─── Priya Sharma ─────────────────────────────────────────────────────
+  { employer: 'Greenfield Consulting',  name: 'Kyle Patterson',   standard: 'Data Technician',         lsc: 'Priya Sharma',   startDate: '2024-12-01', plannedGateway: '2026-07-15', status: 'Live',    knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
+  { employer: 'DataSphere Analytics',   name: 'Fatima Malik',     standard: 'Data Analyst',            lsc: 'Priya Sharma',   startDate: '2025-02-01', plannedGateway: '2026-10-01', status: 'BIL',     knowledgePct: 50, skillsPct: 45, behavioursPct: 55  },
+  { employer: 'NovaTech Solutions',     name: 'Luca Ferretti',    standard: 'Data Analyst',            lsc: 'Priya Sharma',   startDate: '2025-01-15', plannedGateway: '2026-08-20', status: 'Live',    knowledgePct: 40, skillsPct: 35, behavioursPct: 40  },
+  { employer: 'Greenfield Consulting',  name: 'Maya Patel',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-01-01', plannedGateway: '2026-07-01', status: 'Live',    knowledgePct: 75, skillsPct: 70, behavioursPct: 80  },
+  { employer: 'Bloom Marketing Co.',    name: 'Uma Sharma',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-04-01', plannedGateway: '2026-11-01', status: 'BIL',     knowledgePct: 25, skillsPct: 20, behavioursPct: 30  },
+  // ─── Tom Bradley ──────────────────────────────────────────────────────
+  { employer: 'Urban Digital Ltd',      name: 'George Baker',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2025-05-01', plannedGateway: '2026-11-18', status: 'Live',    knowledgePct: 35, skillsPct: 30, behavioursPct: 40  },
+  { employer: 'Greenfield Consulting',  name: 'Victor Marsh',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-12-18', plannedGateway: '2026-07-18', status: 'Live',    knowledgePct: 60, skillsPct: 55, behavioursPct: 65  },
+  { employer: 'Apex Digital Ltd',       name: 'Jordan Ellis',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2025-02-28', plannedGateway: '2026-08-28', status: 'Live',    knowledgePct: 55, skillsPct: 50, behavioursPct: 55  },
+  { employer: 'Sterling Accounts',      name: 'Tara Collins',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2024-12-22', plannedGateway: '2026-07-22', status: 'Live',    knowledgePct: 70, skillsPct: 65, behavioursPct: 75  },
+  { employer: 'Pinnacle Finance Group', name: 'Freddie Marsh',    standard: 'Applied AI & Automation', lsc: 'Tom Bradley',    startDate: '2025-03-01', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
+  // ─── Hannah Clarke ────────────────────────────────────────────────────
+  { employer: 'Apex Digital Ltd',       name: 'Holly Nguyen',     standard: 'Data Technician',         lsc: 'Hannah Clarke',  startDate: '2025-05-25', plannedGateway: '2026-11-25', status: 'Live',    knowledgePct: 20, skillsPct: 15, behavioursPct: 25  },
+  { employer: 'Bloom Marketing Co.',    name: 'Reuben Adeyemi',   standard: 'Data Technician',         lsc: 'Hannah Clarke',  startDate: '2025-03-28', plannedGateway: '2026-09-28', status: 'Live',    knowledgePct: 50, skillsPct: 45, behavioursPct: 55  },
+  { employer: 'TechCore UK',            name: 'Nathan Brooks',    standard: 'Data Analyst',            lsc: 'Hannah Clarke',  startDate: '2025-01-07', plannedGateway: '2026-07-07', status: 'Live',    knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
+  { employer: 'Sterling Accounts',      name: 'Sam Davies',       standard: 'Data Analyst',            lsc: 'Hannah Clarke',  startDate: '2025-06-01', plannedGateway: '2026-12-01', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  { employer: 'Clarity Finance Ltd',    name: 'Will Thornton',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  startDate: '2025-04-01', plannedGateway: '2026-10-01', status: 'BIL',     knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
+];
+
 // ─── Users ─────────────────────────────────────────────────────────────
 const USERS = [
   { id: 'delivery',   name: 'Delivery Manager',   role: 'delivery',   initials: 'DM' },
@@ -469,6 +509,9 @@ let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
 let gwForecastFilter   = 'All';
 let lscPageCoach       = 'James Okafor';
+let ksbLSCFilter       = '';
+let ksbStandardFilter  = '';
+let ksbStatusFilter    = '';
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -617,11 +660,20 @@ function applyRolePermissions() {
     if (el) el.style.order = order;
   });
 
-  // Delivery: show manager view or LSC caseload view
-  const mgView  = document.getElementById('delivery-manager-view');
-  const lscView = document.getElementById('lsc-caseload-view');
-  if (mgView)  mgView.style.display  = isLSC ? 'none' : '';
-  if (lscView) lscView.style.display = isLSC ? '' : 'none';
+  // KSB filter bar — hidden for LSC (auto-filtered by coach)
+  const ksbFilterBar = document.getElementById('ksb-filter-bar');
+  if (ksbFilterBar) ksbFilterBar.style.display = isLSC ? 'none' : '';
+
+  // Reset KSB filters on role switch
+  ksbLSCFilter = '';
+  ksbStandardFilter = '';
+  ksbStatusFilter = '';
+  const ksbLscEl = document.getElementById('ksb-lsc');
+  const ksbStdEl = document.getElementById('ksb-standard');
+  const ksbSttEl = document.getElementById('ksb-status');
+  if (ksbLscEl) ksbLscEl.value = '';
+  if (ksbStdEl) ksbStdEl.value = '';
+  if (ksbSttEl) ksbSttEl.value = '';
 
   if (isLSC) {
     const coach = currentUser.coach;
@@ -737,6 +789,7 @@ function renderAll() {
   renderLSCTables();
   renderCurriculum();
   renderGatewayForecast();
+  renderKSB();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -1560,6 +1613,109 @@ function renderGateway() {
 
   container.innerHTML = html;
 }
+
+// ─── KSB Tracker ───────────────────────────────────────────────────────
+
+function ksbRag(r) {
+  const avg = (r.knowledgePct + r.skillsPct + r.behavioursPct) / 3;
+  const remaining = 100 - avg;
+  if (remaining >= 75) return 'super-red';
+  if (remaining >= 51) return 'red';
+  if (remaining >= 25) return 'amber';
+  return 'green';
+}
+
+function ksbRagBadge(rag) {
+  const map = {
+    'super-red': ['rag-badge--super-red', 'Super Red'],
+    'red':       ['rag-badge--red',       'Red'],
+    'amber':     ['rag-badge--amber',     'Amber'],
+    'green':     ['rag-badge--green',     'Green'],
+  };
+  const [cls, label] = map[rag] || ['', rag];
+  return `<span class="rag-badge ${cls}">${label}</span>`;
+}
+
+function ksbStatusPill(status) {
+  if (status === 'Live')    return `<span class="dd-status-current">Live</span>`;
+  if (status === 'BIL')     return `<span class="ksb-status-bil">BIL</span>`;
+  if (status === 'Gateway') return `<span class="dd-status-gateway">Gateway</span>`;
+  return status;
+}
+
+function ksbPctCell(pct) {
+  const cls = pct >= 75 ? 'ksb-pct--green' : pct < 50 ? 'ksb-pct--red' : '';
+  return `<span class="ksb-pct${cls ? ' ' + cls : ''}">${pct}%</span>`;
+}
+
+function renderKSB() {
+  const isLSC  = currentUser.role === 'lsc';
+  const mo3    = new Date('2026-09-04');
+  const mo6    = new Date('2026-12-04');
+  const lscF   = isLSC ? currentUser.coach : ksbLSCFilter;
+
+  // KPI base: full caseload (pre-additional-filter)
+  const kpiBase = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA;
+  const w6 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo6);
+  const w3 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo3);
+  [['sr','super-red'],['r','red'],['a','amber'],['g','green']].forEach(([code, rag]) => {
+    setText(`ksb-6m-${code}`, w6.filter(r => ksbRag(r) === rag).length);
+    setText(`ksb-3m-${code}`, w3.filter(r => ksbRag(r) === rag).length);
+  });
+
+  // Table rows
+  let rows = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA.slice();
+
+  // Managers with no LSC filter: show only at-risk (not green)
+  const managerAllView = !isLSC && !ksbLSCFilter;
+  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green');
+
+  if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
+  if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
+
+  // Sort: super-red → red → amber → green
+  const ragOrder = {'super-red': 0, 'red': 1, 'amber': 2, 'green': 3};
+  rows.sort((a, b) => ragOrder[ksbRag(a)] - ragOrder[ksbRag(b)]);
+
+  const countEl = document.getElementById('ksb-panel-count');
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+
+  const notice = document.getElementById('ksb-manager-notice');
+  if (notice) notice.style.display = managerAllView ? '' : 'none';
+
+  const tbody = document.getElementById('ksb-tbody');
+  if (!tbody) return;
+  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No learners match the selected filters.'); return; }
+
+  tbody.innerHTML = rows.map(r => {
+    const rag = ksbRag(r);
+    return `<tr${rag === 'super-red' ? ' class="row-alert"' : ''}>
+      <td>${r.employer}</td>
+      <td>${r.name}</td>
+      <td>${r.standard}</td>
+      <td>${fmtDate(r.startDate)}</td>
+      <td>${fmtDate(r.plannedGateway)}</td>
+      <td>${ksbStatusPill(r.status)}</td>
+      <td>${ksbPctCell(r.knowledgePct)}</td>
+      <td>${ksbPctCell(r.skillsPct)}</td>
+      <td>${ksbPctCell(r.behavioursPct)}</td>
+      <td>${ksbRagBadge(rag)}</td>
+    </tr>`;
+  }).join('');
+}
+
+document.getElementById('ksb-lsc')?.addEventListener('change', function() {
+  ksbLSCFilter = this.value;
+  renderKSB();
+});
+document.getElementById('ksb-standard')?.addEventListener('change', function() {
+  ksbStandardFilter = this.value;
+  renderKSB();
+});
+document.getElementById('ksb-status')?.addEventListener('change', function() {
+  ksbStatusFilter = this.value;
+  renderKSB();
+});
 
 // ─── Curriculum ────────────────────────────────────────────────────────
 

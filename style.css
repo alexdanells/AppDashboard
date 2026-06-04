@@ -1187,6 +1187,50 @@ body {
 .area-delivery   { background: #fef3c7; color: #92400e; }
 .area-welfare    { background: #fdf4ff; color: #7e22ce; }
 
+/* ===================== KSB Tracker ===================== */
+.ksb-kpi-section { margin-bottom: 0.5rem; }
+.ksb-kpi-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+.ksb-kpi-rule {
+  font-weight: 400;
+  text-transform: none;
+  font-style: italic;
+  letter-spacing: 0;
+  margin-left: 0.25rem;
+}
+.kpi-value.ksb-super-red { color: #7f1d1d; }
+.rag-badge--super-red { background: #fce7e7; color: #7f1d1d; font-weight: 900; }
+
+.ksb-notice {
+  font-size: 0.82rem;
+  color: #92400e;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.ksb-pct        { font-weight: 600; }
+.ksb-pct--green { color: var(--green-dark); }
+.ksb-pct--red   { color: var(--red); }
+
+.ksb-status-bil {
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  display: inline-block;
+}
+
 /* ===================== Curriculum ===================== */
 .curr-progress {
   font-family: monospace;
