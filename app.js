@@ -437,6 +437,46 @@ const CURRICULUM_DATA = [
   { name: 'Will Thornton',   employer: 'Clarity Finance Ltd',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  sprint: 'L4 AI Copilot No Code AI Applications',  partsComplete: 2, partsExpected: 6, lastActivity: '2026-04-05' },
 ];
 
+// ─── KSB Tracker Data ──────────────────────────────────────────────────
+const KSB_STANDARDS = {
+  'Data Technician':         { knowledge: 52, skills: 32, behaviours: 8  },
+  'Applied AI & Automation': { knowledge: 58, skills: 58, behaviours: 12 },
+  'Data Analyst':            { knowledge: 30, skills: 30, behaviours: 14 },
+};
+
+const KSB_DATA = [
+  // ─── Sarah Mitchell ───────────────────────────────────────────────────
+  { employer: 'Bright Digital Agency',  name: 'Amara Osei',      standard: 'Data Technician',         lsc: 'Sarah Mitchell', startDate: '2024-09-02', plannedGateway: '2026-06-15', status: 'Gateway', knowledgePct: 95, skillsPct: 88, behavioursPct: 100 },
+  { employer: 'TechCore UK',            name: 'Isla Thomson',     standard: 'Data Technician',         lsc: 'Sarah Mitchell', startDate: '2024-11-04', plannedGateway: '2026-08-20', status: 'Live',    knowledgePct: 70, skillsPct: 65, behavioursPct: 75  },
+  { employer: 'Apex Digital Ltd',       name: 'Tasha Morris',     standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-01-06', plannedGateway: '2026-07-10', status: 'Live',    knowledgePct: 45, skillsPct: 40, behavioursPct: 50  },
+  { employer: 'Future Tech Services',   name: 'Kira Patel',       standard: 'Applied AI & Automation', lsc: 'Sarah Mitchell', startDate: '2025-03-10', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
+  { employer: 'Clarity Finance Ltd',    name: 'Yasmin Al-Hassan', standard: 'Data Analyst',            lsc: 'Sarah Mitchell', startDate: '2024-12-02', plannedGateway: '2026-12-10', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  // ─── James Okafor ─────────────────────────────────────────────────────
+  { employer: 'TechCore UK',            name: 'Quinn Andrews',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2024-09-15', plannedGateway: '2026-06-10', status: 'Gateway', knowledgePct: 90, skillsPct: 85, behavioursPct: 95  },
+  { employer: 'Clarity Finance Ltd',    name: 'Leo Okafor',       standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2024-10-01', plannedGateway: '2026-06-25', status: 'Gateway', knowledgePct: 85, skillsPct: 80, behavioursPct: 90  },
+  { employer: 'DataSphere Analytics',   name: 'Grace Adeniran',   standard: 'Data Technician',         lsc: 'James Okafor',   startDate: '2025-02-01', plannedGateway: '2026-09-15', status: 'BIL',     knowledgePct: 55, skillsPct: 50, behavioursPct: 60  },
+  { employer: 'DataSphere Analytics',   name: 'Riya Sharma',      standard: 'Data Analyst',            lsc: 'James Okafor',   startDate: '2025-03-01', plannedGateway: '2026-09-23', status: 'Live',    knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
+  { employer: 'Pinnacle Finance Group', name: 'Patrick Marsh',    standard: 'Applied AI & Automation', lsc: 'James Okafor',   startDate: '2025-01-01', plannedGateway: '2026-12-01', status: 'Live',    knowledgePct: 20, skillsPct: 15, behavioursPct: 25  },
+  // ─── Priya Sharma ─────────────────────────────────────────────────────
+  { employer: 'Greenfield Consulting',  name: 'Kyle Patterson',   standard: 'Data Technician',         lsc: 'Priya Sharma',   startDate: '2024-12-01', plannedGateway: '2026-07-15', status: 'Live',    knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
+  { employer: 'DataSphere Analytics',   name: 'Fatima Malik',     standard: 'Data Analyst',            lsc: 'Priya Sharma',   startDate: '2025-02-01', plannedGateway: '2026-10-01', status: 'BIL',     knowledgePct: 50, skillsPct: 45, behavioursPct: 55  },
+  { employer: 'NovaTech Solutions',     name: 'Luca Ferretti',    standard: 'Data Analyst',            lsc: 'Priya Sharma',   startDate: '2025-01-15', plannedGateway: '2026-08-20', status: 'Live',    knowledgePct: 40, skillsPct: 35, behavioursPct: 40  },
+  { employer: 'Greenfield Consulting',  name: 'Maya Patel',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-01-01', plannedGateway: '2026-07-01', status: 'Live',    knowledgePct: 75, skillsPct: 70, behavioursPct: 80  },
+  { employer: 'Bloom Marketing Co.',    name: 'Uma Sharma',       standard: 'Applied AI & Automation', lsc: 'Priya Sharma',   startDate: '2025-04-01', plannedGateway: '2026-11-01', status: 'BIL',     knowledgePct: 25, skillsPct: 20, behavioursPct: 30  },
+  // ─── Tom Bradley ──────────────────────────────────────────────────────
+  { employer: 'Urban Digital Ltd',      name: 'George Baker',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2025-05-01', plannedGateway: '2026-11-18', status: 'Live',    knowledgePct: 35, skillsPct: 30, behavioursPct: 40  },
+  { employer: 'Greenfield Consulting',  name: 'Victor Marsh',     standard: 'Data Technician',         lsc: 'Tom Bradley',    startDate: '2024-12-18', plannedGateway: '2026-07-18', status: 'Live',    knowledgePct: 60, skillsPct: 55, behavioursPct: 65  },
+  { employer: 'Apex Digital Ltd',       name: 'Jordan Ellis',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2025-02-28', plannedGateway: '2026-08-28', status: 'Live',    knowledgePct: 55, skillsPct: 50, behavioursPct: 55  },
+  { employer: 'Sterling Accounts',      name: 'Tara Collins',     standard: 'Data Analyst',            lsc: 'Tom Bradley',    startDate: '2024-12-22', plannedGateway: '2026-07-22', status: 'Live',    knowledgePct: 70, skillsPct: 65, behavioursPct: 75  },
+  { employer: 'Pinnacle Finance Group', name: 'Freddie Marsh',    standard: 'Applied AI & Automation', lsc: 'Tom Bradley',    startDate: '2025-03-01', plannedGateway: '2026-09-01', status: 'Live',    knowledgePct: 30, skillsPct: 25, behavioursPct: 35  },
+  // ─── Hannah Clarke ────────────────────────────────────────────────────
+  { employer: 'Apex Digital Ltd',       name: 'Holly Nguyen',     standard: 'Data Technician',         lsc: 'Hannah Clarke',  startDate: '2025-05-25', plannedGateway: '2026-11-25', status: 'Live',    knowledgePct: 20, skillsPct: 15, behavioursPct: 25  },
+  { employer: 'Bloom Marketing Co.',    name: 'Reuben Adeyemi',   standard: 'Data Technician',         lsc: 'Hannah Clarke',  startDate: '2025-03-28', plannedGateway: '2026-09-28', status: 'Live',    knowledgePct: 50, skillsPct: 45, behavioursPct: 55  },
+  { employer: 'TechCore UK',            name: 'Nathan Brooks',    standard: 'Data Analyst',            lsc: 'Hannah Clarke',  startDate: '2025-01-07', plannedGateway: '2026-07-07', status: 'Live',    knowledgePct: 65, skillsPct: 60, behavioursPct: 70  },
+  { employer: 'Sterling Accounts',      name: 'Sam Davies',       standard: 'Data Analyst',            lsc: 'Hannah Clarke',  startDate: '2025-06-01', plannedGateway: '2026-12-01', status: 'Live',    knowledgePct: 15, skillsPct: 10, behavioursPct: 20  },
+  { employer: 'Clarity Finance Ltd',    name: 'Will Thornton',    standard: 'Applied AI & Automation', lsc: 'Hannah Clarke',  startDate: '2025-04-01', plannedGateway: '2026-10-01', status: 'BIL',     knowledgePct: 40, skillsPct: 35, behavioursPct: 45  },
+];
+
 // ─── Users ─────────────────────────────────────────────────────────────
 const USERS = [
   { id: 'delivery',   name: 'Delivery Manager',   role: 'delivery',   initials: 'DM' },
@@ -467,7 +507,11 @@ let pipelineOffset     = 0;
 let gatewayOffset      = 0; // 0 = June 2026
 let deliveryLSCFilter  = 'All';
 let deliveryDashFilter = 'All';
+let gwForecastFilter   = 'All';
 let lscPageCoach       = 'James Okafor';
+let ksbLSCFilter       = '';
+let ksbStandardFilter  = '';
+let ksbStatusFilter    = '';
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -518,12 +562,15 @@ document.querySelectorAll('.nav-link').forEach(link => {
   });
 });
 
-// ─── Sub-navigation (Learners page) ────────────────────────────────────
+// ─── Sub-navigation (scoped to each section's own nav) ─────────────────
 document.querySelectorAll('.sub-nav-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
+    const nav       = btn.closest('.sub-nav');
+    const container = nav?.parentElement;
+    if (!nav || !container) return;
+    nav.querySelectorAll('.sub-nav-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+    container.querySelectorAll(':scope > .sub-page').forEach(p => p.classList.remove('active'));
     document.getElementById(btn.dataset.sub)?.classList.add('active');
   });
 });
@@ -573,6 +620,7 @@ function switchUser(userId) {
   renderAll();
   renderPipeline();
   renderGateway();
+  renderGatewayForecast();
   renderWelfare();
   renderDeliveryDash();
 }
@@ -612,11 +660,20 @@ function applyRolePermissions() {
     if (el) el.style.order = order;
   });
 
-  // Delivery: show manager view or LSC caseload view
-  const mgView  = document.getElementById('delivery-manager-view');
-  const lscView = document.getElementById('lsc-caseload-view');
-  if (mgView)  mgView.style.display  = isLSC ? 'none' : '';
-  if (lscView) lscView.style.display = isLSC ? '' : 'none';
+  // KSB filter bar — hidden for LSC (auto-filtered by coach)
+  const ksbFilterBar = document.getElementById('ksb-filter-bar');
+  if (ksbFilterBar) ksbFilterBar.style.display = isLSC ? 'none' : '';
+
+  // Reset KSB filters on role switch
+  ksbLSCFilter = '';
+  ksbStandardFilter = '';
+  ksbStatusFilter = '';
+  const ksbLscEl = document.getElementById('ksb-lsc');
+  const ksbStdEl = document.getElementById('ksb-standard');
+  const ksbSttEl = document.getElementById('ksb-status');
+  if (ksbLscEl) ksbLscEl.value = '';
+  if (ksbStdEl) ksbStdEl.value = '';
+  if (ksbSttEl) ksbSttEl.value = '';
 
   if (isLSC) {
     const coach = currentUser.coach;
@@ -639,6 +696,8 @@ function applyRolePermissions() {
     if (compOtjCard)     compOtjCard.style.display     = '';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = 'none';
+    const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
+    if (gwFcLscBar) gwFcLscBar.style.display = 'none';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = coach; rfLsc.disabled = true; }
@@ -657,6 +716,8 @@ function applyRolePermissions() {
     if (compOtjCard)     compOtjCard.style.display     = 'none';
     const currLscBar = document.getElementById('curriculum-lsc-bar');
     if (currLscBar) currLscBar.style.display = '';
+    const gwFcLscBar = document.getElementById('gw-forecast-lsc-bar');
+    if (gwFcLscBar) gwFcLscBar.style.display = '';
 
     const rfLsc = document.getElementById('rf-lsc');
     if (rfLsc) { rfLsc.value = ''; rfLsc.disabled = false; }
@@ -692,6 +753,12 @@ document.getElementById('delivery-dash-lsc')?.addEventListener('change', functio
   renderDeliveryDash();
 });
 
+// ─── Gateway Forecast LSC filter ───────────────────────────────────────
+document.getElementById('gw-forecast-lsc')?.addEventListener('change', function () {
+  gwForecastFilter = this.value;
+  renderGatewayForecast();
+});
+
 // ─── LSC page coach selector ───────────────────────────────────────────
 document.getElementById('lsc-coach')?.addEventListener('change', function () {
   lscPageCoach = this.value;
@@ -721,6 +788,8 @@ function renderAll() {
   renderDeliveryTables();
   renderLSCTables();
   renderCurriculum();
+  renderGatewayForecast();
+  renderKSB();
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -1293,51 +1362,41 @@ function bilStatusPill(status) {
 
 function renderDeliveryDash() {
   const f = deliveryDashFilter === 'All' ? null : deliveryDashFilter;
-  renderDeliveryDashKPIs(f);
-  renderOOFTable(f);
-  renderBILTable(f);
-  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
-  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
-  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
-}
-
-function renderDeliveryDashKPIs(lscFilter) {
-  const filterFn = r => !lscFilter || r.lsc === lscFilter;
-
-  const oofRows    = OOF_DATA.filter(filterFn);
-  const bilRows    = BIL_DATA.filter(filterFn);
-  const q2Rows     = GW_Q2_DATA.filter(filterFn);
-  const q3Rows     = GW_Q3_DATA.filter(filterFn);
-  const q4Rows     = GW_Q4_DATA.filter(filterFn);
-
-  const oofRed     = oofRows.filter(r => r.portfolioRag === 'red').length;
-  const bilNeeded  = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
-  const q2AtGw     = q2Rows.filter(r => r.status === 'At Gateway').length;
-
-  setText('dd-oof-total',  oofRows.length);
-  setText('dd-oof-sub',    oofRed > 0 ? `${oofRed} red portfolio` : 'No red portfolios');
+  const filterFn  = r => !f || r.lsc === f;
+  const bilRows   = BIL_DATA.filter(filterFn);
+  const bilNeeded = bilRows.filter(r => r.status === 'BIL Decision Needed').length;
   setText('dd-bil-total',  bilRows.length);
   setText('dd-bil-sub',    `${bilNeeded} decision${bilNeeded !== 1 ? 's' : ''} needed`);
   setText('dd-bil-action', bilNeeded);
-  setText('dd-q2-total',   q2Rows.length);
-  setText('dd-q2-sub',     `${q2AtGw} at gateway`);
-  setText('dd-q3-total',   q3Rows.length);
-  setText('dd-q3-sub',     `${q3Rows.filter(r => r.status === 'Current').length} current`);
-  setText('dd-q4-total',   q4Rows.length);
-  setText('dd-q4-sub',     `${q4Rows.filter(r => r.status === 'Current').length} current`);
-
-  // Portfolio RAG across all quarters
-  const allQRows   = [...q2Rows, ...q3Rows, ...q4Rows];
-  const ragGreen   = allQRows.filter(r => r.portfolioRag === 'green').length;
-  const ragAmber   = allQRows.filter(r => r.portfolioRag === 'amber').length;
-  const ragRed     = allQRows.filter(r => r.portfolioRag === 'red').length;
-  setText('dd-rag-green', `${ragGreen} Green`);
-  setText('dd-rag-amber', `${ragAmber} Amber`);
-  setText('dd-rag-red',   `${ragRed} Red`);
-
-  // Highlight BIL action card if decisions needed
   const card = document.getElementById('dd-bil-action-card');
   if (card) card.classList.toggle('kpi-card--active-alert', bilNeeded > 0);
+}
+
+// ─── Gateway Forecast ─────────────────────────────────────────────────
+function renderGatewayForecast() {
+  const isLSC = currentUser.role === 'lsc';
+  const f = isLSC ? currentUser.coach : (gwForecastFilter === 'All' ? null : gwForecastFilter);
+
+  renderGWQuarterTable('gw-q2-tbody', 'q2-panel-count', GW_Q2_DATA, f);
+  renderGWQuarterTable('gw-q3-tbody', 'q3-panel-count', GW_Q3_DATA, f);
+  renderGWQuarterTable('gw-q4-tbody', 'q4-panel-count', GW_Q4_DATA, f);
+
+  const filterFn = r => !f || r.lsc === f;
+  const q2Rows   = GW_Q2_DATA.filter(filterFn);
+  const q3Rows   = GW_Q3_DATA.filter(filterFn);
+  const q4Rows   = GW_Q4_DATA.filter(filterFn);
+  const q2AtGw   = q2Rows.filter(r => r.status === 'At Gateway').length;
+  setText('dd-q2-total', q2Rows.length);
+  setText('dd-q2-sub',   `${q2AtGw} at gateway`);
+  setText('dd-q3-total', q3Rows.length);
+  setText('dd-q3-sub',   `${q3Rows.filter(r => r.status === 'Current').length} current`);
+  setText('dd-q4-total', q4Rows.length);
+  setText('dd-q4-sub',   `${q4Rows.filter(r => r.status === 'Current').length} current`);
+
+  const allQRows = [...q2Rows, ...q3Rows, ...q4Rows];
+  setText('dd-rag-green', `${allQRows.filter(r => r.portfolioRag === 'green').length} Green`);
+  setText('dd-rag-amber', `${allQRows.filter(r => r.portfolioRag === 'amber').length} Amber`);
+  setText('dd-rag-red',   `${allQRows.filter(r => r.portfolioRag === 'red').length} Red`);
 }
 
 function renderOOFTable(lscFilter) {
@@ -1453,17 +1512,24 @@ function renderGateway() {
     return;
   }
 
+  // Filter groups for LSC users
+  const isLSCView  = currentUser.role === 'lsc';
+  const gwGroups   = isLSCView
+    ? monthData.groups.filter(g => g.lsc === currentUser.coach)
+    : monthData.groups;
+
   // Totals
-  const allLearners = monthData.groups.flatMap(g => g.learners);
+  const allLearners = gwGroups.flatMap(g => g.learners);
   const atGateway   = allLearners.filter(l => l.atGateway).length;
   const carryOver   = allLearners.filter(l => l.carryOverNext).length;
-  const pct         = monthData.expected > 0
-    ? Math.min(100, Math.round((atGateway / monthData.expected) * 100))
+  const expected    = isLSCView ? allLearners.filter(l => !l.withdrawn).length : monthData.expected;
+  const pct         = expected > 0
+    ? Math.min(100, Math.round((atGateway / expected) * 100))
     : 0;
 
   // Progress bar + metrics
   setText('gw-forecast',    monthData.forecast);
-  setText('gw-expected',    monthData.expected);
+  setText('gw-expected',    expected);
   setText('gw-at-gateway',  atGateway);
   setText('gw-carry-over',  carryOver);
   setText('gw-pct',         pct + '%');
@@ -1494,7 +1560,7 @@ function renderGateway() {
 
   let html = '';
 
-  monthData.groups.forEach(group => {
+  gwGroups.forEach(group => {
     const active    = group.learners.filter(l => !l.withdrawn);
     const groupAt   = group.learners.filter(l => l.atGateway).length;
     const groupExp  = active.length;
@@ -1547,6 +1613,109 @@ function renderGateway() {
 
   container.innerHTML = html;
 }
+
+// ─── KSB Tracker ───────────────────────────────────────────────────────
+
+function ksbRag(r) {
+  const avg = (r.knowledgePct + r.skillsPct + r.behavioursPct) / 3;
+  const remaining = 100 - avg;
+  if (remaining >= 75) return 'super-red';
+  if (remaining >= 51) return 'red';
+  if (remaining >= 25) return 'amber';
+  return 'green';
+}
+
+function ksbRagBadge(rag) {
+  const map = {
+    'super-red': ['rag-badge--super-red', 'Super Red'],
+    'red':       ['rag-badge--red',       'Red'],
+    'amber':     ['rag-badge--amber',     'Amber'],
+    'green':     ['rag-badge--green',     'Green'],
+  };
+  const [cls, label] = map[rag] || ['', rag];
+  return `<span class="rag-badge ${cls}">${label}</span>`;
+}
+
+function ksbStatusPill(status) {
+  if (status === 'Live')    return `<span class="dd-status-current">Live</span>`;
+  if (status === 'BIL')     return `<span class="ksb-status-bil">BIL</span>`;
+  if (status === 'Gateway') return `<span class="dd-status-gateway">Gateway</span>`;
+  return status;
+}
+
+function ksbPctCell(pct) {
+  const cls = pct >= 75 ? 'ksb-pct--green' : pct < 50 ? 'ksb-pct--red' : '';
+  return `<span class="ksb-pct${cls ? ' ' + cls : ''}">${pct}%</span>`;
+}
+
+function renderKSB() {
+  const isLSC  = currentUser.role === 'lsc';
+  const mo3    = new Date('2026-09-04');
+  const mo6    = new Date('2026-12-04');
+  const lscF   = isLSC ? currentUser.coach : ksbLSCFilter;
+
+  // KPI base: full caseload (pre-additional-filter)
+  const kpiBase = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA;
+  const w6 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo6);
+  const w3 = kpiBase.filter(r => new Date(r.plannedGateway) <= mo3);
+  [['sr','super-red'],['r','red'],['a','amber'],['g','green']].forEach(([code, rag]) => {
+    setText(`ksb-6m-${code}`, w6.filter(r => ksbRag(r) === rag).length);
+    setText(`ksb-3m-${code}`, w3.filter(r => ksbRag(r) === rag).length);
+  });
+
+  // Table rows
+  let rows = lscF ? KSB_DATA.filter(r => r.lsc === lscF) : KSB_DATA.slice();
+
+  // Managers with no LSC filter: show only at-risk (not green)
+  const managerAllView = !isLSC && !ksbLSCFilter;
+  if (managerAllView) rows = rows.filter(r => ksbRag(r) !== 'green');
+
+  if (ksbStandardFilter) rows = rows.filter(r => r.standard === ksbStandardFilter);
+  if (ksbStatusFilter)   rows = rows.filter(r => r.status   === ksbStatusFilter);
+
+  // Sort: super-red → red → amber → green
+  const ragOrder = {'super-red': 0, 'red': 1, 'amber': 2, 'green': 3};
+  rows.sort((a, b) => ragOrder[ksbRag(a)] - ragOrder[ksbRag(b)]);
+
+  const countEl = document.getElementById('ksb-panel-count');
+  if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
+
+  const notice = document.getElementById('ksb-manager-notice');
+  if (notice) notice.style.display = managerAllView ? '' : 'none';
+
+  const tbody = document.getElementById('ksb-tbody');
+  if (!tbody) return;
+  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No learners match the selected filters.'); return; }
+
+  tbody.innerHTML = rows.map(r => {
+    const rag = ksbRag(r);
+    return `<tr${rag === 'super-red' ? ' class="row-alert"' : ''}>
+      <td>${r.employer}</td>
+      <td>${r.name}</td>
+      <td>${r.standard}</td>
+      <td>${fmtDate(r.startDate)}</td>
+      <td>${fmtDate(r.plannedGateway)}</td>
+      <td>${ksbStatusPill(r.status)}</td>
+      <td>${ksbPctCell(r.knowledgePct)}</td>
+      <td>${ksbPctCell(r.skillsPct)}</td>
+      <td>${ksbPctCell(r.behavioursPct)}</td>
+      <td>${ksbRagBadge(rag)}</td>
+    </tr>`;
+  }).join('');
+}
+
+document.getElementById('ksb-lsc')?.addEventListener('change', function() {
+  ksbLSCFilter = this.value;
+  renderKSB();
+});
+document.getElementById('ksb-standard')?.addEventListener('change', function() {
+  ksbStandardFilter = this.value;
+  renderKSB();
+});
+document.getElementById('ksb-status')?.addEventListener('change', function() {
+  ksbStatusFilter = this.value;
+  renderKSB();
+});
 
 // ─── Curriculum ────────────────────────────────────────────────────────
 
@@ -1934,6 +2103,7 @@ applyRolePermissions();
 renderAll();
 renderPipeline();
 renderGateway();
+renderGatewayForecast();
 renderWelfare();
 renderDeliveryDash();
 

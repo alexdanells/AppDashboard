@@ -36,7 +36,7 @@
       <a href="#" class="nav-link" data-page="page-sales">Sales Pipeline</a>
       <a href="#" class="nav-link" data-page="page-smt">SMT</a>
       <a href="#" class="nav-link" data-page="page-learners">Learners</a>
-      <a href="#" class="nav-link" data-page="page-gateway">Gateway Pipeline</a>
+      <a href="#" class="nav-link" data-page="page-gateway">Gateway</a>
       <a href="#" class="nav-link" data-page="page-reporting">Reporting</a>
     </nav>
   </header>
@@ -449,98 +449,86 @@
       <!-- ── Delivery ──────────────────────────────────────────────────── -->
       <div id="sub-delivery" class="sub-page active">
 
-        <!-- Delivery Manager / Compliance / Quality view -->
+        <!-- KSB Tracker — shown for all roles -->
+        <!-- Hidden selects kept for JS compatibility -->
+        <select id="lsc-coach" style="display:none;"><option>Sarah Mitchell</option><option selected>James Okafor</option><option>Priya Sharma</option><option>Tom Bradley</option><option>Hannah Clarke</option></select>
+        <select id="delivery-dash-lsc" style="display:none;"><option value="All">All Coaches</option></select>
+
         <div id="delivery-manager-view">
           <div class="page-heading">
             <div>
-              <h1 class="page-title">Delivery</h1>
-              <p class="page-subtitle">OOF, Break in Learning &amp; Gateway Planning by Quarter</p>
+              <h1 class="page-title">Delivery — KSB Tracker</h1>
+              <p class="page-subtitle">Knowledge, Skills and Behaviours progress across your provision</p>
             </div>
             <button class="btn-export">⬇ Export</button>
           </div>
 
-          <div class="lsc-selector-bar">
-            <label class="lsc-selector-label" for="delivery-dash-lsc">Filter by LSC:</label>
-            <select class="filter-select" id="delivery-dash-lsc">
-              <option value="All">All Coaches</option>
+          <div class="lsc-selector-bar" id="ksb-filter-bar" style="flex-wrap:wrap;gap:0.75rem;">
+            <label class="lsc-selector-label" for="ksb-lsc">Filter by LSC:</label>
+            <select class="filter-select" id="ksb-lsc">
+              <option value="">All Coaches</option>
               <option>Sarah Mitchell</option>
               <option>James Okafor</option>
               <option>Priya Sharma</option>
               <option>Tom Bradley</option>
               <option>Hannah Clarke</option>
             </select>
+            <select class="filter-select" id="ksb-standard">
+              <option value="">All Standards</option>
+              <option>Data Technician</option>
+              <option>Data Analyst</option>
+              <option>Applied AI &amp; Automation</option>
+            </select>
+            <select class="filter-select" id="ksb-status">
+              <option value="">All Statuses</option>
+              <option>Live</option>
+              <option>BIL</option>
+              <option>Gateway</option>
+            </select>
           </div>
 
-          <div class="kpi-bar">
-            <div class="kpi-card"><span class="kpi-label">OOF Learners</span><span class="kpi-value" id="dd-oof-total">—</span><span class="kpi-sub" id="dd-oof-sub">—</span></div>
-            <div class="kpi-card"><span class="kpi-label">Break in Learning</span><span class="kpi-value" id="dd-bil-total">—</span><span class="kpi-sub" id="dd-bil-sub">—</span></div>
-            <div class="kpi-card kpi-card--alert" id="dd-bil-action-card"><span class="kpi-label">BIL Action Needed</span><span class="kpi-value" id="dd-bil-action">—</span><span class="kpi-sub">Decisions required</span></div>
-            <div class="kpi-card"><span class="kpi-label">Q2 Gateway (Apr–Jun)</span><span class="kpi-value" id="dd-q2-total">—</span><span class="kpi-sub" id="dd-q2-sub">—</span></div>
-            <div class="kpi-card"><span class="kpi-label">Q3 Gateway (Jul–Sep)</span><span class="kpi-value" id="dd-q3-total">—</span><span class="kpi-sub" id="dd-q3-sub">—</span></div>
-            <div class="kpi-card"><span class="kpi-label">Q4 Gateway (Oct–Dec)</span><span class="kpi-value" id="dd-q4-total">—</span><span class="kpi-sub" id="dd-q4-sub">—</span></div>
-          </div>
-
-          <div class="rag-summary-bar">
-            <span class="rag-summary-label">Portfolio RAG across all quarters:</span>
-            <span class="rag-count-pill rag-count--green" id="dd-rag-green">—</span>
-            <span class="rag-count-pill rag-count--amber" id="dd-rag-amber">—</span>
-            <span class="rag-count-pill rag-count--red" id="dd-rag-red">—</span>
-          </div>
-
-          <div class="panel-stack">
-            <div class="panel panel--span">
-              <div class="panel-header"><h2 class="panel-title">Gateway — Q2 2026 <span class="panel-title-sub">(Apr–Jun)</span></h2><span class="panel-count" id="q2-panel-count">—</span></div>
-              <div class="panel-body" style="padding: 0; overflow-x: auto;">
-                <table class="data-table dd-table">
-                  <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead>
-                  <tbody id="gw-q2-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="panel panel--span">
-              <div class="panel-header"><h2 class="panel-title">Gateway — Q3 2026 <span class="panel-title-sub">(Jul–Sep)</span></h2><span class="panel-count" id="q3-panel-count">—</span></div>
-              <div class="panel-body" style="padding: 0; overflow-x: auto;">
-                <table class="data-table dd-table">
-                  <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead>
-                  <tbody id="gw-q3-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-            <div class="panel panel--span">
-              <div class="panel-header"><h2 class="panel-title">Gateway — Q4 2026 <span class="panel-title-sub">(Oct–Dec)</span></h2><span class="panel-count" id="q4-panel-count">—</span></div>
-              <div class="panel-body" style="padding: 0; overflow-x: auto;">
-                <table class="data-table dd-table">
-                  <thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead>
-                  <tbody id="gw-q4-tbody"></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- LSC Caseload view (LSC role only) -->
-        <div id="lsc-caseload-view" style="display:none;">
-          <div class="page-heading">
-            <div>
-              <h1 class="page-title">My Caseload</h1>
-              <p class="page-subtitle" id="lsc-caseload-subtitle">Learner Success Coach view</p>
+          <div class="ksb-kpi-section">
+            <div class="ksb-kpi-label">Within 6 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Dec 2026)</span></div>
+            <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-6m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-6m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-6m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-6m-g">—</span></div>
             </div>
           </div>
 
-          <!-- Hidden coach selector kept for JS compatibility -->
-          <select id="lsc-coach" style="display:none;">
-            <option>Sarah Mitchell</option>
-            <option selected>James Okafor</option>
-            <option>Priya Sharma</option>
-            <option>Tom Bradley</option>
-            <option>Hannah Clarke</option>
-          </select>
-
-          <div class="kpi-bar" style="grid-template-columns: repeat(2, 1fr);">
-            <div class="kpi-card"><span class="kpi-label">My Learners</span><span class="kpi-value" id="lsc-learners">—</span></div>
-            <div class="kpi-card"><span class="kpi-label">At Risk</span><span class="kpi-value red" id="lsc-at-risk">—</span></div>
+          <div class="ksb-kpi-section" style="margin-bottom:1.25rem;">
+            <div class="ksb-kpi-label">Within 3 months of gateway <span class="ksb-kpi-rule">(gateway date on or before Sep 2026)</span></div>
+            <div class="kpi-bar" style="grid-template-columns: repeat(4, 1fr);">
+              <div class="kpi-card"><span class="kpi-label">Super Red<span class="kpi-sub">≥75% remaining</span></span><span class="kpi-value ksb-super-red" id="ksb-3m-sr">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Red<span class="kpi-sub">51–74% remaining</span></span><span class="kpi-value red" id="ksb-3m-r">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Amber<span class="kpi-sub">25–50% remaining</span></span><span class="kpi-value amber" id="ksb-3m-a">—</span></div>
+              <div class="kpi-card"><span class="kpi-label">Green<span class="kpi-sub">≤24% remaining</span></span><span class="kpi-value green" id="ksb-3m-g">—</span></div>
+            </div>
           </div>
 
+          <div id="ksb-manager-notice" class="ksb-notice" style="display:none;">
+            ⓘ Showing at-risk learners only (Super Red, Red, Amber). Filter by LSC above to see the full caseload for a specific coach.
+          </div>
+
+          <div class="panel panel--span">
+            <div class="panel-header">
+              <h2 class="panel-title">KSB Progress</h2>
+              <span class="panel-count" id="ksb-panel-count">—</span>
+            </div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table dd-table">
+                <thead>
+                  <tr>
+                    <th>Employer</th><th>Learner</th><th>Standard</th>
+                    <th>Start Date</th><th>Planned Gateway</th><th>Status</th>
+                    <th>Knowledge</th><th>Skills</th><th>Behaviours</th><th>RAG</th>
+                  </tr>
+                </thead>
+                <tbody id="ksb-tbody"></tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -696,46 +684,105 @@
 
     </section>
 
-    <!-- ==================== GATEWAY PIPELINE ==================== -->
+    <!-- ==================== GATEWAY ==================== -->
     <section id="page-gateway" class="page">
       <div class="page-heading">
         <div>
-          <h1 class="page-title">Gateway Pipeline</h1>
-          <p class="page-subtitle">Monthly gateway tracking by LSC</p>
+          <h1 class="page-title">Gateway</h1>
+          <p class="page-subtitle">Gateway planning and monthly pipeline tracking</p>
         </div>
         <button class="btn-export">⬇ Export</button>
       </div>
 
-      <div class="pipeline-progress-card">
-        <div class="pipeline-progress-header">
-          <span class="pipeline-progress-label">Forecast vs At Gateway</span>
-          <div class="month-nav">
-            <button class="month-btn" id="gw-month-prev">&#8249;</button>
-            <span class="month-label" id="gw-month-label">—</span>
-            <button class="month-btn" id="gw-month-next">&#8250;</button>
+      <!-- Sub-navigation -->
+      <div class="sub-nav">
+        <button class="sub-nav-btn active" data-sub="sub-gw-forecast">Gateway Forecast</button>
+        <button class="sub-nav-btn" data-sub="sub-gw-pipeline">Gateway Pipeline</button>
+      </div>
+
+      <!-- ── Gateway Forecast ───────────────────────────────────────────── -->
+      <div id="sub-gw-forecast" class="sub-page active">
+        <div class="lsc-selector-bar" id="gw-forecast-lsc-bar">
+          <label class="lsc-selector-label" for="gw-forecast-lsc">Filter by LSC:</label>
+          <select class="filter-select" id="gw-forecast-lsc">
+            <option value="All">All Coaches</option>
+            <option>Sarah Mitchell</option>
+            <option>James Okafor</option>
+            <option>Priya Sharma</option>
+            <option>Tom Bradley</option>
+            <option>Hannah Clarke</option>
+          </select>
+        </div>
+
+        <div class="kpi-bar" style="grid-template-columns: repeat(3, 1fr);">
+          <div class="kpi-card"><span class="kpi-label">Q2 Gateway (Apr–Jun)</span><span class="kpi-value" id="dd-q2-total">—</span><span class="kpi-sub" id="dd-q2-sub">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Q3 Gateway (Jul–Sep)</span><span class="kpi-value" id="dd-q3-total">—</span><span class="kpi-sub" id="dd-q3-sub">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Q4 Gateway (Oct–Dec)</span><span class="kpi-value" id="dd-q4-total">—</span><span class="kpi-sub" id="dd-q4-sub">—</span></div>
+        </div>
+
+        <div class="rag-summary-bar">
+          <span class="rag-summary-label">Portfolio RAG across all quarters:</span>
+          <span class="rag-count-pill rag-count--green" id="dd-rag-green">—</span>
+          <span class="rag-count-pill rag-count--amber" id="dd-rag-amber">—</span>
+          <span class="rag-count-pill rag-count--red" id="dd-rag-red">—</span>
+        </div>
+
+        <div class="panel-stack">
+          <div class="panel panel--span">
+            <div class="panel-header"><h2 class="panel-title">Gateway — Q2 2026 <span class="panel-title-sub">(Apr–Jun)</span></h2><span class="panel-count" id="q2-panel-count">—</span></div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table dd-table"><thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead><tbody id="gw-q2-tbody"></tbody></table>
+            </div>
           </div>
-          <span class="pipeline-progress-pct" id="gw-pct">—%</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" id="gw-bar" style="width: 0%"></div>
-        </div>
-        <div class="pipeline-progress-sub">
-          <span id="gw-bar-sub">— at gateway of — expected</span>
+          <div class="panel panel--span">
+            <div class="panel-header"><h2 class="panel-title">Gateway — Q3 2026 <span class="panel-title-sub">(Jul–Sep)</span></h2><span class="panel-count" id="q3-panel-count">—</span></div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table dd-table"><thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead><tbody id="gw-q3-tbody"></tbody></table>
+            </div>
+          </div>
+          <div class="panel panel--span">
+            <div class="panel-header"><h2 class="panel-title">Gateway — Q4 2026 <span class="panel-title-sub">(Oct–Dec)</span></h2><span class="panel-count" id="q4-panel-count">—</span></div>
+            <div class="panel-body" style="padding: 0; overflow-x: auto;">
+              <table class="data-table dd-table"><thead><tr><th>Employer</th><th>Learner</th><th>Standard</th><th>Planned Gateway</th><th>LSC</th><th>Status</th><th>Month Expected</th><th>GW &rarr; EPA</th><th>Portfolio RAG</th></tr></thead><tbody id="gw-q4-tbody"></tbody></table>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="gateway-metrics">
-        <div class="gw-metric gw-blue"><span class="gw-metric-label">Forecast</span><span class="gw-metric-value" id="gw-forecast">—</span></div>
-        <div class="gw-metric gw-amber"><span class="gw-metric-label">Expected at Gateway</span><span class="gw-metric-value" id="gw-expected">—</span></div>
-        <div class="gw-metric gw-green"><span class="gw-metric-label">At Gateway</span><span class="gw-metric-value" id="gw-at-gateway">—</span></div>
-        <div class="gw-metric gw-red"><span class="gw-metric-label">Carry Over to Next Month</span><span class="gw-metric-value" id="gw-carry-over">—</span></div>
-      </div>
+      <!-- ── Gateway Pipeline ──────────────────────────────────────────── -->
+      <div id="sub-gw-pipeline" class="sub-page">
+        <div class="pipeline-progress-card">
+          <div class="pipeline-progress-header">
+            <span class="pipeline-progress-label">Forecast vs At Gateway</span>
+            <div class="month-nav">
+              <button class="month-btn" id="gw-month-prev">&#8249;</button>
+              <span class="month-label" id="gw-month-label">—</span>
+              <button class="month-btn" id="gw-month-next">&#8250;</button>
+            </div>
+            <span class="pipeline-progress-pct" id="gw-pct">—%</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill" id="gw-bar" style="width: 0%"></div>
+          </div>
+          <div class="pipeline-progress-sub">
+            <span id="gw-bar-sub">— at gateway of — expected</span>
+          </div>
+        </div>
 
-      <div class="panel">
-        <div class="panel-body" style="padding: 0; overflow-x: auto;">
-          <div id="gateway-container"></div>
+        <div class="gateway-metrics">
+          <div class="gw-metric gw-blue"><span class="gw-metric-label">Forecast</span><span class="gw-metric-value" id="gw-forecast">—</span></div>
+          <div class="gw-metric gw-amber"><span class="gw-metric-label">Expected at Gateway</span><span class="gw-metric-value" id="gw-expected">—</span></div>
+          <div class="gw-metric gw-green"><span class="gw-metric-label">At Gateway</span><span class="gw-metric-value" id="gw-at-gateway">—</span></div>
+          <div class="gw-metric gw-red"><span class="gw-metric-label">Carry Over to Next Month</span><span class="gw-metric-value" id="gw-carry-over">—</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-body" style="padding: 0; overflow-x: auto;">
+            <div id="gateway-container"></div>
+          </div>
         </div>
       </div>
+
     </section>
 
     <!-- ==================== REPORTING ==================== -->
