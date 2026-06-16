@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Boom Training — Dashboard</title>
   <link rel="stylesheet" href="style.css" />
+  <script>(function(){var t=localStorage.getItem('btTheme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}());</script>
 </head>
 <body>
 
@@ -26,6 +27,7 @@
           <button class="toggle-btn active" data-size="200">200 learners</button>
           <button class="toggle-btn" data-size="1000">1,000 learners</button>
         </div>
+        <button class="theme-btn" id="theme-btn" title="Switch to dark mode" aria-label="Toggle dark mode"></button>
         <span class="date-badge" id="today-date"></span>
         <div class="user-switcher" id="user-switcher">
           <button class="user-btn" id="user-btn">

@@ -21,6 +21,35 @@
   --font:        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
 
+/* ===================== Dark mode ===================== */
+[data-theme="dark"] {
+  --navy:       #5fa5e8;
+  --navy-mid:   #1a3055;
+  --navy-light: #1e3a6a;
+  --white:      #1a2640;
+  --surface:    #0f1825;
+  --card:       #1a2640;
+  --border:     #253b5c;
+  --text-main:  #d0e0f0;
+  --text-muted: #6e90b0;
+  --shadow:     0 2px 16px rgba(0,0,0,0.5);
+}
+
+/* Hardcoded colours that need targeted dark-mode overrides */
+[data-theme="dark"] .user-btn:hover                      { background: #1f3255; border-color: var(--border); }
+[data-theme="dark"] .user-dropdown-item:hover            { background: #1f3255; }
+[data-theme="dark"] .user-dropdown-item.active           { background: #1e3560; color: var(--navy); }
+[data-theme="dark"] .data-table tbody tr:hover           { background: #1f3255; }
+[data-theme="dark"] .data-table tr                       { border-bottom-color: var(--border); }
+[data-theme="dark"] .progress-track                      { background: #253b5c; }
+[data-theme="dark"] .sr-card.active                      { background: #1e3560; border-color: var(--navy); }
+[data-theme="dark"] .sr-card.active .sr-card-title       { color: var(--navy); }
+[data-theme="dark"] .bd-std-pill                         { background: rgba(255,255,255,0.08); }
+[data-theme="dark"] .data-table tbody tr.row-alert       { background: #2a1a1a; }
+[data-theme="dark"] .data-table tbody tr.row-alert:hover { background: #3a1f1f; }
+[data-theme="dark"] .gateway-table tbody tr.row-carry     { background: #25220e; }
+[data-theme="dark"] .gateway-table tbody tr.row-withdrawn { background: #2a1a1a; }
+
 /* ===================== Reset ===================== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -142,6 +171,25 @@ body {
   color: var(--border);
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+/* Theme toggle button */
+.theme-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.theme-btn:hover {
+  background: var(--navy);
+  color: var(--white);
+  border-color: var(--navy);
 }
 
 .phase-toggle-sep {
