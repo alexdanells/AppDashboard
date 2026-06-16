@@ -58,6 +58,33 @@ All sections restored. `applyPhaseSettings()` re-applies `NAV_ACCESS` role check
 
 ---
 
+## Dark Mode
+
+A sun/moon icon button sits in the header (between the size toggle and the date badge). Click it to switch between light and dark themes. The preference is saved to `localStorage` under key `btTheme` and applied immediately on the next page load via a small inline `<script>` in `<head>` (prevents flash of wrong theme).
+
+### How it works
+- `document.documentElement` gets `data-theme="dark"` set/removed on toggle
+- `MOON_ICON` / `SUN_ICON` SVG constants in `app.js` are injected into the button via `updateThemeBtn(isDark)`
+- `updateThemeBtn()` is called once on page load (reads the current `data-theme` state) and on every click
+
+### CSS variable strategy
+`--navy` is dual-use in light mode (dark brand color for both button backgrounds and text). In dark mode the variables are overridden as follows:
+
+| Variable | Light | Dark | Reason |
+|---|---|---|---|
+| `--navy` | `#0f1e3c` | `#d8e6f2` | Repurposed as near-white so all text/labels using `--navy` become readable |
+| `--navy-mid` | `#1b2f55` | `#a8bfd4` | Same — used for secondary text (e.g. "View →" button text) |
+| `--white` | `#ffffff` | `#1c1c1c` | Cards, panels, header surfaces go dark gray |
+| `--surface` | `#f5f7fb` | `#111111` | Page background goes near-black |
+| `--card` | `#ffffff` | `#1c1c1c` | As above |
+| `--border` | `#e2e8f0` | `#2e2e2e` | Borders go dark |
+| `--text-main` | `#0f1e3c` | `#eeeeee` | Body text goes white |
+| `--text-muted` | `#64748b` | `#888888` | Muted text lightens |
+
+Because `--navy` becomes near-white, any element using `background: var(--navy)` (active toggles, buttons, avatars) must be explicitly overridden in `[data-theme="dark"]` to use a dark gray (`#383838`) with white text instead. See the dark mode block at the top of `style.css` for the full list of targeted overrides (hardcoded pastel row states, gateway metric cards, pipeline pills, ksb-notice, etc.).
+
+---
+
 ## Navigation (6 items)
 
 | Nav Label | Page ID | Visible to |
@@ -321,6 +348,7 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `exportReportCSV()` | Exports full report dataset (all pages) |
 | `_buildMeetingLookup()` | Last meeting for all masters (TOUCHPOINT_DATA + synthetic) |
 | `_buildOtjLookup()` | OTJ data for all masters (OTJ_DATA + synthetic) |
+| `updateThemeBtn(isDark)` | Swaps button icon (moon↔sun) and `title`/`aria-label` to match current theme |
 
 ---
 
@@ -354,6 +382,8 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `.ksb-notice` | Amber info notice box (KSB, Reporting) |
 | `.phase-toggle` / `.phase-btn` / `.phase-btn.active` | Phase 1/2/3 toggle in header |
 | `.phase-toggle-sep` | Vertical separator between phase toggle and size toggle |
+| `.theme-btn` | Circular sun/moon icon button for dark mode toggle |
+| `[data-theme="dark"]` | Applied to `<html>` element; overrides CSS variables + targeted hardcoded colours |
 
 ---
 
