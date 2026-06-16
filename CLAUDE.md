@@ -35,6 +35,29 @@ Open `index.html` directly in a browser — no build step, no server needed.
 
 ---
 
+## Phase Toggle (Phase 1 / Phase 2 / Phase 3)
+
+Three buttons sit in the header to the left of the size toggle. Phase 2 is permanently disabled (greyed out). Phase 3 is the full current dashboard. Phase 1 is a reduced minimum-viable view.
+
+### Phase 1 restrictions
+- **Nav hidden:** Sales Pipeline, Gateway
+- **Overview — sections hidden:** DfE AAF section, DfE AAF summary card, Sales Pipeline summary card, Gateway Pipeline summary card, Learner Welfare summary card, Learner Voice summary card, Achievement Rate KPI card (`id="kpi-achievement-card"`), BIL Decisions Needed banner entry (`id="ov-bil-decision-row"`)
+- **Compliance tab — hidden:** BIL Decisions Needed KPI card (`id="comp-bil-action-card"`) and BIL table
+- **Learners sub-tabs hidden:** Curriculum, Learner Welfare, Learner Voice
+- **Delivery/KSB tab:** renamed to "Delivery — KSB & Curriculum"; table gains three extra columns (Current Sprint, Curriculum %, Status) from `AD.curriculum` via `_buildCurriculumLookup()`; panel title becomes "KSB & Curriculum Progress"
+
+### Phase 3 (full dashboard)
+All sections restored. `applyPhaseSettings()` re-applies `NAV_ACCESS` role checks when restoring nav links so role permissions still hold.
+
+### Implementation
+- `currentPhase` state variable (1 or 3; Phase 2 button is disabled)
+- `applyPhaseSettings()` runs at the end of `renderAll()` and on every phase button click
+- `applyRolePermissions()` runs first (role-based visibility), then `applyPhaseSettings()` applies phase overrides on top
+- `renderKSB()` rebuilds `<thead>` on every call: 13 columns in Phase 1, 10 columns in Phase 3
+- KSB sort uses event delegation on `document` scoped to `#ksb-table .sort-th` (direct binding broke on thead rebuild)
+
+---
+
 ## Navigation (6 items)
 
 | Nav Label | Page ID | Visible to |
@@ -101,8 +124,11 @@ Old hand-crafted arrays (`TOUCHPOINT_DATA`, `KSB_DATA` etc.) are kept in the fil
 ## Page Details
 
 ### Overview (`page-overview`)
-- **DfE AAF section** — 6 RAG metric cards at top, collapsible via toggle button. Hidden for LSC users.
-- **6 KPI cards** — dynamic labels: managers see provision-wide stats; LSC sees own caseload (My Learners, Reviews Due, At Risk, OTJ Compliance, + provision Employers/Achievement Rate)
+- **DfE AAF section** — 6 RAG metric cards at top, collapsible via toggle button. Hidden for LSC users and in Phase 1.
+- **KPI bar** — uses `grid-template-columns: repeat(auto-fit, minmax(140px, 1fr))` so card count varies by role/phase without layout breakage
+  - **Manager cards (up to 8):** Active Learners · Employers · On Track · At Risk · Overdue Reviews · Monthly OTJ Compliance (`kpi-otj-month-card`) · Monthly Meeting Compliance (`kpi-meeting-month-card`) · Achievement Rate (`kpi-achievement-card`, hidden in Phase 1)
+  - **LSC cards (7):** My Learners · Employers · On Track · At Risk · Monthly OTJ Compliance (relabeled `kpi-overdue`) · Monthly Meeting Compliance (`kpi-meeting-month-card`) · Achievement Rate
+  - `kpi-otj-month-card` is manager-only (hidden for LSC via `applyRolePermissions()`); LSC uses the `kpi-overdue` slot relabeled "Monthly OTJ Compliance"
 - **Urgent actions banner** — count of SLA breaches + BIL decisions + OOF red + ALS overdue + active safeguarding + welfare overdue + KSB super-red
 - **Summary cards grid** — 10 cards (managers) / 8 cards (LSC), ordered via CSS `order` property:
   - **Manager order:** DfE AAF · Sales Pipeline · Compliance · OOF & BIL · KSB Tracker · Gateway Pipeline · Gateway Forecast · Curriculum · Learner Welfare · Learner Voice
@@ -226,6 +252,7 @@ All other data sources (`AD.masters`, `AD.ksb`, `AD.sla`, `AD.otj`, `AD.curricul
 
 ```javascript
 let currentSize        = 200;
+let currentPhase       = 1;           // 1 = Phase 1 (MVP), 3 = Phase 3 (full)
 let pipelineOffset     = 0;           // 0 = May 2026
 let gatewayOffset      = 0;           // 0 = June 2026
 let gwForecastFilter   = 'All';
@@ -248,8 +275,8 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 
 | Constant | Description |
 |---|---|
-| `DATA` | Summary KPI values keyed by 200/1000 |
-| `COACH_DATA` | Per-coach KPIs (5 LSCs) — still used for LSC KPI cards |
+| `DATA` | Summary KPI values keyed by 200/1000; includes `otjCompliance` and `meetingCompliance` |
+| `COACH_DATA` | Per-coach KPIs (5 LSCs) — includes `meetingCompliance`; used for LSC KPI cards |
 | `AAF_METRICS` | DfE AAF metrics keyed by 200/1000 |
 | `KSB_STANDARDS` | K/S/B totals per standard (Data Technician, Data Analyst, Applied AI) |
 | `PIPELINE_ENTRIES` | Sales pipeline May–Aug 2026 |
@@ -273,8 +300,10 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 
 | Function | Purpose |
 |---|---|
-| `renderAll()` | Triggers all KPI and table renders; called on size toggle and user switch |
+| `renderAll()` | Triggers all KPI and table renders; calls `applyPhaseSettings()` at end |
 | `applyRolePermissions()` | Shows/hides nav, cards, filter bars based on `currentUser.role` |
+| `applyPhaseSettings()` | Applies Phase 1 restrictions on top of role permissions; called after `renderAll()` and on phase toggle |
+| `_buildCurriculumLookup()` | Builds name→curriculum record map for Phase 1 KSB+Curriculum joined table |
 | `switchUser(userId)` | Changes active account, re-applies permissions, re-renders |
 | `syncCoachDropdowns()` | Updates all LSC dropdowns to 5 or 20 coaches based on `currentSize` |
 | `renderGatewayForecast()` | Q2/Q3/Q4 tables and KPIs |
@@ -323,6 +352,8 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `.check-yes` / `.check-no` | Tick/dash indicators |
 | `.ksb-kpi-section` / `.ksb-kpi-label` | KSB KPI group labels |
 | `.ksb-notice` | Amber info notice box (KSB, Reporting) |
+| `.phase-toggle` / `.phase-btn` / `.phase-btn.active` | Phase 1/2/3 toggle in header |
+| `.phase-toggle-sep` | Vertical separator between phase toggle and size toggle |
 
 ---
 

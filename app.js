@@ -17,7 +17,7 @@ const STANDARDS = [
 const DATA = {
   200: {
     learners: 200, onTrack: 168, atRisk: 24, overdue: 8,
-    employers: 34, achievement: '73%', actionsToday: 7,
+    employers: 34, achievement: '73%', otjCompliance: '82%', meetingCompliance: '88%', actionsToday: 7,
     revenue: '£1.2M', starts: 12, gateway: 18, withdrawals: 11,
     outstanding: 18, overdueReviews: 9, noOtj: 12, awaitingFirst: 8,
     learnerENPS: 62, promoters: '68%', passives: '26%', detractors: '6%', employerENPS: 54,
@@ -25,7 +25,7 @@ const DATA = {
   },
   1000: {
     learners: 1000, onTrack: 820, atRisk: 130, overdue: 50,
-    employers: 95, achievement: '71%', actionsToday: 34,
+    employers: 95, achievement: '71%', otjCompliance: '79%', meetingCompliance: '85%', actionsToday: 34,
     revenue: '£6.1M', starts: 58, gateway: 91, withdrawals: 63,
     outstanding: 87, overdueReviews: 43, noOtj: 58, awaitingFirst: 31,
     learnerENPS: 58, promoters: '65%', passives: '27%', detractors: '8%', employerENPS: 51,
@@ -35,11 +35,11 @@ const DATA = {
 
 // ─── Coach KPIs (for LSC page) ────────────────────────────────────────
 const COACH_DATA = {
-  'Sarah Mitchell': { learners: 38, reviewsDue: 2, atRisk: 3, otjCompliance: '85%' },
-  'James Okafor':   { learners: 42, reviewsDue: 3, atRisk: 4, otjCompliance: '81%' },
-  'Priya Sharma':   { learners: 40, reviewsDue: 4, atRisk: 5, otjCompliance: '79%' },
-  'Tom Bradley':    { learners: 45, reviewsDue: 5, atRisk: 6, otjCompliance: '77%' },
-  'Hannah Clarke':  { learners: 35, reviewsDue: 3, atRisk: 6, otjCompliance: '83%' },
+  'Sarah Mitchell': { learners: 38, reviewsDue: 2, atRisk: 3, otjCompliance: '85%', meetingCompliance: '90%' },
+  'James Okafor':   { learners: 42, reviewsDue: 3, atRisk: 4, otjCompliance: '81%', meetingCompliance: '87%' },
+  'Priya Sharma':   { learners: 40, reviewsDue: 4, atRisk: 5, otjCompliance: '79%', meetingCompliance: '85%' },
+  'Tom Bradley':    { learners: 45, reviewsDue: 5, atRisk: 6, otjCompliance: '77%', meetingCompliance: '83%' },
+  'Hannah Clarke':  { learners: 35, reviewsDue: 3, atRisk: 6, otjCompliance: '83%', meetingCompliance: '91%' },
 };
 
 // ─── AAF Metrics ───────────────────────────────────────────────────────
@@ -1279,6 +1279,9 @@ function applyRolePermissions() {
     const dLscEl = document.getElementById('delivery-lsc');
     if (dLscEl) dLscEl.value = coach;
 
+    const otjMonthCard = document.getElementById('kpi-otj-month-card');
+    if (otjMonthCard) otjMonthCard.style.display = 'none';
+
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = 'none';
     const compReviewsCard = document.getElementById('comp-reviews-due-card');
@@ -1307,6 +1310,9 @@ function applyRolePermissions() {
     lscPageCoach       = 'James Okafor';
     deliveryDashFilter = 'All';
     deliveryLSCFilter  = 'All';
+
+    const otjMonthCard = document.getElementById('kpi-otj-month-card');
+    if (otjMonthCard) otjMonthCard.style.display = '';
 
     const compLscBar = document.getElementById('compliance-lsc-bar');
     if (compLscBar) compLscBar.style.display = '';
@@ -1513,21 +1519,24 @@ function setKpiCard(id, label, value) {
 function renderOverviewKPIs() {
   if (currentUser.role === 'lsc') {
     const c = COACH_DATA[currentUser.coach] || {};
-    setKpiCard('kpi-learners',    'My Learners',      c.learners       || '—');
-    setKpiCard('kpi-on-track',    'Reviews Due',       c.reviewsDue     || '—');
-    setKpiCard('kpi-at-risk',     'At Risk',           c.atRisk         || '—');
-    setKpiCard('kpi-overdue',     'OTJ Compliance',    c.otjCompliance  || '—');
+    setKpiCard('kpi-learners',    'My Learners',             c.learners      || '—');
+    setKpiCard('kpi-on-track',    'Reviews Due',             c.reviewsDue    || '—');
+    setKpiCard('kpi-at-risk',     'At Risk',                 c.atRisk        || '—');
+    setKpiCard('kpi-overdue',        'Monthly OTJ Compliance',     c.otjCompliance     || '—');
+    setKpiCard('kpi-meeting-month',  'Monthly Meeting Compliance', c.meetingCompliance || '—');
     const prov = DATA[currentSize];
-    setKpiCard('kpi-employers',   'Employers',         prov.employers);
-    setKpiCard('kpi-achievement', 'Achievement Rate',  prov.achievement);
+    setKpiCard('kpi-employers',   'Employers',               prov.employers);
+    setKpiCard('kpi-achievement', 'Achievement Rate',        prov.achievement);
   } else {
     const d = DATA[currentSize];
-    setKpiCard('kpi-learners',    'Active Learners',   d.learners);
-    setKpiCard('kpi-on-track',    'On Track',          d.onTrack);
-    setKpiCard('kpi-at-risk',     'At Risk',           d.atRisk);
-    setKpiCard('kpi-overdue',     'Overdue Reviews',   d.overdue);
-    setKpiCard('kpi-employers',   'Employers',         d.employers);
-    setKpiCard('kpi-achievement', 'Achievement Rate',  d.achievement);
+    setKpiCard('kpi-learners',    'Active Learners',         d.learners);
+    setKpiCard('kpi-on-track',    'On Track',                d.onTrack);
+    setKpiCard('kpi-at-risk',     'At Risk',                 d.atRisk);
+    setKpiCard('kpi-overdue',     'Overdue Reviews',         d.overdue);
+    setKpiCard('kpi-employers',   'Employers',               d.employers);
+    setKpiCard('kpi-otj-month',      'Monthly OTJ Compliance',     d.otjCompliance);
+    setKpiCard('kpi-meeting-month',  'Monthly Meeting Compliance', d.meetingCompliance);
+    setKpiCard('kpi-achievement',    'Achievement Rate',           d.achievement);
     setText('actions-count', d.actionsToday + ' actions');
     setText('risk-count',    d.atRisk + ' learners');
   }

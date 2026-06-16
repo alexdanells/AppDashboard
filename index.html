@@ -71,10 +71,14 @@
       </div>
 
       <!-- KPI bar -->
-      <div class="kpi-bar">
+      <div class="kpi-bar" style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
         <div class="kpi-card">
           <span class="kpi-label">Active Learners</span>
           <span class="kpi-value" id="kpi-learners">—</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Employers</span>
+          <span class="kpi-value" id="kpi-employers">—</span>
         </div>
         <div class="kpi-card">
           <span class="kpi-label">On Track</span>
@@ -88,9 +92,13 @@
           <span class="kpi-label">Overdue Reviews</span>
           <span class="kpi-value red" id="kpi-overdue">—</span>
         </div>
-        <div class="kpi-card">
-          <span class="kpi-label">Employers</span>
-          <span class="kpi-value" id="kpi-employers">—</span>
+        <div class="kpi-card" id="kpi-otj-month-card">
+          <span class="kpi-label">Monthly OTJ Compliance</span>
+          <span class="kpi-value green" id="kpi-otj-month">—</span>
+        </div>
+        <div class="kpi-card" id="kpi-meeting-month-card">
+          <span class="kpi-label">Monthly Meeting Compliance</span>
+          <span class="kpi-value green" id="kpi-meeting-month">—</span>
         </div>
         <div class="kpi-card" id="kpi-achievement-card">
           <span class="kpi-label">Achievement Rate</span>
