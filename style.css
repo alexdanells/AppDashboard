@@ -109,6 +109,48 @@ body {
   background: var(--surface);
 }
 
+/* Phase toggle */
+.phase-toggle {
+  display: flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.phase-btn {
+  border: none;
+  background: transparent;
+  border-radius: 16px;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.phase-btn.active {
+  background: var(--navy);
+  color: var(--white);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.phase-btn:disabled {
+  color: var(--border);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.phase-toggle-sep {
+  width: 1px;
+  background: var(--border);
+  margin: 4px 2px;
+  align-self: stretch;
+}
+
 /* Provision size toggle */
 .size-toggle {
   display: flex;

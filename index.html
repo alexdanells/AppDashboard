@@ -16,6 +16,12 @@
         <span class="header-title">Apprenticeship Dashboard</span>
       </div>
       <div class="header-right">
+        <div class="phase-toggle" title="Switch between implementation phases">
+          <button class="phase-btn active" data-phase="1">Phase 1</button>
+          <button class="phase-btn" data-phase="2" disabled>Phase 2</button>
+          <button class="phase-btn" data-phase="3">Phase 3</button>
+        </div>
+        <div class="phase-toggle-sep"></div>
         <div class="size-toggle" title="Switch between provision sizes">
           <button class="toggle-btn active" data-size="200">200 learners</button>
           <button class="toggle-btn" data-size="1000">1,000 learners</button>
@@ -86,7 +92,7 @@
           <span class="kpi-label">Employers</span>
           <span class="kpi-value" id="kpi-employers">—</span>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card" id="kpi-achievement-card">
           <span class="kpi-label">Achievement Rate</span>
           <span class="kpi-value green" id="kpi-achievement">—</span>
         </div>
@@ -138,7 +144,7 @@
           <div class="ov-rows">
             <div class="ov-row"><span class="ov-label">Out of Funding (OOF)</span><span class="ov-value ov-amber" id="ov-oof">—</span></div>
             <div class="ov-row"><span class="ov-label">OOF — red portfolio</span><span class="ov-value ov-red" id="ov-oof-red">—</span></div>
-            <div class="ov-row"><span class="ov-label">BIL — decision needed</span><span class="ov-value ov-amber" id="ov-bil-decision">—</span></div>
+            <div class="ov-row" id="ov-bil-decision-row"><span class="ov-label">BIL — decision needed</span><span class="ov-value ov-amber" id="ov-bil-decision">—</span></div>
             <div class="ov-row"><span class="ov-label">Learners on BIL</span><span class="ov-value" id="ov-bil-total">—</span></div>
           </div>
         </div>
@@ -652,7 +658,7 @@
               <span class="panel-count" id="ksb-panel-count">—</span>
             </div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
-              <table class="data-table dd-table">
+              <table class="data-table dd-table" id="ksb-table">
                 <thead>
                   <tr>
                     <th class="sort-th" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
@@ -779,7 +785,7 @@
           <div class="kpi-card"><span class="kpi-label">Progress Reviews (8+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
           <div class="kpi-card"><span class="kpi-label">OTJ Compliance in Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Out of Funding</span><span class="kpi-value" id="comp-oof-total">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
+          <div class="kpi-card" id="comp-bil-action-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
           <div class="kpi-card" id="comp-reviews-due-card"><span class="kpi-label">Reviews Due (14 days)</span><span class="kpi-value amber" id="lsc-reviews-due">—</span></div>
           <div class="kpi-card" id="comp-otj-card"><span class="kpi-label">OTJ Compliance</span><span class="kpi-value green" id="lsc-otj">—</span></div>
         </div>

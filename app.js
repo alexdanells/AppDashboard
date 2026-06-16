@@ -1018,6 +1018,7 @@ let ksbStandardFilter  = '';
 let ksbStatusFilter    = '';
 let ksbSortCol         = 'rag';
 let ksbSortAsc         = true;
+let currentPhase       = 1;        // 1=Phase 1, 3=Phase 3 (Phase 2 disabled)
 
 // ─── Utility ───────────────────────────────────────────────────────────
 function setText(id, value) {
@@ -1343,6 +1344,91 @@ function applyRolePermissions() {
   }
 }
 
+// ─── Phase settings ────────────────────────────────────────────────────
+
+function applyPhaseSettings() {
+  const isPhase1 = currentPhase === 1;
+  const isLSC    = currentUser.role === 'lsc';
+  const role     = currentUser.role;
+
+  // — Nav links hidden in Phase 1 —
+  const phase1HiddenPages = ['page-sales', 'page-gateway'];
+  phase1HiddenPages.forEach(pageId => {
+    const link = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+    if (!link) return;
+    if (isPhase1) {
+      link.style.display = 'none';
+    } else {
+      // Restore: re-apply role-based visibility from NAV_ACCESS
+      const allowed = NAV_ACCESS[pageId] || [];
+      link.style.display = allowed.includes(role) ? '' : 'none';
+    }
+  });
+
+  // If current page is one now hidden, navigate to Overview
+  const activePageId = document.querySelector('.page.active')?.id;
+  if (isPhase1 && phase1HiddenPages.includes(activePageId)) {
+    document.querySelector('.nav-link[data-page="page-overview"]')?.click();
+  }
+
+  // — Overview cards hidden in Phase 1 —
+  const aafSection = document.getElementById('ov-aaf-section');
+  if (aafSection) aafSection.style.display = (isPhase1 || isLSC) ? 'none' : '';
+
+  const aafCard = document.getElementById('ov-aaf-card');
+  if (aafCard) aafCard.style.display = (isPhase1 || isLSC) ? 'none' : '';
+
+  const salesCard = document.getElementById('ov-sales-card');
+  if (salesCard) salesCard.style.display = (isPhase1 || isLSC) ? 'none' : '';
+
+  // Gateway Pipeline, Welfare, Voice cards + Achievement Rate KPI + BIL rows hidden in Phase 1
+  ['ov-gateway-card', 'ov-welfare-card', 'ov-voice-card',
+   'kpi-achievement-card', 'ov-bil-decision-row', 'comp-bil-action-card'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isPhase1 ? 'none' : '';
+  });
+
+  // — Learners sub-tabs hidden in Phase 1: Curriculum, Welfare, Voice —
+  const hiddenSubtabs = ['sub-curriculum', 'sub-welfare', 'sub-voice'];
+
+  if (isPhase1) {
+    // If user is currently on one of the hidden sub-tabs, switch to Delivery
+    const learnerPageActive = document.getElementById('page-learners')?.classList.contains('active');
+    const activeHidden = hiddenSubtabs.some(id => document.getElementById(id)?.classList.contains('active'));
+    if (learnerPageActive && activeHidden) {
+      document.querySelectorAll('#page-learners .sub-nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#page-learners .sub-page').forEach(p => p.classList.remove('active'));
+      document.querySelector('#page-learners .sub-nav-btn[data-sub="sub-delivery"]')?.classList.add('active');
+      document.getElementById('sub-delivery')?.classList.add('active');
+    }
+    hiddenSubtabs.forEach(id => {
+      const btn  = document.querySelector(`#page-learners .sub-nav-btn[data-sub="${id}"]`);
+      const pane = document.getElementById(id);
+      if (btn)  btn.style.display = 'none';
+      if (pane) pane.classList.remove('active');
+    });
+  } else {
+    hiddenSubtabs.forEach(id => {
+      const btn = document.querySelector(`#page-learners .sub-nav-btn[data-sub="${id}"]`);
+      if (btn) btn.style.display = '';
+    });
+  }
+}
+
+// ─── Phase toggle ──────────────────────────────────────────────────────
+document.querySelectorAll('.phase-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.disabled) return;
+    const phase = parseInt(btn.dataset.phase);
+    if (phase === currentPhase) return;
+    currentPhase = phase;
+    document.querySelectorAll('.phase-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyPhaseSettings();
+    renderKSB(); // rebuild table header and combined columns
+  });
+});
+
 // ─── Size toggle ───────────────────────────────────────────────────────
 document.querySelectorAll('.toggle-btn').forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1412,6 +1498,7 @@ function renderAll() {
   renderGatewayForecast();
   renderKSB();
   renderLearnerVoice();
+  applyPhaseSettings(); // apply phase-based visibility after all renders
 }
 
 // ─── Overview KPIs ─────────────────────────────────────────────────────
@@ -2392,6 +2479,12 @@ function ksbPctCell(pct) {
   return `<span class="ksb-pct${cls ? ' ' + cls : ''}">${pct}%</span>`;
 }
 
+function _buildCurriculumLookup() {
+  const map = {};
+  AD.curriculum.forEach(r => { map[r.name] = r; });
+  return map;
+}
+
 function renderKSB() {
   const isLSC  = currentUser.role === 'lsc';
   const mo3    = new Date('2026-09-04');
@@ -2413,7 +2506,6 @@ function renderKSB() {
   // Managers with no LSC filter: show only at-risk (not green)
   const managerAllView = !isLSC && !ksbLSCFilter;
   if (managerAllView) {
-    const mo6 = new Date('2026-12-04');
     rows = rows.filter(r =>
       ksbRag(r) !== 'green' &&
       r.status !== 'BIL' &&
@@ -2434,18 +2526,40 @@ function renderKSB() {
     return (av < bv ? -1 : av > bv ? 1 : 0) * (ksbSortAsc ? 1 : -1);
   });
 
-  // Update sort header icons
-  document.querySelectorAll('.sort-th').forEach(th => {
-    const icon = th.querySelector('.sort-icon');
-    if (!icon) return;
-    if (th.dataset.col === ksbSortCol) {
-      icon.textContent = ksbSortAsc ? '↑' : '↓';
-      th.classList.add('sort-active');
-    } else {
-      icon.textContent = '⇅';
-      th.classList.remove('sort-active');
-    }
-  });
+  // Rebuild thead based on phase (Phase 1 adds curriculum columns)
+  const ksbTable = document.getElementById('ksb-table');
+  if (ksbTable) {
+    const isPhase1 = currentPhase === 1;
+    const currColHeaders = isPhase1 ? `
+      <th>Current Sprint</th>
+      <th>Curriculum %</th>
+      <th>Curriculum Status</th>` : '';
+    ksbTable.querySelector('thead tr').innerHTML = `
+      <th class="sort-th" data-col="employer">Employer <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="name">Learner <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="startDate">Start Date <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="plannedGateway">Planned Gateway <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="status">Status <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="knowledgePct">Knowledge <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="skillsPct">Skills <span class="sort-icon">⇅</span></th>
+      <th class="sort-th" data-col="behavioursPct">Behaviours <span class="sort-icon">⇅</span></th>
+      ${currColHeaders}
+      <th class="sort-th" data-col="rag">RAG <span class="sort-icon">⇅</span></th>`;
+
+    // Update sort icons (scoped to this table only)
+    ksbTable.querySelectorAll('.sort-th').forEach(th => {
+      const icon = th.querySelector('.sort-icon');
+      if (!icon) return;
+      if (th.dataset.col === ksbSortCol) {
+        icon.textContent = ksbSortAsc ? '↑' : '↓';
+        th.classList.add('sort-active');
+      } else {
+        icon.textContent = '⇅';
+        th.classList.remove('sort-active');
+      }
+    });
+  }
 
   const countEl = document.getElementById('ksb-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
@@ -2453,20 +2567,40 @@ function renderKSB() {
   const notice = document.getElementById('ksb-manager-notice');
   if (notice) notice.style.display = managerAllView ? '' : 'none';
 
-  // Update subtitle based on role
-  const subtitle = document.querySelector('#delivery-manager-view .page-subtitle');
+  // Update page title, subtitle and panel title based on phase
+  const isPhase1 = currentPhase === 1;
+  const pageTitle   = document.querySelector('#delivery-manager-view .page-title');
+  const subtitle    = document.querySelector('#delivery-manager-view .page-subtitle');
+  const panelTitle  = document.querySelector('#delivery-manager-view .panel-title');
+  if (pageTitle)  pageTitle.textContent  = isPhase1 ? 'Delivery — KSB & Curriculum' : 'Delivery — KSB Tracker';
+  if (panelTitle) panelTitle.textContent = isPhase1 ? 'KSB & Curriculum Progress' : 'KSB Progress';
   if (subtitle) {
     subtitle.textContent = isLSC
-      ? 'Knowledge, Skills and Behaviours across your caseload'
-      : 'Knowledge, Skills and Behaviours progress across your provision';
+      ? (isPhase1 ? 'KSB progress and curriculum status across your caseload' : 'Knowledge, Skills and Behaviours across your caseload')
+      : (isPhase1 ? 'KSB progress and curriculum status across your provision'  : 'Knowledge, Skills and Behaviours progress across your provision');
   }
+
+  // Build curriculum lookup for Phase 1 combined view
+  const currLookup = isPhase1 ? _buildCurriculumLookup() : null;
+  const colCount   = isPhase1 ? 13 : 10;
 
   const tbody = document.getElementById('ksb-tbody');
   if (!tbody) return;
-  if (!rows.length) { tbody.innerHTML = emptyRow(10, 'No learners match the selected filters.'); return; }
+  if (!rows.length) { tbody.innerHTML = emptyRow(colCount, 'No learners match the selected filters.'); return; }
 
   tbody.innerHTML = rows.map(r => {
     const rag = ksbRag(r);
+    let currCols = '';
+    if (currLookup) {
+      const curr = currLookup[r.name];
+      if (curr) {
+        const cs  = curriculumStatus(curr);
+        const pct = Math.round(curr.partsComplete / 8 * 100);
+        currCols = `<td style="font-size:0.8rem;">${curr.sprint}</td><td>${pct}%</td><td>${curriculumStatusPill(cs)}</td>`;
+      } else {
+        currCols = `<td>—</td><td>—</td><td>—</td>`;
+      }
+    }
     return `<tr${rag === 'super-red' ? ' class="row-alert"' : ''}>
       <td>${r.employer}</td>
       <td>${r.name}</td>
@@ -2477,22 +2611,19 @@ function renderKSB() {
       <td>${ksbPctCell(r.knowledgePct)}</td>
       <td>${ksbPctCell(r.skillsPct)}</td>
       <td>${ksbPctCell(r.behavioursPct)}</td>
+      ${currCols}
       <td>${ksbRagBadge(rag)}</td>
     </tr>`;
   }).join('');
 }
 
-document.querySelectorAll('.sort-th').forEach(th => {
-  th.addEventListener('click', () => {
-    const col = th.dataset.col;
-    if (ksbSortCol === col) {
-      ksbSortAsc = !ksbSortAsc;
-    } else {
-      ksbSortCol = col;
-      ksbSortAsc = true;
-    }
-    renderKSB();
-  });
+document.addEventListener('click', function(e) {
+  const th = e.target.closest('#ksb-table .sort-th');
+  if (!th) return;
+  const col = th.dataset.col;
+  if (ksbSortCol === col) ksbSortAsc = !ksbSortAsc;
+  else { ksbSortCol = col; ksbSortAsc = true; }
+  renderKSB();
 });
 
 document.getElementById('ksb-lsc')?.addEventListener('change', function() {
