@@ -3941,9 +3941,35 @@ function closeDataMap() {
   document.body.style.overflow = '';
 }
 
+function exportDataMapCSV() {
+  const PLATFORM_LABELS = { yes: 'Yes', no: 'No', partial: 'Partial' };
+  const rows = [['Page', 'Section', 'Phase Availability', 'Field', 'In Platform?', 'Notes']];
+  Object.entries(DATA_ORIGINS).forEach(([, page]) => {
+    (page.sections || []).forEach(sec => {
+      const phaseLabel = (sec.phases && !sec.phases.includes(1)) ? 'Phase 3 only' : 'Phase 1 & 3';
+      (sec.fields || []).forEach(f => {
+        rows.push([
+          page.title,
+          sec.name,
+          phaseLabel,
+          f.label,
+          f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed',
+          f.source || '',
+        ]);
+      });
+    });
+  });
+  const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+  a.download = 'BoomTraining_PlatformDataMap.csv';
+  a.click();
+}
+
 document.getElementById('datamap-btn').addEventListener('click', openDataMap);
 document.getElementById('datamap-close').addEventListener('click', closeDataMap);
 document.getElementById('datamap-overlay').addEventListener('click', closeDataMap);
+document.getElementById('datamap-export-btn').addEventListener('click', exportDataMapCSV);
 
 document.querySelectorAll('.dm-filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {

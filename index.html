@@ -1188,9 +1188,15 @@
         <div class="datamap-title">Platform Data Map</div>
         <div class="datamap-subtitle">Every dashboard data point and its current status in the Boom Platform</div>
       </div>
-      <button class="datamap-close" id="datamap-close" title="Close">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg>
-      </button>
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <button class="datamap-export-btn" id="datamap-export-btn" title="Export full data map as CSV">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 7l4 4 4-4M2 13h12"/></svg>
+          Export CSV
+        </button>
+        <button class="datamap-close" id="datamap-close" title="Close">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg>
+        </button>
+      </div>
     </div>
     <div class="datamap-stats" id="datamap-stats"></div>
     <div class="datamap-filters">
