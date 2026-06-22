@@ -1078,6 +1078,7 @@ document.querySelectorAll('.nav-link').forEach(link => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     link.classList.add('active');
     document.getElementById(target)?.classList.add('active');
+    if (dataOriginOpen) renderDataOriginPanel();
   });
 });
 
@@ -3421,6 +3422,351 @@ document.getElementById('report-clear-btn')?.addEventListener('click', () => {
 document.getElementById('report-export-btn')?.addEventListener('click', exportReportCSV);
 
 populateEmployerDropdown();
+
+// ─── Data Origins Panel ────────────────────────────────────────────────
+
+const DATA_ORIGINS = {
+  'page-overview': {
+    title: 'Overview',
+    sections: [
+      {
+        name: 'DfE AAF Metrics',
+        desc: 'High-level compliance KPIs required for DfE Area Achievement Framework reporting.',
+        fields: [
+          { label: 'Timely Achievement Rate',           source: '' },
+          { label: 'Overall Achievement Rate',          source: '' },
+          { label: 'Learner Satisfaction Score',        source: '' },
+          { label: 'Employer Satisfaction Score',       source: '' },
+          { label: 'Safeguarding Compliance Status',    source: '' },
+          { label: 'Destination & Progression Data',   source: '' },
+        ]
+      },
+      {
+        name: 'KPI Bar',
+        desc: 'Headline figures displayed at the top of the Overview page.',
+        fields: [
+          { label: 'Active Learner Count',              source: '' },
+          { label: 'Active Employer Count',             source: '' },
+          { label: 'On-Track Learner Count',            source: '' },
+          { label: 'At-Risk Learner Count',             source: '' },
+          { label: 'Overdue Reviews Count',             source: '' },
+          { label: 'Monthly OTJ Compliance %',         source: '' },
+          { label: 'Monthly Meeting Compliance %',     source: '' },
+          { label: 'Achievement Rate (current cohort)', source: '' },
+        ]
+      },
+      {
+        name: 'Urgent Actions Banner',
+        desc: 'Aggregated count of items requiring immediate action, shown in the alert strip.',
+        fields: [
+          { label: 'SLA Breach Count (overdue progress reviews)', source: '' },
+          { label: 'BIL Decisions Needed Count',        source: '' },
+          { label: 'OOF Red (missed gateway) Count',   source: '' },
+          { label: 'ALS Reviews Overdue Count',        source: '' },
+          { label: 'Active Safeguarding Cases',        source: '' },
+          { label: 'Welfare Check-ins Overdue',        source: '' },
+          { label: 'KSB Super-Red Learner Count',      source: '' },
+        ]
+      },
+      {
+        name: 'Overview Summary Cards',
+        desc: 'Snapshot values on each card — these draw from the same sources as the full pages.',
+        fields: [
+          { label: 'Compliance card values',           source: '' },
+          { label: 'OOF & BIL card values',            source: '' },
+          { label: 'KSB Tracker summary',              source: '' },
+          { label: 'Gateway Pipeline / Forecast',      source: '' },
+          { label: 'Curriculum summary',               source: '' },
+          { label: 'Learner Welfare summary',          source: '' },
+          { label: 'Learner Voice summary',            source: '' },
+          { label: 'Sales Pipeline summary',           source: '' },
+        ]
+      },
+    ]
+  },
+
+  'page-sales': {
+    title: 'Sales Pipeline',
+    sections: [
+      {
+        name: 'Pipeline Records',
+        desc: 'Individual prospect and lead records tracked by Account Managers.',
+        fields: [
+          { label: 'Learner / Prospect Name',          source: '' },
+          { label: 'Employer Name',                    source: '' },
+          { label: 'Apprenticeship Standard',          source: '' },
+          { label: 'Account Manager',                  source: '' },
+          { label: 'Pipeline Status (Cold Lead → Enrolment)', source: '' },
+          { label: 'Probability % (conversion likelihood)', source: '' },
+          { label: 'Expected Start Date',              source: '' },
+          { label: 'Contract / Funding Value',         source: '' },
+        ]
+      },
+      {
+        name: 'Monthly Targets',
+        desc: 'Monthly new-start targets used in the confirmation progress bar.',
+        fields: [
+          { label: 'Monthly New-Start Target (by standard)', source: '' },
+          { label: 'Confirmed Starts this month (≥70% probability)', source: '' },
+        ]
+      },
+    ]
+  },
+
+  'page-learners': {
+    title: 'Learners',
+    sections: [
+      {
+        name: 'Learner Record — Core (all sub-tabs)',
+        desc: 'Shared fields that appear across every Learners tab.',
+        fields: [
+          { label: 'Learner Full Name',                source: '' },
+          { label: 'Employer Name',                    source: '' },
+          { label: 'Apprenticeship Standard',          source: '' },
+          { label: 'Learning Skills Coach (LSC)',      source: '' },
+          { label: 'Learning Start Date',              source: '' },
+          { label: 'Planned Gateway Date',             source: '' },
+          { label: 'Learner Status (Live / OOF / BIL / Gateway)', source: '' },
+          { label: 'Learning End Date',                source: '' },
+        ]
+      },
+      {
+        name: 'KSB Tracker',
+        desc: 'Knowledge, Skills and Behaviours progress tracked against the standard.',
+        fields: [
+          { label: 'Knowledge % Complete',             source: '' },
+          { label: 'Skills % Complete',                source: '' },
+          { label: 'Behaviours % Complete',            source: '' },
+          { label: 'Overall KSB RAG Status (derived)', source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — First LSC Meeting',
+        desc: 'Tracks whether FDOL and the induction checklist are completed within the 30-day window.',
+        fields: [
+          { label: 'FDOL Date (First Day of Learning)', source: '' },
+          { label: 'Induction / FDOL Checklist Completion Date', source: '' },
+          { label: 'Planned Start Date',               source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — Monthly Touchpoints',
+        desc: 'Monthly contact meetings logged between LSC and learner.',
+        fields: [
+          { label: 'Meeting Date',                     source: '' },
+          { label: 'Meeting Type (Touchpoint / Progress Review)', source: '' },
+          { label: 'Conducting Coach / LSC',           source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — Progress Reviews',
+        desc: 'Formal progress reviews — flagged when overdue by 8+ weeks.',
+        fields: [
+          { label: 'Last Progress Review Date',        source: '' },
+          { label: 'Review Due By Date (calculated)',  source: '' },
+          { label: 'Weeks Since Last Review (calculated)', source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — OTJ (Off-the-Job Training)',
+        desc: 'Hours logged against the mandatory OTJ requirement (approx. 6hrs/week).',
+        fields: [
+          { label: 'OTJ Hours Completed (cumulative to date)', source: '' },
+          { label: 'OTJ Hours Expected (cumulative to date)', source: '' },
+          { label: 'Last OTJ Entry Date',              source: '' },
+          { label: 'Total OTJ Target Hours (full programme)', source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — Out of Funding (OOF)',
+        desc: 'Learners who have passed their planned gateway date and remain on funding.',
+        fields: [
+          { label: 'OOF Flag / Date',                  source: '' },
+          { label: 'OOF Reason',                       source: '' },
+          { label: 'Planned Gateway Date (vs actual)', source: '' },
+        ]
+      },
+      {
+        name: 'Compliance — Break in Learning (BIL)',
+        desc: 'Approved pauses from the programme with a confirmed return-to-learning date.',
+        fields: [
+          { label: 'BIL Start Date',                   source: '' },
+          { label: 'Expected Return to Learning (RTL) Date', source: '' },
+          { label: 'RTL Confirmed / Actual Date',      source: '' },
+          { label: 'BIL Decision Status (pending / confirmed)', source: '' },
+        ]
+      },
+      {
+        name: 'Curriculum Progress',
+        desc: 'Progress through the digital learning platform (e.g. Aptem, Bud, OneFile).',
+        fields: [
+          { label: 'Current Sprint / Module Name',     source: '' },
+          { label: 'Sprint Progress %',                source: '' },
+          { label: 'Last Activity Date on Platform',   source: '' },
+          { label: 'Curriculum Status (On Track / Behind / Off Track / No Activity)', source: '' },
+        ]
+      },
+      {
+        name: 'Learner Welfare — ALS & LLDD',
+        desc: 'Additional Learning Support needs and declared disabilities / learning difficulties.',
+        fields: [
+          { label: 'LLDD / Declared Need Flag',        source: '' },
+          { label: 'Need Type (Learning Difficulty / ADHD & Autism / Mental Health / Physical & Sensory)', source: '' },
+          { label: 'Adjustments / Support Plan in Place', source: '' },
+          { label: 'Active Support Plan Flag',         source: '' },
+          { label: 'ALS Review Due Date',              source: '' },
+        ]
+      },
+      {
+        name: 'Learner Welfare — Safeguarding & Welfare',
+        desc: 'Safeguarding concerns raised and welfare check-in records.',
+        fields: [
+          { label: 'Safeguarding Concern Flag',        source: '' },
+          { label: 'Concern Type & Open/Closed Status', source: '' },
+          { label: 'Welfare Check-in Date',            source: '' },
+          { label: 'Welfare Check-in Status (due / completed)', source: '' },
+        ]
+      },
+      {
+        name: 'Learner Voice',
+        desc: 'Learner and employer satisfaction scores, feedback commentary, and exit reviews.',
+        fields: [
+          { label: 'Learner eNPS Response Score (0–10)', source: '' },
+          { label: 'Employer eNPS Response Score (0–10)', source: '' },
+          { label: 'Learner Feedback Commentary & Date', source: '' },
+          { label: 'Employer / Line Manager Feedback & Date', source: '' },
+          { label: 'Exit Review Status (Achieved / Withdrawn)', source: '' },
+          { label: 'Exit Review Commentary',           source: '' },
+        ]
+      },
+    ]
+  },
+
+  'page-gateway': {
+    title: 'Gateway',
+    sections: [
+      {
+        name: 'Gateway Readiness',
+        desc: 'Evidence that a learner is prepared to proceed to End Point Assessment.',
+        fields: [
+          { label: 'Planned Gateway Date',             source: '' },
+          { label: 'Gateway Meeting Date (employer + learner + LSC)', source: '' },
+          { label: 'Gateway Readiness RAG (Red / Amber / Green)', source: '' },
+          { label: 'Employer Sign-off Date',           source: '' },
+          { label: 'KSB Sign-off / Portfolio Completion', source: '' },
+          { label: 'English & Maths Qualifications Confirmed', source: '' },
+        ]
+      },
+      {
+        name: 'End Point Assessment (EPA)',
+        desc: 'EPA booking, scheduling and outcome data.',
+        fields: [
+          { label: 'EPA Booking / Registration Date',  source: '' },
+          { label: 'EPA Assessment Organisation (EPAO)', source: '' },
+          { label: 'EPA Assessment Date',              source: '' },
+          { label: 'EPA Outcome (Pass / Merit / Distinction / Fail)', source: '' },
+          { label: 'Resit / Carry Over Flag',          source: '' },
+        ]
+      },
+      {
+        name: 'Gateway Forecast',
+        desc: 'Forward-looking pipeline data used in the quarterly forecast tables.',
+        fields: [
+          { label: 'Planned Gateway Quarter (Q2 / Q3 / Q4)', source: '' },
+          { label: 'Gateway Forecast RAG per Learner', source: '' },
+          { label: 'Months Remaining to Planned Gateway', source: '' },
+        ]
+      },
+    ]
+  },
+
+  'page-reporting': {
+    title: 'Reporting',
+    sections: [
+      {
+        name: 'Standard Reports — Data Sources',
+        desc: 'Each standard report draws from the sources documented on the relevant Learners / Gateway pages.',
+        fields: [
+          { label: 'LSC Full Caseload → Learner Record + all compliance fields', source: '' },
+          { label: 'Standard Employer Report → Learner Record + employer-facing fields', source: '' },
+          { label: 'Learner Touchpoints → Monthly Touchpoints', source: '' },
+          { label: 'Progress Reviews → Compliance — Progress Reviews', source: '' },
+          { label: 'OTJ Compliance → Compliance — OTJ', source: '' },
+          { label: 'KSB Progress → KSB Tracker',       source: '' },
+          { label: 'Curriculum Progress → Curriculum Progress', source: '' },
+        ]
+      },
+      {
+        name: 'Quick Reports — Data Sources',
+        desc: 'Pre-filtered one-click reports — data sources match the underlying section.',
+        fields: [
+          { label: 'Awaiting First Meeting → First LSC Meeting', source: '' },
+          { label: 'Progress Reviews Overdue → Progress Reviews', source: '' },
+          { label: 'BIL Decisions Needed → BIL',       source: '' },
+          { label: 'OOF Red Portfolio → OOF',          source: '' },
+          { label: 'KSB At-Risk → KSB Tracker',        source: '' },
+          { label: 'Curriculum Off-Track → Curriculum Progress', source: '' },
+          { label: 'Gateway Red Portfolio → Gateway Readiness', source: '' },
+          { label: 'Active Safeguarding → Safeguarding & Welfare', source: '' },
+          { label: 'Welfare Check-ins Due → Safeguarding & Welfare', source: '' },
+          { label: 'ALS Register → ALS & LLDD',        source: '' },
+          { label: 'Sales Pipeline → Pipeline Records', source: '' },
+        ]
+      },
+    ]
+  },
+};
+
+let dataOriginOpen = false;
+
+function renderDataOriginPanel() {
+  const activePage = document.querySelector('.page.active');
+  const pageId     = activePage ? activePage.id : 'page-overview';
+  const origin     = DATA_ORIGINS[pageId] || DATA_ORIGINS['page-overview'];
+
+  document.getElementById('dop-header-page').textContent = origin.title;
+
+  const body = document.getElementById('dop-body');
+  body.innerHTML = origin.sections.map(sec => {
+    const mapped   = sec.fields.filter(f => f.source && f.source.trim()).length;
+    const total    = sec.fields.length;
+    const fieldHtml = sec.fields.map(f => {
+      const isMapped = f.source && f.source.trim() !== '';
+      return `<div class="dop-field">
+        <span class="dop-field-label">${f.label}</span>
+        <span class="dop-field-source ${isMapped ? 'dop-mapped' : 'dop-unmapped'}">${isMapped ? f.source : 'Not yet mapped'}</span>
+      </div>`;
+    }).join('');
+
+    return `<div class="dop-section">
+      <div class="dop-section-head">
+        <div class="dop-section-name">${sec.name}</div>
+        ${sec.desc ? `<div class="dop-section-desc">${sec.desc}</div>` : ''}
+        <div class="dop-section-count">${mapped} / ${total} fields mapped</div>
+      </div>
+      <div class="dop-fields">${fieldHtml}</div>
+    </div>`;
+  }).join('');
+}
+
+function openDataOriginPanel() {
+  dataOriginOpen = true;
+  renderDataOriginPanel();
+  document.getElementById('data-origin-panel').classList.add('open');
+  document.getElementById('data-origin-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDataOriginPanel() {
+  dataOriginOpen = false;
+  document.getElementById('data-origin-panel').classList.remove('open');
+  document.getElementById('data-origin-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('data-origin-tab').addEventListener('click', openDataOriginPanel);
+document.getElementById('dop-close').addEventListener('click', closeDataOriginPanel);
+document.getElementById('data-origin-overlay').addEventListener('click', closeDataOriginPanel);
 
 // ─── Init ──────────────────────────────────────────────────────────────
 renderUserSwitcher();
