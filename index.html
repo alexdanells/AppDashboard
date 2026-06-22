@@ -17,6 +17,11 @@
         <span class="header-title">Apprenticeship Dashboard</span>
       </div>
       <div class="header-right">
+        <button class="datamap-btn" id="datamap-btn" title="View consolidated Platform Data Map">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+          Platform Map
+        </button>
+        <div class="phase-toggle-sep"></div>
         <div class="phase-toggle" title="Switch between implementation phases">
           <button class="phase-btn active" data-phase="1">Phase 1</button>
           <button class="phase-btn" data-phase="2" disabled>Phase 2</button>
@@ -1174,6 +1179,38 @@
     <div class="dop-intro">Maps every data point on this page to its source in the Boom Platform. Each field is marked <strong>Yes</strong> (data exists and is mappable), <strong>No</strong> (field needs to be created), or <strong>Partial</strong> (data exists but requires adjustment). Fields not yet reviewed show as <em>Not yet reviewed</em>.</div>
     <div class="dop-body" id="dop-body"></div>
   </aside>
+
+  <!-- ===================== PLATFORM MAP MODAL ===================== -->
+  <div class="datamap-overlay" id="datamap-overlay"></div>
+  <div class="datamap-modal" id="datamap-modal" role="dialog" aria-label="Platform Data Map">
+    <div class="datamap-header">
+      <div>
+        <div class="datamap-title">Platform Data Map</div>
+        <div class="datamap-subtitle">Every dashboard data point and its current status in the Boom Platform</div>
+      </div>
+      <button class="datamap-close" id="datamap-close" title="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="2" y1="2" x2="14" y2="14"/><line x1="14" y1="2" x2="2" y2="14"/></svg>
+      </button>
+    </div>
+    <div class="datamap-stats" id="datamap-stats"></div>
+    <div class="datamap-filters">
+      <div class="datamap-filter-group">
+        <span class="datamap-filter-label">Status</span>
+        <button class="dm-filter-btn active" data-dm-filter="all">All</button>
+        <button class="dm-filter-btn" data-dm-filter="yes">Yes</button>
+        <button class="dm-filter-btn" data-dm-filter="partial">Partial</button>
+        <button class="dm-filter-btn" data-dm-filter="no">No</button>
+        <button class="dm-filter-btn" data-dm-filter="pending">Not yet reviewed</button>
+      </div>
+      <div class="datamap-filter-group">
+        <span class="datamap-filter-label">Phase</span>
+        <button class="dm-phase-btn active" data-dm-phase="all">All</button>
+        <button class="dm-phase-btn" data-dm-phase="1">Phase 1</button>
+        <button class="dm-phase-btn" data-dm-phase="3">Phase 3 only</button>
+      </div>
+    </div>
+    <div class="datamap-body" id="datamap-body"></div>
+  </div>
 
   <script src="app.js"></script>
 </body>

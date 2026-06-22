@@ -3839,6 +3839,129 @@ document.getElementById('data-origin-tab').addEventListener('click', openDataOri
 document.getElementById('dop-close').addEventListener('click', closeDataOriginPanel);
 document.getElementById('data-origin-overlay').addEventListener('click', closeDataOriginPanel);
 
+// ─── Platform Map Modal ────────────────────────────────────────────────
+
+let _dmStatusFilter = 'all';
+let _dmPhaseFilter  = 'all';
+
+function renderDataMap() {
+  const PLATFORM_LABELS = { yes: 'Yes', no: 'No', partial: 'Partial' };
+
+  // Flatten all fields across all pages/sections
+  const allFields = [];
+  Object.entries(DATA_ORIGINS).forEach(([pageId, page]) => {
+    (page.sections || []).forEach(sec => {
+      (sec.fields || []).forEach(f => {
+        allFields.push({
+          pageId,
+          pageTitle:  page.title,
+          pagePhases: page.phases  || [1, 3],
+          secName:    sec.name,
+          secPhases:  sec.phases   || [1, 3],
+          label:      f.label,
+          platform:   f.platform,
+          source:     f.source || '',
+        });
+      });
+    });
+  });
+
+  // Summary stats (always over all fields, ignoring current filter)
+  const yesCount     = allFields.filter(f => f.platform === 'yes').length;
+  const partialCount = allFields.filter(f => f.platform === 'partial').length;
+  const noCount      = allFields.filter(f => f.platform === 'no').length;
+  const pendingCount = allFields.filter(f => !f.platform).length;
+  document.getElementById('datamap-stats').innerHTML =
+    `<div class="dm-stat dm-stat-yes"><span class="dm-stat-num">${yesCount}</span><span class="dm-stat-label">Yes</span></div>` +
+    `<div class="dm-stat dm-stat-partial"><span class="dm-stat-num">${partialCount}</span><span class="dm-stat-label">Partial</span></div>` +
+    `<div class="dm-stat dm-stat-no"><span class="dm-stat-num">${noCount}</span><span class="dm-stat-label">No</span></div>` +
+    `<div class="dm-stat dm-stat-pending"><span class="dm-stat-num">${pendingCount}</span><span class="dm-stat-label">Not reviewed</span></div>` +
+    `<div class="dm-stat dm-stat-total"><span class="dm-stat-num">${allFields.length}</span><span class="dm-stat-label">Total fields</span></div>`;
+
+  // Apply filters
+  const filtered = allFields.filter(f => {
+    if (_dmStatusFilter !== 'all') {
+      if ((f.platform || 'pending') !== _dmStatusFilter) return false;
+    }
+    if (_dmPhaseFilter === '1')  { if (!f.secPhases.includes(1)) return false; }
+    if (_dmPhaseFilter === '3')  { if (f.secPhases.includes(1))  return false; } // phase 3 only = not in phase 1
+    return true;
+  });
+
+  const body = document.getElementById('datamap-body');
+  if (!filtered.length) {
+    body.innerHTML = '<div class="dm-empty">No fields match the selected filters.</div>';
+    return;
+  }
+
+  // Group by page → section (preserving DATA_ORIGINS order)
+  const grouped = {};
+  filtered.forEach(f => {
+    if (!grouped[f.pageId]) grouped[f.pageId] = { title: f.pageTitle, sections: {} };
+    if (!grouped[f.pageId].sections[f.secName]) {
+      grouped[f.pageId].sections[f.secName] = { secPhases: f.secPhases, fields: [] };
+    }
+    grouped[f.pageId].sections[f.secName].fields.push(f);
+  });
+
+  body.innerHTML = Object.entries(grouped).map(([pageId, page]) => {
+    const secHtml = Object.entries(page.sections).map(([secName, sec]) => {
+      const isP3Only = sec.secPhases && !sec.secPhases.includes(1);
+      const fieldRows = sec.fields.map(f => {
+        const pClass = f.platform ? `dop-platform-${f.platform}` : 'dop-platform-pending';
+        const pLabel = f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed';
+        return `<tr class="dm-field-row">
+          <td class="dm-field-label">${f.label}</td>
+          <td style="width:90px;"><span class="dop-platform-badge ${pClass}">${pLabel}</span></td>
+          <td class="dm-field-notes">${f.source}</td>
+        </tr>`;
+      }).join('');
+      return `<div class="dm-section">
+        <div class="dm-section-head">
+          <span class="dm-section-name">${secName}</span>
+          ${isP3Only ? '<span class="dop-phase-badge">Phase 3</span>' : ''}
+          <span class="dm-section-count">${sec.fields.length} field${sec.fields.length !== 1 ? 's' : ''}</span>
+        </div>
+        <table class="dm-table"><tbody>${fieldRows}</tbody></table>
+      </div>`;
+    }).join('');
+    return `<div class="dm-page"><div class="dm-page-head">${page.title}</div>${secHtml}</div>`;
+  }).join('');
+}
+
+function openDataMap() {
+  renderDataMap();
+  document.getElementById('datamap-modal').classList.add('open');
+  document.getElementById('datamap-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeDataMap() {
+  document.getElementById('datamap-modal').classList.remove('open');
+  document.getElementById('datamap-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('datamap-btn').addEventListener('click', openDataMap);
+document.getElementById('datamap-close').addEventListener('click', closeDataMap);
+document.getElementById('datamap-overlay').addEventListener('click', closeDataMap);
+
+document.querySelectorAll('.dm-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dm-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _dmStatusFilter = btn.dataset.dmFilter;
+    renderDataMap();
+  });
+});
+document.querySelectorAll('.dm-phase-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.dm-phase-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _dmPhaseFilter = btn.dataset.dmPhase;
+    renderDataMap();
+  });
+});
+
 // ─── Init ──────────────────────────────────────────────────────────────
 renderUserSwitcher();
 applyRolePermissions();
