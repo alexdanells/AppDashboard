@@ -3872,11 +3872,11 @@ function renderDataMap() {
   const noCount      = allFields.filter(f => f.platform === 'no').length;
   const pendingCount = allFields.filter(f => !f.platform).length;
   document.getElementById('datamap-stats').innerHTML =
-    `<div class="dm-stat dm-stat-yes"><span class="dm-stat-num">${yesCount}</span><span class="dm-stat-label">Yes</span></div>` +
-    `<div class="dm-stat dm-stat-partial"><span class="dm-stat-num">${partialCount}</span><span class="dm-stat-label">Partial</span></div>` +
-    `<div class="dm-stat dm-stat-no"><span class="dm-stat-num">${noCount}</span><span class="dm-stat-label">No</span></div>` +
-    `<div class="dm-stat dm-stat-pending"><span class="dm-stat-num">${pendingCount}</span><span class="dm-stat-label">Not reviewed</span></div>` +
-    `<div class="dm-stat dm-stat-total"><span class="dm-stat-num">${allFields.length}</span><span class="dm-stat-label">Total fields</span></div>`;
+    `<div class="dm-stat dm-stat-yes"><span class="dm-stat-num">${yesCount}</span><span class="dm-stat-label">Yes</span><span class="dm-stat-desc">Data exists in Platform &amp; is mappable</span></div>` +
+    `<div class="dm-stat dm-stat-partial"><span class="dm-stat-num">${partialCount}</span><span class="dm-stat-label">Partial</span><span class="dm-stat-desc">Data exists but needs adjustment or surfacing</span></div>` +
+    `<div class="dm-stat dm-stat-no"><span class="dm-stat-num">${noCount}</span><span class="dm-stat-label">No</span><span class="dm-stat-desc">Field needs to be built in the Platform</span></div>` +
+    `<div class="dm-stat dm-stat-pending"><span class="dm-stat-num">${pendingCount}</span><span class="dm-stat-label">Not reviewed</span><span class="dm-stat-desc">Not yet assessed</span></div>` +
+    `<div class="dm-stat dm-stat-total"><span class="dm-stat-num">${allFields.length}</span><span class="dm-stat-label">Total fields</span><span class="dm-stat-desc">Across all dashboard pages</span></div>`;
 
   // Apply filters
   const filtered = allFields.filter(f => {
