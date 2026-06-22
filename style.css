@@ -1726,7 +1726,7 @@ body {
 .data-origin-panel {
   position: fixed;
   top: 0; left: 0;
-  width: 420px;
+  width: 580px;
   max-width: 92vw;
   height: 100vh;
   background: var(--white);
@@ -1818,37 +1818,46 @@ body {
 
 /* Field rows */
 .dop-field {
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+.dop-field:last-child { border-bottom: none; }
+.dop-field-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.6rem;
-  padding: 0.42rem 0.9rem;
-  border-bottom: 1px solid var(--border);
 }
-.dop-field:last-child { border-bottom: none; }
 .dop-field-label {
   font-size: 0.78rem;
   color: var(--text-main);
   flex: 1;
   line-height: 1.35;
 }
-.dop-field-source {
-  font-size: 0.69rem;
-  font-weight: 600;
-  padding: 0.18rem 0.5rem;
+.dop-field-notes {
+  font-size: 0.71rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  line-height: 1.45;
+}
+
+/* Platform status badges */
+.dop-platform-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.12rem 0.55rem;
   border-radius: 99px;
   white-space: nowrap;
   flex-shrink: 0;
 }
-.dop-unmapped {
-  background: var(--border);
-  color: var(--text-muted);
-}
-.dop-mapped {
-  background: #dcfce7;
-  color: #15803d;
-}
-[data-theme="dark"] .dop-mapped { background: #0a2010; color: #4ade80; }
+.dop-platform-yes     { background: #dcfce7; color: #15803d; }
+.dop-platform-no      { background: #fee2e2; color: #b91c1c; }
+.dop-platform-partial { background: #fef3c7; color: #92400e; }
+.dop-platform-pending { background: var(--border); color: var(--text-muted); }
+[data-theme="dark"] .dop-platform-yes     { background: #0a2010; color: #4ade80; }
+[data-theme="dark"] .dop-platform-no      { background: #2a0a0a; color: #f87171; }
+[data-theme="dark"] .dop-platform-partial { background: #1e1600; color: #fbbf24; }
+[data-theme="dark"] .dop-platform-pending { background: #222; color: var(--text-muted); }
 
 /* Progress counter in section head */
 .dop-section-count {
