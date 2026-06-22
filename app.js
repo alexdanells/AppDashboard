@@ -3432,12 +3432,12 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'High-level compliance KPIs required for DfE Area Achievement Framework reporting.',
         fields: [
-          { label: 'Timely Achievement Rate',           source: '' },
-          { label: 'Overall Achievement Rate',          source: '' },
-          { label: 'Learner Satisfaction Score',        source: '' },
-          { label: 'Employer Satisfaction Score',       source: '' },
-          { label: 'Safeguarding Compliance Status',    source: '' },
-          { label: 'Destination & Progression Data',   source: '' },
+          { label: 'Timely Achievement Rate',           source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Overall Achievement Rate',          source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Learner Satisfaction Score',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Employer Satisfaction Score',       source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Safeguarding Compliance Status',    source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Destination & Progression Data',   source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3445,14 +3445,14 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Headline figures at the top of the Overview page. Achievement Rate is Phase 3 only.',
         fields: [
-          { label: 'Active Learner Count',              platform: 'partial', source: 'No dedicated active learner view — can be derived from LSC assignments (all learners assigned to an LSC), but without Learner Status it cannot filter out BIL / OOF learners. Needs to be surfaced on the Manager UI dashboard' },
-          { label: 'Active Employer Count',             platform: 'no',      source: 'Not in Platform — Employer Name functionality needs to be built first before an employer count is possible' },
-          { label: 'On-Track Learner Count',            platform: 'partial', source: 'Derived from KSB RAG (Green/Amber) AND Curriculum Status (On Track) — both data sources exist in the Platform; the combined calculation needs to be applied' },
-          { label: 'At-Risk Learner Count',             platform: 'partial', source: 'Derived from KSB RAG (Red/Super Red) OR Curriculum Status (Behind/Off Track/No Activity) — any learner off-track on either measure counts as At Risk' },
-          { label: 'Overdue Reviews Count',             platform: 'partial', source: 'Derivable from Progress Review dates — system has something embedded already but needs strengthening. Correct threshold is 10 weeks' },
-          { label: 'Monthly OTJ Compliance %',         platform: 'yes',     source: 'Present in Platform — active learning in the current calendar month is tracked. Aggregated across full provision for manager view; per-LSC caseload for LSC view' },
-          { label: 'Monthly Meeting Compliance %',     platform: 'no',      source: 'Not available — depends on Starter Checklist and Interim 121 forms being built. Aggregated across full provision for manager view; per-LSC caseload for LSC view' },
-          { label: 'Achievement Rate (current cohort)', platform: 'no',      source: 'Not recorded — requires Learner Status with an Achiever state to be built into the Platform' },
+          { label: 'Active Learner Count',              platform: 'partial', source: 'Derivable from LSC assignments — all learners assigned to an LSC; needs to be visible on Manager UI', calculation: 'Count of learners with Learner Status = Live (once Learner Status exists). Interim approach: count of all learners assigned to any LSC. Manager view = provision-wide total; LSC view = own caseload only', illustrates: 'Primary KPI card on Overview — the headline count of learners currently on programme', rationale: 'The baseline for all other KPI calculations — total active learners gives context to compliance percentages and risk counts', build: 'Expose total learner count from LSC assignments on the Manager UI dashboard. Once Learner Status is built, filter to Live status only to exclude BIL, OOF, and completed learners' },
+          { label: 'Active Employer Count',             platform: 'no',      source: 'Not in Platform — Employer Name field needs to be built first', calculation: 'Count of distinct employer entities with at least one active learner', illustrates: 'KPI card on Overview showing the number of employers currently engaged in the programme', rationale: 'Provides a view of the employer footprint; useful for account management and tracking employer retention across the provision', build: 'Requires Employer Name field to be built first. Once employers are linked as entities to learner records, count distinct employers with at least one active learner' },
+          { label: 'On-Track Learner Count',            platform: 'partial', source: 'Derived from KSB RAG (Green/Amber) AND Curriculum Status (On Track) — both data sources exist in the Platform; the combined calculation needs to be applied', calculation: 'Count of learners where KSB RAG = Green or Amber AND Curriculum Status = On Track. A learner must satisfy both criteria to be counted as On Track', illustrates: 'KPI card on Overview; used alongside At-Risk count to give managers a quick sense of provision health', rationale: 'Enables managers to quickly assess the proportion of learners progressing well vs those needing intervention across the whole provision', build: 'Apply combined logic: On Track = (KSB RAG ≤ Amber) AND (Curriculum Status = On Track). Requires KSB RAG derivation (see KSB Tracker section) and Curriculum Status to be accessible' },
+          { label: 'At-Risk Learner Count',             platform: 'partial', source: 'Derived from KSB RAG (Red/Super Red) OR Curriculum Status (Behind/Off Track/No Activity) — any learner off-track on either measure counts as At Risk', calculation: 'Count of learners where KSB RAG = Red or Super Red OR Curriculum Status = Behind / Off Track / No Activity. Either condition alone is sufficient to flag as At Risk', illustrates: 'KPI card on Overview — the primary performance indicator for provision health', rationale: 'Identifies learners needing active intervention due to KSB progress falling behind or curriculum disengagement; early identification enables timely LSC action before gateway is affected', build: 'Apply combined logic: At Risk = (KSB RAG ≥ Red) OR (Curriculum Status ≠ On Track). Should be the direct complement of On Track' },
+          { label: 'Overdue Reviews Count',             platform: 'partial', source: 'Derivable from Progress Review dates — system has something embedded already but needs strengthening. Correct threshold is 10 weeks', calculation: 'Count of learners where (Today − Last Progress Review Date) ÷ 7 ≥ 10 weeks. Manager view = provision-wide; LSC view = own caseload', illustrates: 'KPI card on Overview and Compliance tab; included in the Urgent Actions banner count', rationale: 'Overdue progress reviews are a direct compliance breach — this count enables managers to identify which LSCs need to prioritise reviews urgently', build: 'Strengthen existing review overdue detection to use 10-week threshold consistently. Expose as a count filterable by LSC for manager visibility' },
+          { label: 'Monthly OTJ Compliance %',         platform: 'yes',     source: 'Present in Platform — active OTJ learning in the current calendar month is tracked', calculation: '(Count of learners with at least one OTJ entry in the current calendar month / total active learners) × 100. Manager view = provision-wide %; LSC view = own caseload %', illustrates: 'KPI card on Overview as a compliance percentage; also shown in the OTJ Compliance table', rationale: 'Monthly OTJ activity is a leading indicator of learner engagement — a learner with no OTJ in month may be disengaging or struggling to evidence learning in the workplace', build: '' },
+          { label: 'Monthly Meeting Compliance %',     platform: 'no',      source: 'Not available — depends on Starter Checklist and Interim 121 forms being built. Aggregated across full provision for manager view; per-LSC caseload for LSC view', calculation: '(Count of learners with a completed meeting form of any type in the current calendar month / total active learners) × 100. Manager view = provision-wide %; LSC view = own caseload %', illustrates: 'KPI card on Overview showing % of learners seen in the current month', rationale: 'Monthly contact is the minimum engagement requirement for apprenticeship delivery — this is the primary indicator of LSC activity across the provision', build: 'Requires Starter Checklist and Interim 121 forms to be built first. Once all meeting types exist, aggregate by calendar month per learner and calculate compliance percentage' },
+          { label: 'Achievement Rate (current cohort)', platform: 'no',      source: 'Not recorded — requires Learner Status with an Achiever state to be built into the Platform', calculation: '(Count of learners with Learner Status = Achieved / count of learners who have reached gateway and received an EPA outcome) × 100. Withdrawn learners are included in the denominator', illustrates: 'KPI card on Overview (Phase 3 only) — the headline quality metric for the provision', rationale: 'Achievement rate is the primary DfE quality measure for apprenticeship providers and a key Ofsted inspection metric — it directly affects funding and regulatory outcomes', build: 'Add Achieved and Withdrawn states to Learner Status. Achievement Rate = Achieved ÷ (Achieved + Withdrawn) for learners who have completed their EPA outcome' },
         ]
       },
       {
@@ -3460,13 +3460,13 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Aggregated count of items needing immediate action. BIL Decisions Needed is Phase 3 only.',
         fields: [
-          { label: 'SLA Breach Count (overdue progress reviews)', platform: 'partial', source: 'Derivable from Progress Review dates at 10-week threshold — system has something embedded but needs strengthening' },
-          { label: 'OOF Red (missed gateway) Count',   platform: 'no',      source: 'Blocked — depends on Planned Gateway Date field being built first' },
-          { label: 'ALS Reviews Overdue Count',        source: '' },
-          { label: 'KSB Super-Red Learner Count',      platform: 'partial', source: 'Derivable from K/S/B % on the Apprenticeship Tab — Super Red threshold (≥75% remaining) applied to the combined KSB RAG calculation' },
-          { label: 'BIL Decisions Needed Count',        source: '' },
-          { label: 'Active Safeguarding Cases',        source: '' },
-          { label: 'Welfare Check-ins Overdue',        source: '' },
+          { label: 'SLA Breach Count (overdue progress reviews)', platform: 'partial', source: 'Derivable from Progress Review dates at 10-week threshold — system has something embedded but needs strengthening', calculation: 'Count of learners where Weeks Since Last Review ≥ 10. Included in the Urgent Actions total', illustrates: 'Shown as a count in the Urgent Actions banner at the top of Overview; links to the Progress Reviews compliance table', rationale: 'SLA breaches require immediate LSC action — surfacing the count prominently ensures managers are aware of compliance exposure', build: 'Consistent 10-week threshold calculation (see Progress Reviews). Expose as an aggregated count accessible on the Overview' },
+          { label: 'OOF Red (missed gateway) Count',   platform: 'no',      source: 'Blocked — depends on Planned Gateway Date field being built first', calculation: 'Count of learners with OOF status who are significantly past their Planned Gateway Date (RAG = Red). Included in the Urgent Actions total', illustrates: 'Shown in the Urgent Actions banner; links to the OOF compliance table', rationale: 'OOF learners represent active funding risk — the count surfaces the scale of the problem for management action', build: 'Requires Planned Gateway Date and Learner Status (OOF) to be built first' },
+          { label: 'ALS Reviews Overdue Count',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'KSB Super-Red Learner Count',      platform: 'partial', source: 'Derivable from K/S/B % on the Apprenticeship Tab — Super Red threshold (≥75% remaining) applied to the combined KSB RAG calculation', calculation: 'Count of learners where worst KSB component remaining % ≥ 75% (Super Red threshold). Included in the Urgent Actions total', illustrates: 'Shown in the Urgent Actions banner; links to the KSB Tracker filtered to Super Red learners', rationale: 'Super Red learners have more than 75% of their KSB remaining and are at serious risk of missing their gateway date — they require the most urgent LSC intervention', build: 'Apply Super Red threshold (≥75% remaining) to K/S/B % data. Expose as an aggregated count' },
+          { label: 'BIL Decisions Needed Count',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Active Safeguarding Cases',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Welfare Check-ins Overdue',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3474,11 +3474,11 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Snapshot cards available in both phases — draw from the same sources as the full pages.',
         fields: [
-          { label: 'Compliance card values',           source: '' },
-          { label: 'OOF & BIL card values',            source: '' },
-          { label: 'KSB Tracker summary',              source: '' },
-          { label: 'Gateway Forecast summary',         source: '' },
-          { label: 'Curriculum summary',               source: '' },
+          { label: 'Compliance card values',           source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'OOF & BIL card values',            source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'KSB Tracker summary',              source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Forecast summary',         source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Curriculum summary',               source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3486,11 +3486,11 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Additional summary cards that appear only in Phase 3.',
         fields: [
-          { label: 'DfE AAF card values',              source: '' },
-          { label: 'Sales Pipeline summary',           source: '' },
-          { label: 'Gateway Pipeline summary',         source: '' },
-          { label: 'Learner Welfare summary',          source: '' },
-          { label: 'Learner Voice summary',            source: '' },
+          { label: 'DfE AAF card values',              source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Sales Pipeline summary',           source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Pipeline summary',         source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Learner Welfare summary',          source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Learner Voice summary',            source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
     ]
@@ -3505,14 +3505,14 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Individual prospect and lead records tracked by Account Managers.',
         fields: [
-          { label: 'Learner / Prospect Name',          source: '' },
-          { label: 'Employer Name',                    source: '' },
-          { label: 'Apprenticeship Standard',          source: '' },
-          { label: 'Account Manager',                  source: '' },
-          { label: 'Pipeline Status (Cold Lead → Enrolment)', source: '' },
-          { label: 'Probability % (conversion likelihood)', source: '' },
-          { label: 'Expected Start Date',              source: '' },
-          { label: 'Contract / Funding Value',         source: '' },
+          { label: 'Learner / Prospect Name',          source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Employer Name',                    source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Apprenticeship Standard',          source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Account Manager',                  source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Pipeline Status (Cold Lead → Enrolment)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Probability % (conversion likelihood)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Expected Start Date',              source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Contract / Funding Value',         source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3520,8 +3520,8 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Monthly new-start targets used in the confirmation progress bar.',
         fields: [
-          { label: 'Monthly New-Start Target (by standard)', source: '' },
-          { label: 'Confirmed Starts this month (≥70% probability)', source: '' },
+          { label: 'Monthly New-Start Target (by standard)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Confirmed Starts this month (≥70% probability)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
     ]
@@ -3536,14 +3536,14 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Shared fields that appear across every Learners tab.',
         fields: [
-          { label: 'Learner Full Name',                platform: 'yes',     source: 'Present in Platform — Name field on the learner record, easily mappable' },
-          { label: 'Employer Name',                    platform: 'no',      source: 'Not in Platform — a new Employer Name field needs to be created' },
-          { label: 'Apprenticeship Standard',          platform: 'yes',     source: 'Present in Platform — Standard field on the learner record, easily mappable' },
-          { label: 'Learning Skills Coach (LSC)',      platform: 'yes',     source: 'LSCs are users in the system — pull from user assignments (not a visible field on the learner record front-end)' },
-          { label: 'Learning Start Date',              platform: 'yes',     source: 'Present in Platform — Start Date field, visible on front-end and directly mappable' },
-          { label: 'Planned Gateway Date',             platform: 'no',      source: 'Not in Platform as a distinct field — End Date represents programme completion, not the practical period end (gateway)' },
-          { label: 'Learner Status (Live / OOF / BIL / Gateway)', platform: 'no', source: 'Not in Platform — new functionality needs to be created to track this status' },
-          { label: 'Learning End Date',                platform: 'yes',     source: 'Present in Platform — End Date field (note: programme completion date, not the practical period / gateway end)' },
+          { label: 'Learner Full Name',                platform: 'yes',     source: 'Learner record — Name field on the learner record', calculation: 'Direct field — no derivation required', illustrates: 'Identifies the learner across all tables, compliance views, KSB tracker, curriculum, and reports', rationale: 'Enables LSCs and managers to locate and action specific learners across every part of the dashboard', build: '' },
+          { label: 'Employer Name',                    platform: 'no',      source: 'Not in Platform — a new Employer Name field needs to be created', calculation: 'Direct field — no derivation required once created', illustrates: 'Shown alongside learner name in all tables; groups learners by employer in the Standard Employer Report', rationale: 'Enables employer-level reporting and account management visibility — managers need to see which employers have learners at risk or out of compliance', build: 'Create an Employer Name field on the learner record. Recommend as a linked entity (not free text) so multiple learners can be grouped under the same employer account and counted distinctly' },
+          { label: 'Apprenticeship Standard',          platform: 'yes',     source: 'Learner record — Standard field', calculation: 'Direct field — no derivation required', illustrates: 'Shown in all tables; used as a filter in KSB Tracker, Curriculum, Reporting, and other views', rationale: 'Different standards have different KSB structures, sprint sequences, and gateway requirements — standard-aware filtering is essential for accurate compliance and progress views', build: '' },
+          { label: 'Learning Skills Coach (LSC)',      platform: 'yes',     source: 'User assignment system — LSC is a user type in the Platform; learners are assigned to an LSC user', calculation: 'Direct lookup — pull the assigned LSC user from the learner assignment record', illustrates: 'Shown in all tables; the primary caseload filter throughout the dashboard (managers filter by LSC; LSC accounts auto-filter to their own caseload)', rationale: 'The LSC is the primary responsible party for each learner — accountability and compliance ownership depends on this assignment being visible and filterable', build: 'Surface the assigned LSC as a visible field on the learner record front-end UI (currently only visible in the backend)' },
+          { label: 'Learning Start Date',              platform: 'yes',     source: 'Learner record — Start Date field, visible on front-end', calculation: 'Direct field — used as the baseline for calculating expected OTJ hours, sprint progress expectations, and review due dates', illustrates: 'Shown in the LSC Full Caseload and KSB Tracker table; anchors all time-based progress calculations', rationale: 'The start date is the foundation for all time-based calculations — OTJ expected hours, review due dates, sprint progress expectations, and OOF detection all derive from it', build: '' },
+          { label: 'Planned Gateway Date',             platform: 'no',      source: 'Not in Platform as a distinct field — End Date represents programme completion, not the practical period end', calculation: 'Direct field once created — the date the learner is expected to complete the practical period and proceed to EPA; set at enrolment and updated if the programme is extended', illustrates: 'Shown in the KSB Tracker table (currently a placeholder); used to calculate months remaining to gateway for KSB at-risk filtering, and to auto-trigger OOF status', rationale: 'Critical for identifying learners approaching or past their gateway — without this field, OOF detection is impossible and KSB urgency cannot be properly scoped', build: 'Add a Planned Gateway Date field to the learner record, distinct from the Learning End Date (programme completion). This is the end of the practical period / the point at which the learner proceeds to EPA' },
+          { label: 'Learner Status (Live / OOF / BIL / Gateway)', platform: 'no', source: 'Not in Platform — new functionality required', calculation: 'Set manually by the LSC or triggered by system events: auto-flag OOF when Today > Planned Gateway Date and status is still Live; BIL set when a formal break is approved by the LSC; Completed/Achieved set when EPA outcome is recorded', illustrates: 'Drives filtering throughout the dashboard — Active Learner count, OOF table, BIL table, and On Track/At Risk KPIs all depend on this field', rationale: 'Without Learner Status the dashboard cannot distinguish between active learners and those on a break or out of funding — all totals and counts are unreliable without it', build: 'Build a Learner Status field with at minimum these states: Live, Out of Funding (OOF), Break in Learning (BIL), At Gateway, Completed/Achieved, Withdrawn. OOF should auto-trigger when a learner passes their Planned Gateway Date. BIL should be manually set with a start date recorded' },
+          { label: 'Learning End Date',                platform: 'yes',     source: 'Learner record — End Date field', calculation: 'Direct field — the formal programme completion date (includes EPA period); distinct from Planned Gateway Date which is the practical period end', illustrates: 'Shown in the LSC Full Caseload report; provides the full programme timeline end date', rationale: 'Records when the full apprenticeship programme is expected to end; used for programme planning and funding period tracking', build: '' },
         ]
       },
       {
@@ -3551,10 +3551,10 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Knowledge, Skills and Behaviours progress tracked against the standard.',
         fields: [
-          { label: 'Knowledge % Complete',             platform: 'yes',     source: 'Apprenticeship Tab — Knowledge % available as individual breakdown and overall figure' },
-          { label: 'Skills % Complete',                platform: 'yes',     source: 'Apprenticeship Tab — Skills % available as individual breakdown and overall figure' },
-          { label: 'Behaviours % Complete',            platform: 'yes',     source: 'Apprenticeship Tab — Behaviours % available as individual breakdown and overall figure' },
-          { label: 'Overall KSB RAG Status (derived)', platform: 'partial', source: 'Derivable from K/S/B % above — the RAG threshold calculation (Super Red / Red / Amber / Green) would need to be applied on top' },
+          { label: 'Knowledge % Complete',             platform: 'yes',     source: 'Apprenticeship Tab — Knowledge % available as individual breakdown and overall figure', calculation: '(Completed knowledge activities / total knowledge activities for the standard) × 100. Pulled directly from the Platform', illustrates: 'Shown as K% in the KSB Tracker table; used alongside S% and B% to derive the overall KSB RAG status', rationale: 'Identifies learners falling behind on the knowledge component; enables targeted intervention before gateway readiness is compromised', build: '' },
+          { label: 'Skills % Complete',                platform: 'yes',     source: 'Apprenticeship Tab — Skills % available as individual breakdown and overall figure', calculation: '(Completed skills activities / total skills activities for the standard) × 100. Pulled directly from the Platform', illustrates: 'Shown as S% in the KSB Tracker table', rationale: 'Skills are often the most practical component — gaps here may indicate a need for additional workplace opportunities or employer engagement', build: '' },
+          { label: 'Behaviours % Complete',            platform: 'yes',     source: 'Apprenticeship Tab — Behaviours % available as individual breakdown and overall figure', calculation: '(Completed behaviours activities / total behaviours activities for the standard) × 100. Pulled directly from the Platform', illustrates: 'Shown as B% in the KSB Tracker table', rationale: 'Behaviours are often the final component to be evidenced — flagging gaps early allows LSCs to prompt learners and employers to gather evidence in time for gateway', build: '' },
+          { label: 'Overall KSB RAG Status (derived)', platform: 'partial', source: 'Derived from K/S/B % above — calculation must be applied', calculation: 'For each of K, S, B: calculate % remaining = (100 − completed%). Take the single worst (highest) remaining % across K, S, B. Apply thresholds: ≥75% remaining = Super Red; 51–74% = Red; 25–50% = Amber; ≤24% = Green. The worst single component determines the overall RAG', illustrates: 'Colour-coded badge (Super Red / Red / Amber / Green) in the KSB Tracker table; drives the KPI counts at the top of the KSB tab and the At-Risk / On-Track KPI cards on Overview', rationale: 'A single at-a-glance readiness indicator for gateway — a learner with Super Red or Red KSB needs urgent LSC intervention to avoid missing their gateway date', build: 'Apply RAG threshold logic to the existing K/S/B % data. Can be calculated in the Platform as a derived field or in the data export layer. The worst single component score determines the colour — do not average K/S/B as this masks individual weaknesses' },
         ]
       },
       {
@@ -3562,10 +3562,10 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Progress through the digital learning platform. Combined with KSB Tracker in Phase 1; standalone tab in Phase 3.',
         fields: [
-          { label: 'Current Sprint / Module Name',     platform: 'yes',     source: 'Learning Tab — Roadmap section shows the current sprint / module name' },
-          { label: 'Sprint Progress %',                platform: 'partial', source: 'Not directly visible — could be derived: (a) completed sprint parts vs guideline = progress against expected outcomes, or (b) completed vs total sprint parts = overall progress start to finish' },
-          { label: 'Last Activity Date on Platform',   platform: 'partial', source: 'Not on front-end UI — activity completion data likely exists, but last activity date needs to be built in; guideline dates are already visible so can compare completed vs expected' },
-          { label: 'Curriculum Status (On Track / Behind / Off Track / No Activity)', platform: 'yes', source: 'Present in Platform — status shown on the chart (e.g. 2 completed sprint parts vs guideline of 6 = Falling Behind)' },
+          { label: 'Current Sprint / Module Name',     platform: 'yes',     source: 'Learning Tab — Roadmap section shows the active sprint / module name', calculation: 'Direct field — the sprint or module the learner is currently working through', illustrates: 'Shown in the Sprint Name column of the Curriculum table; provides context for the progress figures', rationale: 'Allows LSCs to understand exactly which content a learner is working on, enabling relevant coaching conversations and targeted support', build: '' },
+          { label: 'Sprint Progress %',                platform: 'partial', source: 'Not a direct field — derivable from sprint part completion data and guideline', calculation: 'Two methods shown side by side in the dashboard — (A) Progress vs plan: (completed parts / parts expected by now per guideline) × 100; shows whether the learner is on track against the expected timeline. (B) Overall progress: (completed parts / total parts in sprint) × 100; shows how far through the module they are in total', illustrates: 'Two figures in the Sprint Progress column: primary = % vs plan (drives Curriculum Status); secondary = % overall (gives perspective on journey ahead). Example: 86% vs plan, 75% overall', rationale: 'The vs-plan figure drives compliance status; the overall figure gives the LSC perspective on the full journey ahead. Together they enable more informed coaching conversations than a single percentage alone', build: 'Surface sprint part completion counts (parts completed and parts expected/guideline at current date) as accessible data points so the percentage calculations can be applied' },
+          { label: 'Last Activity Date on Platform',   platform: 'partial', source: 'Not on front-end UI — activity completion timestamps likely exist in the Platform backend', calculation: 'The date of the most recent completed activity or sprint interaction; no derivation needed if the timestamp is surfaced', illustrates: 'Shown in the Last Activity column of the Curriculum table; used to identify No Activity learners and those who have disengaged', rationale: 'Enables LSCs to identify disengaged learners before they fall too far behind — a learner with no platform activity in several weeks may need a direct intervention', build: 'Surface the last activity timestamp on the learner front-end UI or expose it via a data export/API so it can be pulled into the dashboard' },
+          { label: 'Curriculum Status (On Track / Behind / Off Track / No Activity)', platform: 'yes', source: 'Present in Platform — status calculated based on completed sprint parts vs the guideline; shown on the learner chart', calculation: 'Derived by Platform: On Track = completed parts ≥ expected parts per guideline; Behind = completed parts slightly below expected; Off Track = completed parts significantly below expected; No Activity = 0 completed parts', illustrates: 'Colour-coded status pill (On Track / Off Track / Behind / No Activity) in the Curriculum table; drives Curriculum KPI bar counts and contributes to the At-Risk overall KPI', rationale: 'A single visible status per learner lets LSCs prioritise who needs support without interpreting raw percentages; the status drives the Curriculum Off-Track quick report', build: '' },
         ]
       },
       {
@@ -3573,9 +3573,9 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Tracks whether FDOL and the induction checklist are completed within the 30-day window.',
         fields: [
-          { label: 'FDOL Date (First Day of Learning)', platform: 'yes',     source: 'Present in Platform — derived from whether the learner recorded evidence of learning on their start date' },
-          { label: 'Induction / FDOL Checklist Completion Date', platform: 'no', source: 'Not in Platform — Initial Meeting (Starter Checklist) functionality needs to be added to the Platform' },
-          { label: 'Planned Start Date',               platform: 'yes',     source: 'Same as Learning Start Date — Start Date field on the learner record' },
+          { label: 'FDOL Date (First Day of Learning)', platform: 'yes',     source: 'Derived from whether the learner recorded evidence of learning on their start date', calculation: 'Identified as the Start Date if a learning activity was completed on that date; no separate FDOL field required if start date and first learning activity coincide', illustrates: 'Used in the Awaiting First Meeting compliance table to calculate the 30-day window (FDOL + 30 days = deadline for initial meeting)', rationale: 'The First Day of Learning starts the compliance clock for the initial LSC meeting — without this date, the 30-day compliance check cannot be performed', build: '' },
+          { label: 'Induction / FDOL Checklist Completion Date', platform: 'no', source: 'Not in Platform — Initial Meeting (Starter Checklist) form needs to be built', calculation: 'The date the Starter Checklist form is completed and submitted by the LSC; no derivation required once the form exists', illustrates: 'Used alongside FDOL Date in the Awaiting First Meeting table to confirm whether the initial meeting has been completed within the 30-day window; triggers removal from the compliance table once complete', rationale: 'The Starter Checklist evidences that the learner has been inducted, expectations set, and the programme formally started — it is a compliance requirement and the gateway to the ongoing touchpoint cycle', build: 'Build a Starter Checklist / Initial Meeting form in the Platform. The form must be completable by the LSC, record a completion date, be linked to the learner record, and be visible to managers. Completion should remove the learner from the Awaiting First Meeting compliance list' },
+          { label: 'Planned Start Date',               platform: 'yes',     source: 'Learner record — Start Date field (same as Learning Start Date)', calculation: 'Direct field — used to calculate the 30-day compliance window end date (Start Date + 30 days)', illustrates: 'Shown in the Awaiting First Meeting table as the Planned Start date; the basis for the 30-day compliance window column', rationale: 'The start date defines when the compliance window opens for the first LSC meeting', build: '' },
         ]
       },
       {
@@ -3583,9 +3583,9 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Monthly contact meetings logged between LSC and learner.',
         fields: [
-          { label: 'Meeting Date',                     platform: 'partial', source: 'Progress Reviews exist in the Platform, but Starter Checklist (first meeting) and Interim 121 forms are not yet built — monthly touchpoint compliance logic requires all three form types to be available' },
-          { label: 'Meeting Type (Touchpoint / Progress Review)', platform: 'no', source: 'Starter Checklist and Interim 121 forms not yet in Platform — logic needed: Starter Checklist for the first meeting, then Progress Review (if the meeting falls within the 10-week compliance window) or Interim 121 otherwise' },
-          { label: 'Conducting Coach / LSC',           platform: 'partial', source: 'Visible in the backend but not currently shown on the front-end UI — needs to be surfaced in the UI' },
+          { label: 'Meeting Date',                     platform: 'partial', source: 'Progress Reviews are in the Platform with dates; Starter Checklist and Interim 121 forms are not yet built', calculation: 'The date of the most recently completed meeting form of any type (Starter Checklist, Progress Review, or Interim 121). A learner is compliant in-month if any form type has been completed within the current calendar month', illustrates: 'Shown in the Outstanding Touchpoints table as Date of Last Meeting; determines whether a learner has been seen in the current month', rationale: 'Monthly contact is a minimum delivery requirement — without a dated meeting record the dashboard cannot confirm whether a learner has been seen this month', build: 'Build Starter Checklist and Interim 121 forms with date fields. Ensure all three form types contribute to the last meeting date for compliance calculation' },
+          { label: 'Meeting Type (Touchpoint / Progress Review)', platform: 'no', source: 'Not derivable until all form types are built', calculation: 'Determined by which form was completed: Starter Checklist for the initial meeting; thereafter, Progress Review if the meeting falls within the 10-week review window, otherwise Interim 121', illustrates: 'Shown as the Type column in the Touchpoints table; differentiates between compliance-grade Progress Reviews and interim contacts', rationale: 'Not all meetings carry equal compliance weight — a Progress Review and an Interim 121 serve different purposes; tracking the type ensures the right meeting is happening at the right frequency', build: 'Tag each completed form with its type (Starter Checklist / Progress Review / Interim 121). Surface this type as a readable field on the learner meeting record' },
+          { label: 'Conducting Coach / LSC',           platform: 'partial', source: 'Present in backend but not visible on the front-end UI', calculation: 'Direct field — the LSC user who completed the form', illustrates: 'Shown in the Touchpoints table to confirm the correct LSC is conducting meetings for their assigned learners', rationale: 'Confirms accountability — the meeting should be conducted by the assigned LSC; any discrepancy may indicate cover arrangements that need to be tracked', build: 'Surface the conducting coach / completing user on the front-end learner meeting record UI' },
         ]
       },
       {
@@ -3593,9 +3593,9 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Formal progress reviews — flagged when overdue by 10+ weeks.',
         fields: [
-          { label: 'Last Progress Review Date',        platform: 'yes',     source: 'Present in Platform — date recorded on each Progress Review; sign-off status (all parties signed) is also visible on the front-end' },
-          { label: 'Review Due By Date (calculated)',  platform: 'partial', source: 'Platform shows a meeting window (e.g. Aug 18 – Sep 1) but not a single due date — needs to be calculated: first review = 10 weeks after start date, then every 10 weeks thereafter' },
-          { label: 'Weeks Since Last Review (calculated)', platform: 'partial', source: 'Not stored directly — derivable from Last Progress Review Date as a calculated field' },
+          { label: 'Last Progress Review Date',        platform: 'yes',     source: 'Present in Platform — date recorded on each Progress Review; sign-off status (all parties signed) visible on front-end', calculation: 'Direct field — the date the most recent Progress Review was completed and signed by all parties', illustrates: 'Shown in the Progress Reviews compliance table; used to calculate Weeks Since Last Review and whether a review is overdue', rationale: 'The primary compliance indicator for progress review regularity — the 10-week rule is measured against this date', build: '' },
+          { label: 'Review Due By Date (calculated)',  platform: 'partial', source: 'Platform shows a meeting window (e.g. Aug 18 – Sep 1) but not a single calculated due date', calculation: 'First review = Start Date + 10 weeks. Subsequent reviews = Last Progress Review Date + 10 weeks. This produces a single target due date rather than a range', illustrates: 'Shown in the Review Due By column of the Progress Reviews table; used to sort and prioritise the most overdue learners by exact due date', rationale: 'A single due date (rather than a window) enables precise overdue detection and consistent compliance reporting across the provision', build: 'Calculate Review Due By Date as Start Date + 10 weeks for the first review, then Last Review Date + 10 weeks for each subsequent review. Surface as a derived field or calculate in the data export' },
+          { label: 'Weeks Since Last Review (calculated)', platform: 'partial', source: 'Derived from Last Progress Review Date', calculation: '(Today − Last Progress Review Date) ÷ 7, rounded down to whole weeks. Flagged as overdue at ≥ 10 weeks', illustrates: 'Shown in the Weeks Since column with a colour-coded pill (green < 8 weeks, amber 8–9 weeks, red ≥ 10 weeks); drives the overdue reviews count in the Compliance KPI bar and Urgent Actions banner', rationale: 'The primary compliance metric for review cadence — gives LSCs and managers an at-a-glance view of which learners are approaching or exceeding the 10-week threshold', build: 'Calculate as a derived field from Last Progress Review Date — no new Platform data needed, this is date arithmetic. Surface as a calculated column' },
         ]
       },
       {
@@ -3603,10 +3603,10 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Hours logged against the mandatory OTJ requirement (approx. 6hrs/week).',
         fields: [
-          { label: 'OTJ Hours Completed (cumulative to date)', platform: 'yes', source: 'Present in Platform — cumulative hours logged (e.g. 5h 15min / 420hr, shown as %). Month-by-month breakdown also visible in the UI' },
-          { label: 'OTJ Hours Expected (cumulative to date)', platform: 'yes', source: 'Present in Platform — chart calculates tracked vs expected OTJ based on the current point in the programme timeline' },
-          { label: 'Last OTJ Entry Date',              platform: 'yes',     source: 'Present in Platform — last OTJ entry log is visible' },
-          { label: 'Total OTJ Target Hours (full programme)', platform: 'yes', source: 'Present in Platform — total target hours visible on the cumulative OTJ display (e.g. 420hr)' },
+          { label: 'OTJ Hours Completed (cumulative to date)', platform: 'yes', source: 'Present in Platform — cumulative hours logged; shown as total and percentage (e.g. 5h 15min / 420hr = 1%)', calculation: 'Cumulative sum of all OTJ hours logged by the learner to date', illustrates: 'Shown in the OTJ Compliance table as Completed hours; compared against Expected hours to determine compliance status', rationale: 'Off-the-job training is a legal requirement for apprenticeships — monitoring cumulative OTJ ensures learners are on track to meet the minimum hours requirement by gateway', build: '' },
+          { label: 'OTJ Hours Expected (cumulative to date)', platform: 'yes', source: 'Present in Platform — calculated by the OTJ chart based on current programme timeline', calculation: '(Weeks elapsed since start ÷ total programme weeks) × Total OTJ Target Hours. The Platform already calculates this for the chart display', illustrates: 'Shown in the OTJ Compliance table as Expected hours; the gap between Completed and Expected determines whether a learner is compliant', rationale: 'Without the expected figure, OTJ hours alone are meaningless — a learner with 30 hours may be on track in month 1 but severely behind in month 12', build: '' },
+          { label: 'Last OTJ Entry Date',              platform: 'yes',     source: 'Present in Platform — last OTJ log entry date is visible', calculation: 'Direct field — the date of the most recent OTJ hours entry logged by the learner', illustrates: 'Shown in the Last Entry Date column of the OTJ table; identifies learners who have stopped logging OTJ hours', rationale: 'A learner who has not logged OTJ for several weeks may be falling behind or has stopped engaging with the Platform — requires LSC follow-up', build: '' },
+          { label: 'Total OTJ Target Hours (full programme)', platform: 'yes', source: 'Present in Platform — total target hours visible on the cumulative OTJ display (e.g. 420hr)', calculation: 'Set at enrolment based on standard and programme length. Calculated as approximately 20% of total contracted hours over the programme duration', illustrates: 'Shown as the denominator in the OTJ compliance display (e.g. 5h 15min / 420hr); used to calculate the overall completion percentage', rationale: 'The target hours are the benchmark against which all OTJ compliance is measured — without this, percentage completion cannot be calculated', build: '' },
         ]
       },
       {
@@ -3614,9 +3614,9 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Learners who have passed their planned gateway date and remain on funding.',
         fields: [
-          { label: 'OOF Flag / Date',                  platform: 'no',      source: 'Not in Platform — once Planned Gateway Date exists, OOF can be auto-triggered when a learner passes that date. Learner statuses (In Gateway, Completed, etc.) also need to be created as new functionality' },
-          { label: 'OOF Reason',                       platform: 'no',      source: 'Not in Platform — no OOF reason field exists; may not be necessary' },
-          { label: 'Planned Gateway Date (vs actual)', platform: 'no',      source: 'Not in Platform — same gap as the core Planned Gateway Date field; End Date represents programme completion, not the practical period end' },
+          { label: 'OOF Flag / Date',                  platform: 'no',      source: 'Not in Platform — auto-triggerable once Planned Gateway Date is built', calculation: 'Auto-flag: if Today > Planned Gateway Date AND Learner Status = Live, change status to Out of Funding. OOF Date = the date the learner passed their Planned Gateway Date without a gateway completion recorded', illustrates: 'Drives the OOF Active KPI card count, the OOF table, and the OOF Red count in the Urgent Actions banner', rationale: 'Learners past their gateway date are still drawing down apprenticeship funding — this is a compliance and financial risk requiring urgent action (extension, withdrawal, or accelerated gateway)', build: 'Requires Planned Gateway Date to be built first. Auto-trigger OOF status when a learner passes their Planned Gateway Date without a gateway completion recorded. Log the date the flag was triggered' },
+          { label: 'OOF Reason',                       platform: 'no',      source: 'Not in Platform — may not be necessary', calculation: 'Free-text or dropdown if implemented', illustrates: 'Would appear as a Reason column in the OOF table; provides context for management decisions', rationale: 'Understanding why a learner is OOF (EPA delay, employer delay, learner readiness) helps determine the appropriate action and informs provision planning', build: 'Optional — if implemented, recommend a simple dropdown (EPA Delay / Employer Delay / Learner Readiness / Other) rather than free text to enable filtering and reporting' },
+          { label: 'Planned Gateway Date (vs actual)', platform: 'no',      source: 'Not in Platform — same gap as the core Planned Gateway Date field', calculation: 'Once Planned Gateway Date exists: Days Overdue = Today − Planned Gateway Date. Used to sort the OOF table by most overdue first and to apply OOF RAG (Red = significantly overdue, Amber = recently past gateway)', illustrates: 'Shown in the OOF table to indicate how overdue each learner is against their original gateway target', rationale: 'The relative overdue period determines urgency — a learner 2 weeks past gateway needs different action to one 6 months overdue', build: 'Same requirement as core Planned Gateway Date field — no additional build needed once the field exists' },
         ]
       },
       {
@@ -3624,10 +3624,10 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Approved pauses from the programme with a confirmed return-to-learning date.',
         fields: [
-          { label: 'BIL Start Date',                   platform: 'no',      source: 'Not in Platform — all BIL functionality is new. Simplified approach: flag if a learner is on a break via Learner Status rather than a full BIL record with dates' },
-          { label: 'Expected Return to Learning (RTL) Date', platform: 'no', source: 'Not in Platform — may not be viable; consider removing in favour of a simple BIL flag within Learner Status' },
-          { label: 'RTL Confirmed / Actual Date',      platform: 'no',      source: 'Not in Platform — may not be viable; consider removing in favour of a simple BIL flag within Learner Status' },
-          { label: 'BIL Decision Status (pending / confirmed)', platform: 'no', source: 'Not in Platform — may not be viable; Learner Status functionality (to be built) could replace this with a simple on/off BIL flag' },
+          { label: 'BIL Start Date',                   platform: 'no',      source: 'Not in Platform — all BIL functionality is new', calculation: 'The date the learner formally commenced their break in learning; set when Learner Status is changed to BIL', illustrates: 'Shown in the simplified BIL table as BIL Start Date; used to show how long a learner has been on a break', rationale: 'The BIL start date enables tracking of break duration — extended breaks may require employer confirmation or programme amendment', build: 'Add a BIL Start Date field that is set automatically when Learner Status is changed to BIL. Minimum viable: record the date the BIL status was applied' },
+          { label: 'Expected Return to Learning (RTL) Date', platform: 'no', source: 'Not in Platform — removed from dashboard as non-essential for Phase 1', calculation: 'Would be set manually at the time of BIL approval', illustrates: 'Removed from the simplified Phase 1 BIL table — Phase 3 aspirational view', rationale: 'Useful for planning but not critical for Phase 1 — to be revisited in Phase 3', build: 'Phase 3 consideration — add Expected RTL date field alongside BIL status' },
+          { label: 'RTL Confirmed / Actual Date',      platform: 'no',      source: 'Not in Platform — removed from dashboard as non-essential for Phase 1', calculation: 'Would be the date the learner formally returned and BIL status was removed', illustrates: 'Removed from the simplified Phase 1 BIL table — Phase 3 aspirational view', rationale: 'Phase 3 consideration', build: 'Phase 3 consideration — record date when BIL status is removed and learner returns to Live' },
+          { label: 'BIL Decision Status (pending / confirmed)', platform: 'no', source: 'Not in Platform — removed from dashboard as non-essential for Phase 1', calculation: 'Would be a status field (Pending / Confirmed / Extended) on the BIL record', illustrates: 'Removed from simplified Phase 1 BIL table — Phase 3 aspirational view', rationale: 'Phase 3 consideration — the current simplified view just shows which learners are on a break and when it started', build: 'Phase 3 consideration — add decision status workflow once BIL foundation is in place' },
         ]
       },
       {
@@ -3635,11 +3635,11 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Additional Learning Support needs and declared disabilities / learning difficulties.',
         fields: [
-          { label: 'LLDD / Declared Need Flag',        source: '' },
-          { label: 'Need Type (Learning Difficulty / ADHD & Autism / Mental Health / Physical & Sensory)', source: '' },
-          { label: 'Adjustments / Support Plan in Place', source: '' },
-          { label: 'Active Support Plan Flag',         source: '' },
-          { label: 'ALS Review Due Date',              source: '' },
+          { label: 'LLDD / Declared Need Flag',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Need Type (Learning Difficulty / ADHD & Autism / Mental Health / Physical & Sensory)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Adjustments / Support Plan in Place', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Active Support Plan Flag',         source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'ALS Review Due Date',              source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3647,10 +3647,10 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Safeguarding concerns raised and welfare check-in records.',
         fields: [
-          { label: 'Safeguarding Concern Flag',        source: '' },
-          { label: 'Concern Type & Open/Closed Status', source: '' },
-          { label: 'Welfare Check-in Date',            source: '' },
-          { label: 'Welfare Check-in Status (due / completed)', source: '' },
+          { label: 'Safeguarding Concern Flag',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Concern Type & Open/Closed Status', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Welfare Check-in Date',            source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Welfare Check-in Status (due / completed)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3658,12 +3658,12 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Learner and employer satisfaction scores, feedback commentary, and exit reviews.',
         fields: [
-          { label: 'Learner eNPS Response Score (0–10)', source: '' },
-          { label: 'Employer eNPS Response Score (0–10)', source: '' },
-          { label: 'Learner Feedback Commentary & Date', source: '' },
-          { label: 'Employer / Line Manager Feedback & Date', source: '' },
-          { label: 'Exit Review Status (Achieved / Withdrawn)', source: '' },
-          { label: 'Exit Review Commentary',           source: '' },
+          { label: 'Learner eNPS Response Score (0–10)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Employer eNPS Response Score (0–10)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Learner Feedback Commentary & Date', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Employer / Line Manager Feedback & Date', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Exit Review Status (Achieved / Withdrawn)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Exit Review Commentary',           source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
     ]
@@ -3678,12 +3678,12 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Evidence that a learner is prepared to proceed to End Point Assessment.',
         fields: [
-          { label: 'Planned Gateway Date',             source: '' },
-          { label: 'Gateway Meeting Date (employer + learner + LSC)', source: '' },
-          { label: 'Gateway Readiness RAG (Red / Amber / Green)', source: '' },
-          { label: 'Employer Sign-off Date',           source: '' },
-          { label: 'KSB Sign-off / Portfolio Completion', source: '' },
-          { label: 'English & Maths Qualifications Confirmed', source: '' },
+          { label: 'Planned Gateway Date',             source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Meeting Date (employer + learner + LSC)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Readiness RAG (Red / Amber / Green)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Employer Sign-off Date',           source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'KSB Sign-off / Portfolio Completion', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'English & Maths Qualifications Confirmed', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3691,11 +3691,11 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'EPA booking, scheduling and outcome data.',
         fields: [
-          { label: 'EPA Booking / Registration Date',  source: '' },
-          { label: 'EPA Assessment Organisation (EPAO)', source: '' },
-          { label: 'EPA Assessment Date',              source: '' },
-          { label: 'EPA Outcome (Pass / Merit / Distinction / Fail)', source: '' },
-          { label: 'Resit / Carry Over Flag',          source: '' },
+          { label: 'EPA Booking / Registration Date',  source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'EPA Assessment Organisation (EPAO)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'EPA Assessment Date',              source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'EPA Outcome (Pass / Merit / Distinction / Fail)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Resit / Carry Over Flag',          source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3703,9 +3703,9 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Forward-looking pipeline data used in the quarterly forecast tables.',
         fields: [
-          { label: 'Planned Gateway Quarter (Q2 / Q3 / Q4)', source: '' },
-          { label: 'Gateway Forecast RAG per Learner', source: '' },
-          { label: 'Months Remaining to Planned Gateway', source: '' },
+          { label: 'Planned Gateway Quarter (Q2 / Q3 / Q4)', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Forecast RAG per Learner', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Months Remaining to Planned Gateway', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
     ]
@@ -3720,13 +3720,13 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Each standard report draws from the sources documented on the relevant Learners / Gateway pages.',
         fields: [
-          { label: 'LSC Full Caseload → Learner Record + all compliance fields', platform: 'partial', source: 'Inherited — limited by gaps in underlying data (Employer Name, Planned Gateway Date, Learner Status all need building)' },
-          { label: 'Standard Employer Report → Learner Record + employer-facing fields', platform: 'partial', source: 'Inherited — same gaps as Full Caseload. Includes an LSC Commentary column which needs to be built as new functionality — a free-text notes field per learner for MI reporting, avoiding spreadsheet collaboration' },
-          { label: 'Learner Touchpoints → Monthly Touchpoints', platform: 'partial', source: 'Inherited — Progress Reviews available; Starter Checklist and Interim 121 forms not yet built' },
-          { label: 'Progress Reviews → Compliance — Progress Reviews', platform: 'partial', source: 'Inherited — Progress Review dates available; due date calculation (10 weeks) needs applying' },
-          { label: 'OTJ Compliance → Compliance — OTJ', platform: 'yes',     source: 'Inherited — all OTJ data present in Platform' },
-          { label: 'KSB Progress → KSB Tracker',       platform: 'yes',     source: 'Inherited — K/S/B % available from Apprenticeship Tab; RAG calculation needs applying' },
-          { label: 'Curriculum Progress → Curriculum Progress', platform: 'partial', source: 'Inherited — Curriculum Status and Sprint name available; Last Activity Date needs building' },
+          { label: 'LSC Full Caseload → Learner Record + all compliance fields', platform: 'partial', source: 'Inherited — limited by gaps in underlying data (Employer Name, Planned Gateway Date, Learner Status all need building)', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Standard Employer Report → Learner Record + employer-facing fields', platform: 'partial', source: 'Inherited — same gaps as Full Caseload. Includes an LSC Commentary column which needs to be built as new functionality — a free-text notes field per learner for MI reporting, avoiding spreadsheet collaboration', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Learner Touchpoints → Monthly Touchpoints', platform: 'partial', source: 'Inherited — Progress Reviews available; Starter Checklist and Interim 121 forms not yet built', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Progress Reviews → Compliance — Progress Reviews', platform: 'partial', source: 'Inherited — Progress Review dates available; due date calculation (10 weeks) needs applying', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'OTJ Compliance → Compliance — OTJ', platform: 'yes',     source: 'Inherited — all OTJ data present in Platform', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'KSB Progress → KSB Tracker',       platform: 'yes',     source: 'Inherited — K/S/B % available from Apprenticeship Tab; RAG calculation needs applying', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Curriculum Progress → Curriculum Progress', platform: 'partial', source: 'Inherited — Curriculum Status and Sprint name available; Last Activity Date needs building', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3734,11 +3734,11 @@ const DATA_ORIGINS = {
         phases: [1, 3],
         desc: 'Pre-filtered one-click reports available in both phases.',
         fields: [
-          { label: 'Awaiting First Meeting → First LSC Meeting', platform: 'no', source: 'Inherited — depends on Starter Checklist form being built in the Platform' },
-          { label: 'Progress Reviews Overdue → Progress Reviews', platform: 'partial', source: 'Inherited — Progress Review dates exist; overdue calculation (10-week threshold) needs applying' },
-          { label: 'OOF Red Portfolio → OOF',          platform: 'no',      source: 'Inherited — blocked on Planned Gateway Date field being built first' },
-          { label: 'KSB At-Risk → KSB Tracker',        platform: 'partial', source: 'Inherited — K/S/B % available from Apprenticeship Tab; At-Risk derivation (Red/Super Red RAG) needs applying' },
-          { label: 'Curriculum Off-Track → Curriculum Progress', platform: 'yes', source: 'Inherited — Curriculum Status (Falling Behind etc.) available from Platform chart' },
+          { label: 'Awaiting First Meeting → First LSC Meeting', platform: 'no', source: 'Inherited — depends on Starter Checklist form being built in the Platform', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Progress Reviews Overdue → Progress Reviews', platform: 'partial', source: 'Inherited — Progress Review dates exist; overdue calculation (10-week threshold) needs applying', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'OOF Red Portfolio → OOF',          platform: 'no',      source: 'Inherited — blocked on Planned Gateway Date field being built first', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'KSB At-Risk → KSB Tracker',        platform: 'partial', source: 'Inherited — K/S/B % available from Apprenticeship Tab; At-Risk derivation (Red/Super Red RAG) needs applying', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Curriculum Off-Track → Curriculum Progress', platform: 'yes', source: 'Inherited — Curriculum Status (Falling Behind etc.) available from Platform chart', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3746,12 +3746,12 @@ const DATA_ORIGINS = {
         phases: [3],
         desc: 'Pre-filtered reports that depend on Phase 3 data sections.',
         fields: [
-          { label: 'BIL Decisions Needed → BIL',       source: '' },
-          { label: 'Gateway Red Portfolio → Gateway Readiness', source: '' },
-          { label: 'Active Safeguarding → Safeguarding & Welfare', source: '' },
-          { label: 'Welfare Check-ins Due → Safeguarding & Welfare', source: '' },
-          { label: 'ALS Register → ALS & LLDD',        source: '' },
-          { label: 'Sales Pipeline → Pipeline Records', source: '' },
+          { label: 'BIL Decisions Needed → BIL',       source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Gateway Red Portfolio → Gateway Readiness', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Active Safeguarding → Safeguarding & Welfare', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Welfare Check-ins Due → Safeguarding & Welfare', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'ALS Register → ALS & LLDD',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Sales Pipeline → Pipeline Records', source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
     ]
@@ -3797,12 +3797,15 @@ function renderDataOriginPanel() {
       const pClass = f.platform ? `dop-platform-${f.platform}` : 'dop-platform-pending';
       const pLabel = f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed';
       const notes  = f.source && f.source.trim() ? f.source : '';
+      const buildNote = (f.platform === 'no' || f.platform === 'partial') && f.build && f.build.trim()
+        ? `<div class="dop-field-build"><strong>Build required:</strong> ${f.build}</div>` : '';
       return `<div class="dop-field">
         <div class="dop-field-header">
           <span class="dop-field-label">${f.label}</span>
           <span class="dop-platform-badge ${pClass}">${pLabel}</span>
         </div>
         ${notes ? `<div class="dop-field-notes">${notes}</div>` : ''}
+        ${buildNote}
       </div>`;
     }).join('');
 
@@ -3860,7 +3863,11 @@ function renderDataMap() {
           secPhases:  sec.phases   || [1, 3],
           label:      f.label,
           platform:   f.platform,
-          source:     f.source || '',
+          source:     f.source      || '',
+          calculation:f.calculation || '',
+          illustrates:f.illustrates || '',
+          rationale:  f.rationale   || '',
+          build:      f.build       || '',
         });
       });
     });
@@ -3907,14 +3914,26 @@ function renderDataMap() {
   body.innerHTML = Object.entries(grouped).map(([pageId, page]) => {
     const secHtml = Object.entries(page.sections).map(([secName, sec]) => {
       const isP3Only = sec.secPhases && !sec.secPhases.includes(1);
-      const fieldRows = sec.fields.map(f => {
+      const fieldCards = sec.fields.map(f => {
         const pClass = f.platform ? `dop-platform-${f.platform}` : 'dop-platform-pending';
         const pLabel = f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed';
-        return `<tr class="dm-field-row">
-          <td class="dm-field-label">${f.label}</td>
-          <td style="width:90px;"><span class="dop-platform-badge ${pClass}">${pLabel}</span></td>
-          <td class="dm-field-notes">${f.source}</td>
-        </tr>`;
+        const prop = (label, val, cls) => val && val.trim()
+          ? `<div class="dm-prop${cls ? ' ' + cls : ''}"><span class="dm-prop-label">${label}</span><span class="dm-prop-value">${val}</span></div>`
+          : '';
+        const props = [
+          prop('Source',         f.source),
+          prop('Calculation',    f.calculation),
+          prop('Illustrates',    f.illustrates),
+          prop('Rationale',      f.rationale),
+          prop('Build Required', f.build, 'dm-prop-build'),
+        ].filter(Boolean).join('');
+        return `<div class="dm-field-card">
+          <div class="dm-field-card-header">
+            <span class="dm-field-name">${f.label}</span>
+            <span class="dop-platform-badge ${pClass}">${pLabel}</span>
+          </div>
+          ${props ? `<div class="dm-field-props">${props}</div>` : ''}
+        </div>`;
       }).join('');
       return `<div class="dm-section">
         <div class="dm-section-head">
@@ -3922,7 +3941,7 @@ function renderDataMap() {
           ${isP3Only ? '<span class="dop-phase-badge">Phase 3</span>' : ''}
           <span class="dm-section-count">${sec.fields.length} field${sec.fields.length !== 1 ? 's' : ''}</span>
         </div>
-        <table class="dm-table"><tbody>${fieldRows}</tbody></table>
+        <div class="dm-field-cards">${fieldCards}</div>
       </div>`;
     }).join('');
     return `<div class="dm-page"><div class="dm-page-head">${page.title}</div>${secHtml}</div>`;
@@ -3943,7 +3962,7 @@ function closeDataMap() {
 
 function exportDataMapCSV() {
   const PLATFORM_LABELS = { yes: 'Yes', no: 'No', partial: 'Partial' };
-  const rows = [['Page', 'Section', 'Phase Availability', 'Field', 'In Platform?', 'Notes']];
+  const rows = [['Page', 'Section', 'Phase Availability', 'Field', 'In Platform?', 'Source', 'Calculation / Derivation', 'Illustrated As', 'Rationale', 'Build Required']];
   Object.entries(DATA_ORIGINS).forEach(([, page]) => {
     (page.sections || []).forEach(sec => {
       const phaseLabel = (sec.phases && !sec.phases.includes(1)) ? 'Phase 3 only' : 'Phase 1 & 3';
@@ -3954,7 +3973,11 @@ function exportDataMapCSV() {
           phaseLabel,
           f.label,
           f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed',
-          f.source || '',
+          f.source      || '',
+          f.calculation || '',
+          f.illustrates || '',
+          f.rationale   || '',
+          f.build       || '',
         ]);
       });
     });
