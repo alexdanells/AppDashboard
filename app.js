@@ -98,7 +98,7 @@ const TOUCHPOINT_DATA = [
   { name: 'Callum Fraser',   employer: 'Sterling Accounts',      lsc: 'Tom Bradley',    lastMeeting: '2026-04-30', meetingType: 'Interim Review'  },
 ];
 
-// Table 2: Progress Reviews — 8+ weeks since last review (sorted weeksSince desc)
+// Table 2: Progress Reviews — 10+ weeks since last review (sorted weeksSince desc)
 const SLA_DATA = [
   { name: 'Destiny Osei',    employer: 'Bright Digital Agency',  lsc: 'Hannah Clarke',  lastReview: '2026-01-26', weeksSince: 17 },
   { name: 'Harry Singh',     employer: 'Pinnacle Finance Group', lsc: 'Tom Bradley',    lastReview: '2026-02-02', weeksSince: 16 },
@@ -2214,32 +2214,18 @@ function renderBILTable(lscFilter) {
   const tbody = document.getElementById('bil-tbody');
   if (!tbody) return;
   const _src = lscFilter ? AD.bil.filter(r => r.lsc === lscFilter) : AD.bil;
-  const _defBil = (a, b) => {
-    if (!a.expectedRtl && !b.expectedRtl) return 0;
-    if (!a.expectedRtl) return -1;
-    if (!b.expectedRtl) return 1;
-    return new Date(a.expectedRtl) - new Date(b.expectedRtl);
-  };
-  const rows = _doTblSort(_src, 'bil-tbody', _defBil);
+  const rows = _doTblSort(_src, 'bil-tbody', (a, b) => new Date(a.ldol) - new Date(b.ldol));
   const countEl = document.getElementById('bil-panel-count');
   if (countEl) countEl.textContent = rows.length + ' learner' + (rows.length !== 1 ? 's' : '');
-  if (!rows.length) { tbody.innerHTML = emptyRow(8, 'No BIL learners for this coach.'); return; }
-  tbody.innerHTML = rows.map(r => {
-    const isNeeded = r.status === 'BIL Decision Needed';
-    const rowClass = isNeeded ? 'row-alert' : '';
-    const rtlCell  = r.expectedRtl ? fmtDate(r.expectedRtl) : '<span class="cell-alert">Not confirmed</span>';
-    return `
-      <tr class="${rowClass}">
+  if (!rows.length) { tbody.innerHTML = emptyRow(5, 'No BIL learners for this coach.'); return; }
+  tbody.innerHTML = rows.map(r => `
+      <tr>
         <td title="${r.employer}">${r.employer}</td>
         <td title="${r.name}">${r.name}</td>
         <td title="${r.standard}">${r.standard}</td>
         <td>${r.lsc}</td>
-        <td>${bilStatusPill(r.status)}</td>
         <td>${fmtDate(r.ldol)}</td>
-        <td>${rtlCell}</td>
-        <td style="font-size:0.78rem;" title="${r.notes}">${r.notes}</td>
-      </tr>`;
-  }).join('');
+      </tr>`).join('');
   _tblIcons('bil-tbody');
 }
 
@@ -2679,6 +2665,16 @@ function curriculumProgressBar(complete, total) {
   return `<span class="curr-progress">${bars}&nbsp;<span class="curr-progress-num">${complete}/${total}</span></span>`;
 }
 
+function curriculumDualProgress(complete, expected, total) {
+  const vsPlanPct  = expected > 0 ? Math.round(complete / expected * 100) : 0;
+  const overallPct = Math.round(complete / total * 100);
+  const barFilled  = Math.min(complete, expected);
+  const barTotal   = Math.max(expected, complete);
+  const bars = '█'.repeat(barFilled) + '░'.repeat(Math.max(0, barTotal - barFilled));
+  return `<span class="curr-progress">${bars}&nbsp;<span class="curr-progress-num">${vsPlanPct}% vs plan</span></span>`
+       + `<div class="curr-progress-overall">${overallPct}% overall (${complete}/${total})</div>`;
+}
+
 function curriculumStatusPill(status) {
   const cls = { 'On Track': 'curr-pill-ok', 'Off Track': 'curr-pill-amber', 'Behind': 'curr-pill-red', 'No Activity': 'curr-pill-grey' }[status] || '';
   return `<span class="curr-status-pill ${cls}">${status}</span>`;
@@ -2736,7 +2732,7 @@ function renderCurriculum() {
       <td>${r.standard}</td>
       <td>${r.lsc}</td>
       <td style="font-size:0.8rem;">${r.sprint}</td>
-      <td>${curriculumProgressBar(r.partsComplete, 8)}</td>
+      <td>${curriculumDualProgress(r.partsComplete, r.partsExpected, 8)}</td>
       <td>${fmtDate(r.lastActivity)}</td>
       <td>${curriculumStatusPill(status)}</td>
     </tr>`;
@@ -3588,14 +3584,14 @@ const DATA_ORIGINS = {
         desc: 'Monthly contact meetings logged between LSC and learner.',
         fields: [
           { label: 'Meeting Date',                     platform: 'partial', source: 'Progress Reviews exist in the Platform, but Starter Checklist (first meeting) and Interim 121 forms are not yet built — monthly touchpoint compliance logic requires all three form types to be available' },
-          { label: 'Meeting Type (Touchpoint / Progress Review)', platform: 'no', source: 'Starter Checklist and Interim 121 forms not yet in Platform — logic needed: Starter Checklist for the first meeting, then Progress Review (if the meeting falls within the 8-week compliance window) or Interim 121 otherwise' },
+          { label: 'Meeting Type (Touchpoint / Progress Review)', platform: 'no', source: 'Starter Checklist and Interim 121 forms not yet in Platform — logic needed: Starter Checklist for the first meeting, then Progress Review (if the meeting falls within the 10-week compliance window) or Interim 121 otherwise' },
           { label: 'Conducting Coach / LSC',           platform: 'partial', source: 'Visible in the backend but not currently shown on the front-end UI — needs to be surfaced in the UI' },
         ]
       },
       {
         name: 'Compliance — Progress Reviews',
         phases: [1, 3],
-        desc: 'Formal progress reviews — flagged when overdue by 8+ weeks.',
+        desc: 'Formal progress reviews — flagged when overdue by 10+ weeks.',
         fields: [
           { label: 'Last Progress Review Date',        platform: 'yes',     source: 'Present in Platform — date recorded on each Progress Review; sign-off status (all parties signed) is also visible on the front-end' },
           { label: 'Review Due By Date (calculated)',  platform: 'partial', source: 'Platform shows a meeting window (e.g. Aug 18 – Sep 1) but not a single due date — needs to be calculated: first review = 10 weeks after start date, then every 10 weeks thereafter' },

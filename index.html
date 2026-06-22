@@ -792,7 +792,7 @@
         <div class="kpi-bar">
           <div class="kpi-card"><span class="kpi-label">Awaiting First Meeting</span><span class="kpi-value" id="kpi-awaiting-first">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Outstanding Touchpoints</span><span class="kpi-value amber" id="kpi-outstanding">—</span></div>
-          <div class="kpi-card"><span class="kpi-label">Progress Reviews (8+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
+          <div class="kpi-card"><span class="kpi-label">Progress Reviews (10+ wks)</span><span class="kpi-value amber" id="kpi-overdue-reviews">—</span></div>
           <div class="kpi-card"><span class="kpi-label">OTJ Compliance in Month</span><span class="kpi-value amber" id="kpi-no-otj">—</span></div>
           <div class="kpi-card"><span class="kpi-label">Out of Funding</span><span class="kpi-value" id="comp-oof-total">—</span></div>
           <div class="kpi-card" id="comp-bil-action-card"><span class="kpi-label">BIL Decisions Needed</span><span class="kpi-value amber" id="comp-bil-action">—</span></div>
@@ -821,7 +821,7 @@
           </div>
 
           <div class="panel">
-            <div class="panel-header"><div><h2 class="panel-title">Outstanding Monthly Touchpoints</h2><p class="panel-desc">Learners with no 1-2-1 or progress review recorded this calendar month</p></div><button class="btn-export">⬇ Export</button></div>
+            <div class="panel-header"><div><h2 class="panel-title">Outstanding Monthly Touchpoints</h2><p class="panel-desc">Learners with no meeting recorded this calendar month. <strong>Note:</strong> only Progress Reviews are currently available from the Platform — Starter Checklist and Interim 121 forms will be added in a future phase.</p></div><button class="btn-export">⬇ Export</button></div>
             <div class="panel-body" style="padding: 0; overflow-x: auto;">
               <table class="data-table"><thead><tr>
                   <th class="sort-th" data-sort-table="touchpoint-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
@@ -889,10 +889,7 @@
                   <th class="sort-th" data-sort-table="bil-tbody" data-col="name">Learner <span class="sort-icon">⇅</span></th>
                   <th class="sort-th" data-sort-table="bil-tbody" data-col="standard">Standard <span class="sort-icon">⇅</span></th>
                   <th class="sort-th" data-sort-table="bil-tbody" data-col="lsc">LSC <span class="sort-icon">⇅</span></th>
-                  <th class="sort-th" data-sort-table="bil-tbody" data-col="status">Status <span class="sort-icon">⇅</span></th>
-                  <th class="sort-th" data-sort-table="bil-tbody" data-col="ldol">LDOL <span class="sort-icon">⇅</span></th>
-                  <th class="sort-th" data-sort-table="bil-tbody" data-col="expectedRtl">Expected RTL <span class="sort-icon">↑</span></th>
-                  <th>Notes</th>
+                  <th class="sort-th" data-sort-table="bil-tbody" data-col="ldol">BIL Start Date <span class="sort-icon">⇅</span></th>
                 </tr></thead>
                 <tbody id="bil-tbody"></tbody>
               </table>
