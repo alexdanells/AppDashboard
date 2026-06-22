@@ -1445,6 +1445,7 @@ document.querySelectorAll('.phase-btn').forEach(btn => {
     btn.classList.add('active');
     applyPhaseSettings();
     renderKSB(); // rebuild table header and combined columns
+    if (dataOriginOpen) renderDataOriginPanel();
   });
 });
 
@@ -3428,9 +3429,11 @@ populateEmployerDropdown();
 const DATA_ORIGINS = {
   'page-overview': {
     title: 'Overview',
+    phases: [1, 3],
     sections: [
       {
         name: 'DfE AAF Metrics',
+        phases: [3],
         desc: 'High-level compliance KPIs required for DfE Area Achievement Framework reporting.',
         fields: [
           { label: 'Timely Achievement Rate',           source: '' },
@@ -3443,7 +3446,8 @@ const DATA_ORIGINS = {
       },
       {
         name: 'KPI Bar',
-        desc: 'Headline figures displayed at the top of the Overview page.',
+        phases: [1, 3],
+        desc: 'Headline figures at the top of the Overview page. Achievement Rate is Phase 3 only.',
         fields: [
           { label: 'Active Learner Count',              source: '' },
           { label: 'Active Employer Count',             source: '' },
@@ -3457,29 +3461,40 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Urgent Actions Banner',
-        desc: 'Aggregated count of items requiring immediate action, shown in the alert strip.',
+        phases: [1, 3],
+        desc: 'Aggregated count of items needing immediate action. BIL Decisions Needed is Phase 3 only.',
         fields: [
           { label: 'SLA Breach Count (overdue progress reviews)', source: '' },
-          { label: 'BIL Decisions Needed Count',        source: '' },
           { label: 'OOF Red (missed gateway) Count',   source: '' },
           { label: 'ALS Reviews Overdue Count',        source: '' },
+          { label: 'KSB Super-Red Learner Count',      source: '' },
+          { label: 'BIL Decisions Needed Count',        source: '' },
           { label: 'Active Safeguarding Cases',        source: '' },
           { label: 'Welfare Check-ins Overdue',        source: '' },
-          { label: 'KSB Super-Red Learner Count',      source: '' },
         ]
       },
       {
         name: 'Overview Summary Cards',
-        desc: 'Snapshot values on each card — these draw from the same sources as the full pages.',
+        phases: [1, 3],
+        desc: 'Snapshot cards available in both phases — draw from the same sources as the full pages.',
         fields: [
           { label: 'Compliance card values',           source: '' },
           { label: 'OOF & BIL card values',            source: '' },
           { label: 'KSB Tracker summary',              source: '' },
-          { label: 'Gateway Pipeline / Forecast',      source: '' },
+          { label: 'Gateway Forecast summary',         source: '' },
           { label: 'Curriculum summary',               source: '' },
+        ]
+      },
+      {
+        name: 'Overview Summary Cards (Phase 3)',
+        phases: [3],
+        desc: 'Additional summary cards that appear only in Phase 3.',
+        fields: [
+          { label: 'DfE AAF card values',              source: '' },
+          { label: 'Sales Pipeline summary',           source: '' },
+          { label: 'Gateway Pipeline summary',         source: '' },
           { label: 'Learner Welfare summary',          source: '' },
           { label: 'Learner Voice summary',            source: '' },
-          { label: 'Sales Pipeline summary',           source: '' },
         ]
       },
     ]
@@ -3487,9 +3502,11 @@ const DATA_ORIGINS = {
 
   'page-sales': {
     title: 'Sales Pipeline',
+    phases: [3],
     sections: [
       {
         name: 'Pipeline Records',
+        phases: [3],
         desc: 'Individual prospect and lead records tracked by Account Managers.',
         fields: [
           { label: 'Learner / Prospect Name',          source: '' },
@@ -3504,6 +3521,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Monthly Targets',
+        phases: [3],
         desc: 'Monthly new-start targets used in the confirmation progress bar.',
         fields: [
           { label: 'Monthly New-Start Target (by standard)', source: '' },
@@ -3515,9 +3533,11 @@ const DATA_ORIGINS = {
 
   'page-learners': {
     title: 'Learners',
+    phases: [1, 3],
     sections: [
       {
         name: 'Learner Record — Core (all sub-tabs)',
+        phases: [1, 3],
         desc: 'Shared fields that appear across every Learners tab.',
         fields: [
           { label: 'Learner Full Name',                source: '' },
@@ -3532,6 +3552,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'KSB Tracker',
+        phases: [1, 3],
         desc: 'Knowledge, Skills and Behaviours progress tracked against the standard.',
         fields: [
           { label: 'Knowledge % Complete',             source: '' },
@@ -3541,7 +3562,19 @@ const DATA_ORIGINS = {
         ]
       },
       {
+        name: 'Curriculum Progress',
+        phases: [1, 3],
+        desc: 'Progress through the digital learning platform. Combined with KSB Tracker in Phase 1; standalone tab in Phase 3.',
+        fields: [
+          { label: 'Current Sprint / Module Name',     source: '' },
+          { label: 'Sprint Progress %',                source: '' },
+          { label: 'Last Activity Date on Platform',   source: '' },
+          { label: 'Curriculum Status (On Track / Behind / Off Track / No Activity)', source: '' },
+        ]
+      },
+      {
         name: 'Compliance — First LSC Meeting',
+        phases: [1, 3],
         desc: 'Tracks whether FDOL and the induction checklist are completed within the 30-day window.',
         fields: [
           { label: 'FDOL Date (First Day of Learning)', source: '' },
@@ -3551,6 +3584,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Compliance — Monthly Touchpoints',
+        phases: [1, 3],
         desc: 'Monthly contact meetings logged between LSC and learner.',
         fields: [
           { label: 'Meeting Date',                     source: '' },
@@ -3560,6 +3594,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Compliance — Progress Reviews',
+        phases: [1, 3],
         desc: 'Formal progress reviews — flagged when overdue by 8+ weeks.',
         fields: [
           { label: 'Last Progress Review Date',        source: '' },
@@ -3569,6 +3604,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Compliance — OTJ (Off-the-Job Training)',
+        phases: [1, 3],
         desc: 'Hours logged against the mandatory OTJ requirement (approx. 6hrs/week).',
         fields: [
           { label: 'OTJ Hours Completed (cumulative to date)', source: '' },
@@ -3579,6 +3615,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Compliance — Out of Funding (OOF)',
+        phases: [1, 3],
         desc: 'Learners who have passed their planned gateway date and remain on funding.',
         fields: [
           { label: 'OOF Flag / Date',                  source: '' },
@@ -3588,6 +3625,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Compliance — Break in Learning (BIL)',
+        phases: [3],
         desc: 'Approved pauses from the programme with a confirmed return-to-learning date.',
         fields: [
           { label: 'BIL Start Date',                   source: '' },
@@ -3597,17 +3635,8 @@ const DATA_ORIGINS = {
         ]
       },
       {
-        name: 'Curriculum Progress',
-        desc: 'Progress through the digital learning platform (e.g. Aptem, Bud, OneFile).',
-        fields: [
-          { label: 'Current Sprint / Module Name',     source: '' },
-          { label: 'Sprint Progress %',                source: '' },
-          { label: 'Last Activity Date on Platform',   source: '' },
-          { label: 'Curriculum Status (On Track / Behind / Off Track / No Activity)', source: '' },
-        ]
-      },
-      {
         name: 'Learner Welfare — ALS & LLDD',
+        phases: [3],
         desc: 'Additional Learning Support needs and declared disabilities / learning difficulties.',
         fields: [
           { label: 'LLDD / Declared Need Flag',        source: '' },
@@ -3619,6 +3648,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Learner Welfare — Safeguarding & Welfare',
+        phases: [3],
         desc: 'Safeguarding concerns raised and welfare check-in records.',
         fields: [
           { label: 'Safeguarding Concern Flag',        source: '' },
@@ -3629,6 +3659,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Learner Voice',
+        phases: [3],
         desc: 'Learner and employer satisfaction scores, feedback commentary, and exit reviews.',
         fields: [
           { label: 'Learner eNPS Response Score (0–10)', source: '' },
@@ -3644,9 +3675,11 @@ const DATA_ORIGINS = {
 
   'page-gateway': {
     title: 'Gateway',
+    phases: [3],
     sections: [
       {
         name: 'Gateway Readiness',
+        phases: [3],
         desc: 'Evidence that a learner is prepared to proceed to End Point Assessment.',
         fields: [
           { label: 'Planned Gateway Date',             source: '' },
@@ -3659,6 +3692,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'End Point Assessment (EPA)',
+        phases: [3],
         desc: 'EPA booking, scheduling and outcome data.',
         fields: [
           { label: 'EPA Booking / Registration Date',  source: '' },
@@ -3670,6 +3704,7 @@ const DATA_ORIGINS = {
       },
       {
         name: 'Gateway Forecast',
+        phases: [3],
         desc: 'Forward-looking pipeline data used in the quarterly forecast tables.',
         fields: [
           { label: 'Planned Gateway Quarter (Q2 / Q3 / Q4)', source: '' },
@@ -3682,9 +3717,11 @@ const DATA_ORIGINS = {
 
   'page-reporting': {
     title: 'Reporting',
+    phases: [1, 3],
     sections: [
       {
         name: 'Standard Reports — Data Sources',
+        phases: [1, 3],
         desc: 'Each standard report draws from the sources documented on the relevant Learners / Gateway pages.',
         fields: [
           { label: 'LSC Full Caseload → Learner Record + all compliance fields', source: '' },
@@ -3697,15 +3734,23 @@ const DATA_ORIGINS = {
         ]
       },
       {
-        name: 'Quick Reports — Data Sources',
-        desc: 'Pre-filtered one-click reports — data sources match the underlying section.',
+        name: 'Quick Reports (Phase 1 & 3)',
+        phases: [1, 3],
+        desc: 'Pre-filtered one-click reports available in both phases.',
         fields: [
           { label: 'Awaiting First Meeting → First LSC Meeting', source: '' },
           { label: 'Progress Reviews Overdue → Progress Reviews', source: '' },
-          { label: 'BIL Decisions Needed → BIL',       source: '' },
           { label: 'OOF Red Portfolio → OOF',          source: '' },
           { label: 'KSB At-Risk → KSB Tracker',        source: '' },
           { label: 'Curriculum Off-Track → Curriculum Progress', source: '' },
+        ]
+      },
+      {
+        name: 'Quick Reports (Phase 3 only)',
+        phases: [3],
+        desc: 'Pre-filtered reports that depend on Phase 3 data sections.',
+        fields: [
+          { label: 'BIL Decisions Needed → BIL',       source: '' },
           { label: 'Gateway Red Portfolio → Gateway Readiness', source: '' },
           { label: 'Active Safeguarding → Safeguarding & Welfare', source: '' },
           { label: 'Welfare Check-ins Due → Safeguarding & Welfare', source: '' },
@@ -3727,7 +3772,27 @@ function renderDataOriginPanel() {
   document.getElementById('dop-header-page').textContent = origin.title;
 
   const body = document.getElementById('dop-body');
-  body.innerHTML = origin.sections.map(sec => {
+
+  // Page not available in current phase
+  const pagePhases = origin.phases || [1, 3];
+  if (!pagePhases.includes(currentPhase)) {
+    const otherPhase = currentPhase === 1 ? 3 : 1;
+    body.innerHTML = `<div class="dop-unavailable">
+      <div class="dop-unavailable-icon">⚠</div>
+      <div class="dop-unavailable-title">${origin.title} is not part of Phase ${currentPhase}</div>
+      <div class="dop-unavailable-sub">Switch to Phase ${otherPhase} to view the data map for this page.</div>
+    </div>`;
+    return;
+  }
+
+  // Filter sections to those relevant to current phase
+  const visibleSections = (origin.sections || []).filter(sec => {
+    const secPhases = sec.phases || [1, 3];
+    return secPhases.includes(currentPhase);
+  });
+
+  body.innerHTML = visibleSections.map(sec => {
+    const isPhase3Only = sec.phases && !sec.phases.includes(1);
     const mapped   = sec.fields.filter(f => f.source && f.source.trim()).length;
     const total    = sec.fields.length;
     const fieldHtml = sec.fields.map(f => {
@@ -3740,7 +3805,10 @@ function renderDataOriginPanel() {
 
     return `<div class="dop-section">
       <div class="dop-section-head">
-        <div class="dop-section-name">${sec.name}</div>
+        <div class="dop-section-name-row">
+          <span class="dop-section-name">${sec.name}</span>
+          ${isPhase3Only ? '<span class="dop-phase-badge">Phase 3</span>' : ''}
+        </div>
         ${sec.desc ? `<div class="dop-section-desc">${sec.desc}</div>` : ''}
         <div class="dop-section-count">${mapped} / ${total} fields mapped</div>
       </div>

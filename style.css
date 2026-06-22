@@ -1857,3 +1857,46 @@ body {
   color: var(--text-muted);
   margin-top: 0.2rem;
 }
+
+/* Section name row — name + optional phase badge side by side */
+.dop-section-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.1rem;
+}
+
+/* "Phase 3" pill badge on Phase-3-only sections */
+.dop-phase-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.1rem 0.45rem;
+  border-radius: 99px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .dop-phase-badge { background: #0d1829; color: #7aabf0; }
+
+/* "Not available in this phase" message */
+.dop-unavailable {
+  text-align: center;
+  padding: 3rem 1.5rem 2rem;
+  color: var(--text-muted);
+}
+.dop-unavailable-icon {
+  font-size: 1.75rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.6;
+}
+.dop-unavailable-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 0.4rem;
+}
+.dop-unavailable-sub {
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
