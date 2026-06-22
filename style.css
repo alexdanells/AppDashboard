@@ -1674,3 +1674,186 @@ body {
   .enps-hero { padding: 1.25rem; }
   .enps-score { font-size: 2.5rem; }
 }
+
+/* ===================== Data Origins Sidebar ===================== */
+
+/* Left-edge trigger tab */
+.data-origin-tab {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  background: #0f1e3c;
+  color: #fff;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  padding: 0.85rem 0.55rem;
+  cursor: pointer;
+  z-index: 90;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+  transition: background 0.2s, transform 0.2s;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  text-align: center;
+}
+.data-origin-tab:hover {
+  background: #1b2f55;
+  transform: translateY(-50%) translateX(3px);
+}
+[data-theme="dark"] .data-origin-tab            { background: #2e2e2e; color: #eeeeee; }
+[data-theme="dark"] .data-origin-tab:hover      { background: #3a3a3a; }
+
+/* Overlay backdrop */
+.data-origin-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 150;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.data-origin-overlay.open { opacity: 1; pointer-events: all; }
+
+/* Panel */
+.data-origin-panel {
+  position: fixed;
+  top: 0; left: 0;
+  width: 420px;
+  max-width: 92vw;
+  height: 100vh;
+  background: var(--white);
+  z-index: 200;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 32px rgba(0,0,0,0.18);
+}
+.data-origin-panel.open { transform: translateX(0); }
+
+/* Panel header */
+.dop-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1.1rem 1.1rem 0.9rem;
+  background: #0f1e3c;
+  color: #fff;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .dop-header { background: #252525; border-bottom: 1px solid #2e2e2e; }
+.dop-header-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  opacity: 0.65;
+  margin-bottom: 0.2rem;
+}
+.dop-header-page { font-size: 1.05rem; font-weight: 700; }
+.dop-close {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.dop-close:hover { background: rgba(255,255,255,0.25); }
+
+/* Intro blurb */
+.dop-intro {
+  font-size: 0.79rem;
+  color: var(--text-muted);
+  padding: 0.8rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.55;
+  flex-shrink: 0;
+  background: var(--surface);
+}
+
+/* Scrollable body */
+.dop-body {
+  padding: 0.85rem 0.9rem 2.5rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Section card */
+.dop-section {
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+}
+.dop-section-head {
+  padding: 0.65rem 0.9rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.dop-section-name {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.1rem;
+}
+.dop-section-desc {
+  font-size: 0.73rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Field rows */
+.dop-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.42rem 0.9rem;
+  border-bottom: 1px solid var(--border);
+}
+.dop-field:last-child { border-bottom: none; }
+.dop-field-label {
+  font-size: 0.78rem;
+  color: var(--text-main);
+  flex: 1;
+  line-height: 1.35;
+}
+.dop-field-source {
+  font-size: 0.69rem;
+  font-weight: 600;
+  padding: 0.18rem 0.5rem;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.dop-unmapped {
+  background: var(--border);
+  color: var(--text-muted);
+}
+.dop-mapped {
+  background: #dcfce7;
+  color: #15803d;
+}
+[data-theme="dark"] .dop-mapped { background: #0a2010; color: #4ade80; }
+
+/* Progress counter in section head */
+.dop-section-count {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
