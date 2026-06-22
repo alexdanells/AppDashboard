@@ -3949,6 +3949,11 @@ function renderDataMap() {
 }
 
 function openDataMap() {
+  // Sync phase filter to current dashboard phase on every open
+  _dmPhaseFilter = String(currentPhase);
+  document.querySelectorAll('.dm-phase-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dmPhase === _dmPhaseFilter);
+  });
   renderDataMap();
   document.getElementById('datamap-modal').classList.add('open');
   document.getElementById('datamap-overlay').classList.add('open');
