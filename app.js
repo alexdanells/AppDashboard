@@ -3420,6 +3420,140 @@ document.getElementById('report-export-btn')?.addEventListener('click', exportRe
 
 populateEmployerDropdown();
 
+// ─── Platform Build Priority ───────────────────────────────────────────
+
+const BUILD_PRIORITY = [
+  {
+    priority: 1,
+    feature: 'Planned Gateway Date',
+    phase: 1,
+    description: 'Add a Planned Gateway Date field to the learner record, distinct from the Learning End Date (programme completion). This is the date the learner is expected to finish the practical period and proceed to EPA.',
+    unlocks: [
+      'OOF auto-flag — learner is automatically flagged Out of Funding when Today exceeds this date',
+      'KSB urgency scoping — months remaining to gateway determines which learners appear in the at-risk KSB filter',
+      'OOF compliance table and OOF Red count in Urgent Actions banner',
+    ],
+    dependsOn: [],
+    build: 'Add a new date field "Planned Gateway Date" to the learner record. Set at enrolment and updatable if the programme is extended. Distinct from End Date (which represents full programme completion including EPA). Expose on the front-end learner record UI.',
+  },
+  {
+    priority: 2,
+    feature: 'Learner Status',
+    phase: 1,
+    description: 'Build a Learner Status field with defined states to track where each learner is in their programme journey. This is the single highest-value Platform build — it unlocks accurate counts, filtering, and compliance logic across the entire dashboard.',
+    unlocks: [
+      'Accurate Active Learner count — excludes BIL, OOF, and completed learners',
+      'OOF status — auto-triggered when Today > Planned Gateway Date and status is still Live',
+      'BIL status and simplified BIL table — learners on a break are clearly separated from active caseload',
+      'On Track / At Risk KPI accuracy — numerator and denominator both become reliable',
+      'Achievement Rate KPI (Phase 3)',
+    ],
+    dependsOn: ['Planned Gateway Date — required for OOF auto-trigger logic'],
+    build: 'Create a Learner Status field with at minimum these states: Live · Out of Funding (OOF) · Break in Learning (BIL) · At Gateway · Completed / Achieved · Withdrawn. OOF should auto-trigger when Today > Planned Gateway Date and status is still Live. BIL should be set manually by the LSC, with a BIL Start Date recorded automatically at the point of status change.',
+  },
+  {
+    priority: 3,
+    feature: 'Employer Name',
+    phase: 1,
+    description: 'Create an Employer Name field on the learner record so learners can be grouped by their employer across all dashboard views and in reports.',
+    unlocks: [
+      'Active Employer count KPI on Overview',
+      'Standard Employer Report — group learners by employer and share with line managers',
+      'Employer-level filtering in Reporting',
+    ],
+    dependsOn: [],
+    build: 'Add Employer Name as a linked entity on the learner record (not free text) so multiple learners at the same employer are grouped consistently and counted as one. Expose on the learner record front-end UI.',
+  },
+  {
+    priority: 4,
+    feature: 'Starter Checklist (Initial Meeting form)',
+    phase: 1,
+    description: 'Build a Starter Checklist form that the LSC completes on or around the learner\'s first day of learning. This evidences programme induction and starts the 30-day compliance clock for the initial meeting.',
+    unlocks: [
+      'Awaiting First Meeting compliance table — accurately shows which learners haven\'t had their initial meeting',
+      '30-day window compliance check from FDOL to initial meeting completion',
+      'Monthly touchpoint compliance — Starter Checklist counts as a meeting in month for new starters',
+    ],
+    dependsOn: [],
+    build: 'Create a Starter Checklist form completable by the LSC, linked to the learner record, with a mandatory completion date field. Completion should remove the learner from the Awaiting First Meeting compliance list. The form should be visible to managers as part of the learner timeline.',
+  },
+  {
+    priority: 5,
+    feature: 'Interim 121 form',
+    phase: 1,
+    description: 'Build an Interim 121 form for the regular monthly contact between Progress Reviews. Together with the Starter Checklist and Progress Reviews, this completes the set of meeting types needed to calculate full monthly touchpoint compliance.',
+    unlocks: [
+      'Full monthly touchpoint compliance — all three meeting types (Starter Checklist, Progress Review, Interim 121) count toward in-month contact',
+      'Monthly Meeting Compliance % KPI on Overview',
+      'Meeting Type column in compliance tables',
+    ],
+    dependsOn: ['Starter Checklist — to have the full meeting type set in place before calculating compliance'],
+    build: 'Create an Interim 121 form completable by the LSC, linked to the learner record, with a completion date. Ensure all three form types contribute to the last meeting date for monthly compliance calculation. Tag each form with its type (Starter Checklist / Progress Review / Interim 121) for the Meeting Type column.',
+  },
+  {
+    priority: 6,
+    feature: 'Surface LSC assignment on front-end',
+    phase: 1,
+    description: 'The LSC assignment already exists in the Platform backend but is not visible on the learner record front-end UI. Surfacing it enables manager-level caseload oversight and reliable LSC filtering.',
+    unlocks: [
+      'LSC filter reliability across all dashboard views',
+      'Manager-level caseload overview — see how many learners each LSC holds',
+      'Active Learner count per LSC',
+    ],
+    dependsOn: [],
+    build: 'Expose the assigned LSC user as a visible, readable field on the front-end learner record UI. No new data is needed — this is a display change only. The assignment already exists in the user/assignment system.',
+  },
+  {
+    priority: 7,
+    feature: 'Surface Conducting Coach on meeting records',
+    phase: 1,
+    description: 'The user who completes a meeting form is captured in the backend but not shown on the front-end meeting record. Surfacing it confirms accountability and enables the Conducting Coach column in compliance tables.',
+    unlocks: [
+      'Conducting Coach column in the Touchpoints compliance table',
+      'Confirmation that the correct LSC is meeting their assigned learners',
+    ],
+    dependsOn: [],
+    build: 'Expose the completing user / LSC on the front-end meeting record UI. No new data is needed — this is a display change only.',
+  },
+  {
+    priority: 8,
+    feature: 'Sprint Progress % data',
+    phase: 1,
+    description: 'Sprint part completion counts exist in the Platform backend but are not surfaced. Exposing these enables two calculated progress views: progress vs plan, and overall sprint completion.',
+    unlocks: [
+      'Sprint Progress % — shown as two figures: (A) % vs plan (completed / expected at this point) and (B) % overall (completed / total parts)',
+      'Last Activity Date — if completion timestamps are surfaced alongside part counts',
+    ],
+    dependsOn: [],
+    build: 'Surface sprint part completion counts (parts completed, parts expected per guideline at current date, total parts in sprint) on the learner record or via data export. These enable both progress-vs-plan and overall completion percentages to be calculated in the dashboard.',
+  },
+  {
+    priority: 9,
+    feature: 'LSC Commentary field',
+    phase: 3,
+    description: 'A free-text notes field per learner for the LSC to record context about progress, concerns, or agreed actions. Feeds into the Standard Employer Report as a commentary column.',
+    unlocks: [
+      'LSC Commentary column in Standard Employer Report',
+      'Richer employer-facing reports with qualitative context',
+    ],
+    dependsOn: [],
+    build: 'Add a free-text LSC Commentary field to the learner record, editable by the LSC. Surface in data exports and the Standard Employer Report. Consider a character limit to keep commentary concise.',
+  },
+  {
+    priority: 10,
+    feature: 'BIL workflow (RTL dates and decision status)',
+    phase: 3,
+    description: 'Extend Break in Learning beyond a simple start date flag to include Expected Return to Learning date, Confirmed RTL date, and a Decision Status field to manage the approval workflow.',
+    unlocks: [
+      'Full BIL compliance table with RTL tracking',
+      'BIL Decisions Needed count in Urgent Actions banner and Compliance KPI bar',
+      'BIL decision workflow for managers',
+    ],
+    dependsOn: ['Learner Status — BIL state must exist first (Priority 2)'],
+    build: 'Add Expected RTL Date, Confirmed / Actual RTL Date, and Decision Status (Pending / Confirmed / Extended) to the BIL record. Decision Status should drive the BIL Decisions Needed count. Removing BIL status (learner returns) should auto-set Learner Status back to Live.',
+  },
+];
+
 // ─── Data Origins Panel ────────────────────────────────────────────────
 
 const DATA_ORIGINS = {
@@ -3850,8 +3984,61 @@ document.getElementById('data-origin-overlay').addEventListener('click', closeDa
 
 let _dmStatusFilter = 'all';
 let _dmPhaseFilter  = 'all';
+let _dmView         = 'map';  // 'map' | 'build'
+
+function renderBuildPriority() {
+  const body = document.getElementById('datamap-body');
+  const items = BUILD_PRIORITY.filter(item => {
+    if (_dmPhaseFilter === '1') return item.phase === 1;
+    if (_dmPhaseFilter === '3') return item.phase === 3;
+    return true;
+  });
+
+  if (!items.length) {
+    body.innerHTML = '<div class="dm-empty">No build items match the selected phase filter.</div>';
+    return;
+  }
+
+  body.innerHTML = items.map(item => {
+    const phaseClass = item.phase === 1 ? 'bp-phase-1' : 'bp-phase-3';
+    const phaseLabel = item.phase === 1 ? 'Phase 1' : 'Phase 3';
+    const unlocksHtml = item.unlocks.map(u => `<li>${u}</li>`).join('');
+    const depsHtml = item.dependsOn.length
+      ? `<div class="bp-deps"><span class="bp-deps-label">Depends on</span><ul>${item.dependsOn.map(d => `<li>${d}</li>`).join('')}</ul></div>`
+      : '';
+    return `<div class="bp-card">
+      <div class="bp-card-header">
+        <div class="bp-priority-badge">#${item.priority}</div>
+        <div class="bp-feature-name">${item.feature}</div>
+        <span class="bp-phase-badge ${phaseClass}">${phaseLabel}</span>
+      </div>
+      <p class="bp-description">${item.description}</p>
+      <div class="bp-unlocks">
+        <span class="bp-section-label">Unlocks</span>
+        <ul>${unlocksHtml}</ul>
+      </div>
+      ${depsHtml}
+      <div class="bp-build">
+        <span class="bp-section-label">Build specification</span>
+        <p>${item.build}</p>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 function renderDataMap() {
+  const isMapView = _dmView === 'map';
+  document.getElementById('datamap-stats').style.display        = isMapView ? '' : 'none';
+  const filtersWrap = document.getElementById('datamap-filters-wrap');
+  if (filtersWrap) {
+    // Hide status filter group in build view; keep phase filter
+    filtersWrap.querySelectorAll('.datamap-filter-group').forEach((g, i) => {
+      g.style.display = (isMapView || i === 1) ? '' : 'none'; // i=0 is status, i=1 is phase
+    });
+  }
+
+  if (_dmView === 'build') { renderBuildPriority(); return; }
+
   const PLATFORM_LABELS = { yes: 'Yes', no: 'No', partial: 'Partial' };
 
   // Flatten all fields across all pages/sections
@@ -3954,7 +4141,11 @@ function renderDataMap() {
 }
 
 function openDataMap() {
-  // Sync phase filter to current dashboard phase on every open
+  // Reset to Field Map view and sync phase filter to current dashboard phase on every open
+  _dmView = 'map';
+  document.querySelectorAll('.datamap-view-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.dmView === _dmView);
+  });
   _dmPhaseFilter = String(currentPhase);
   document.querySelectorAll('.dm-phase-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.dmPhase === _dmPhaseFilter);
@@ -4003,6 +4194,15 @@ document.getElementById('datamap-btn').addEventListener('click', openDataMap);
 document.getElementById('datamap-close').addEventListener('click', closeDataMap);
 document.getElementById('datamap-overlay').addEventListener('click', closeDataMap);
 document.getElementById('datamap-export-btn').addEventListener('click', exportDataMapCSV);
+
+document.querySelectorAll('.datamap-view-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.datamap-view-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _dmView = btn.dataset.dmView;
+    renderDataMap();
+  });
+});
 
 document.querySelectorAll('.dm-filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {

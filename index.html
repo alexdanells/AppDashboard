@@ -1188,7 +1188,11 @@
         <div class="datamap-title">Platform Data Map</div>
         <div class="datamap-subtitle">Every dashboard data point and its current status in the Boom Platform</div>
       </div>
-      <div style="display:flex;align-items:center;gap:0.5rem;">
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <div class="datamap-view-toggle">
+          <button class="datamap-view-btn active" data-dm-view="map">Field Map</button>
+          <button class="datamap-view-btn" data-dm-view="build">Build Priority</button>
+        </div>
         <button class="datamap-export-btn" id="datamap-export-btn" title="Export full data map as CSV">
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 7l4 4 4-4M2 13h12"/></svg>
           Export CSV
@@ -1199,7 +1203,7 @@
       </div>
     </div>
     <div class="datamap-stats" id="datamap-stats"></div>
-    <div class="datamap-filters">
+    <div class="datamap-filters" id="datamap-filters-wrap">
       <div class="datamap-filter-group">
         <span class="datamap-filter-label">Status</span>
         <button class="dm-filter-btn active" data-dm-filter="all">All</button>
