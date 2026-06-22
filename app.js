@@ -3462,11 +3462,11 @@ const DATA_ORIGINS = {
         fields: [
           { label: 'SLA Breach Count (overdue progress reviews)', platform: 'partial', source: 'Derivable from Progress Review dates at 10-week threshold — system has something embedded but needs strengthening', calculation: 'Count of learners where Weeks Since Last Review ≥ 10. Included in the Urgent Actions total', illustrates: 'Shown as a count in the Urgent Actions banner at the top of Overview; links to the Progress Reviews compliance table', rationale: 'SLA breaches require immediate LSC action — surfacing the count prominently ensures managers are aware of compliance exposure', build: 'Consistent 10-week threshold calculation (see Progress Reviews). Expose as an aggregated count accessible on the Overview' },
           { label: 'OOF Red (missed gateway) Count',   platform: 'no',      source: 'Blocked — depends on Planned Gateway Date field being built first', calculation: 'Count of learners with OOF status who are significantly past their Planned Gateway Date (RAG = Red). Included in the Urgent Actions total', illustrates: 'Shown in the Urgent Actions banner; links to the OOF compliance table', rationale: 'OOF learners represent active funding risk — the count surfaces the scale of the problem for management action', build: 'Requires Planned Gateway Date and Learner Status (OOF) to be built first' },
-          { label: 'ALS Reviews Overdue Count',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'ALS Reviews Overdue Count',        phases: [3], source: '', calculation: '', illustrates: '', rationale: '', build: '' },
           { label: 'KSB Super-Red Learner Count',      platform: 'partial', source: 'Derivable from K/S/B % on the Apprenticeship Tab — Super Red threshold (≥75% remaining) applied to the combined KSB RAG calculation', calculation: 'Count of learners where worst KSB component remaining % ≥ 75% (Super Red threshold). Included in the Urgent Actions total', illustrates: 'Shown in the Urgent Actions banner; links to the KSB Tracker filtered to Super Red learners', rationale: 'Super Red learners have more than 75% of their KSB remaining and are at serious risk of missing their gateway date — they require the most urgent LSC intervention', build: 'Apply Super Red threshold (≥75% remaining) to K/S/B % data. Expose as an aggregated count' },
-          { label: 'BIL Decisions Needed Count',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
-          { label: 'Active Safeguarding Cases',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
-          { label: 'Welfare Check-ins Overdue',        source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'BIL Decisions Needed Count',       phases: [3], source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Active Safeguarding Cases',        phases: [3], source: '', calculation: '', illustrates: '', rationale: '', build: '' },
+          { label: 'Welfare Check-ins Overdue',        phases: [3], source: '', calculation: '', illustrates: '', rationale: '', build: '' },
         ]
       },
       {
@@ -3791,9 +3791,13 @@ function renderDataOriginPanel() {
 
   body.innerHTML = visibleSections.map(sec => {
     const isPhase3Only = sec.phases && !sec.phases.includes(1);
-    const mapped   = sec.fields.filter(f => f.platform).length;
-    const total    = sec.fields.length;
-    const fieldHtml = sec.fields.map(f => {
+    const visibleFields = sec.fields.filter(f => {
+      const fp = f.phases || sec.phases || [1, 3];
+      return fp.includes(currentPhase);
+    });
+    const mapped   = visibleFields.filter(f => f.platform).length;
+    const total    = visibleFields.length;
+    const fieldHtml = visibleFields.map(f => {
       const pClass = f.platform ? `dop-platform-${f.platform}` : 'dop-platform-pending';
       const pLabel = f.platform ? PLATFORM_LABELS[f.platform] : 'Not yet reviewed';
       const notes  = f.source && f.source.trim() ? f.source : '';
@@ -3857,17 +3861,18 @@ function renderDataMap() {
       (sec.fields || []).forEach(f => {
         allFields.push({
           pageId,
-          pageTitle:  page.title,
-          pagePhases: page.phases  || [1, 3],
-          secName:    sec.name,
-          secPhases:  sec.phases   || [1, 3],
-          label:      f.label,
-          platform:   f.platform,
-          source:     f.source      || '',
-          calculation:f.calculation || '',
-          illustrates:f.illustrates || '',
-          rationale:  f.rationale   || '',
-          build:      f.build       || '',
+          pageTitle:   page.title,
+          pagePhases:  page.phases  || [1, 3],
+          secName:     sec.name,
+          secPhases:   sec.phases   || [1, 3],
+          fieldPhases: f.phases     || sec.phases || [1, 3],
+          label:       f.label,
+          platform:    f.platform,
+          source:      f.source      || '',
+          calculation: f.calculation || '',
+          illustrates: f.illustrates || '',
+          rationale:   f.rationale   || '',
+          build:       f.build       || '',
         });
       });
     });
@@ -3890,8 +3895,8 @@ function renderDataMap() {
     if (_dmStatusFilter !== 'all') {
       if ((f.platform || 'pending') !== _dmStatusFilter) return false;
     }
-    if (_dmPhaseFilter === '1')  { if (!f.secPhases.includes(1)) return false; }
-    if (_dmPhaseFilter === '3')  { if (f.secPhases.includes(1))  return false; } // phase 3 only = not in phase 1
+    if (_dmPhaseFilter === '1')  { if (!f.fieldPhases.includes(1)) return false; }
+    if (_dmPhaseFilter === '3')  { if (f.fieldPhases.includes(1))  return false; } // phase 3 only = not in phase 1
     return true;
   });
 
