@@ -1517,6 +1517,11 @@ body {
   font-size: 0.72rem;
   color: var(--text-muted);
 }
+.curr-progress-overall {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
 .curr-status-pill {
   font-size: 0.72rem;
   font-weight: 700;
