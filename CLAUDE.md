@@ -37,7 +37,7 @@ Open `index.html` directly in a browser — no build step, no server needed.
 
 ## Phase Toggle (Phase 1 / Phase 2 / Phase 3)
 
-Three buttons sit in the header to the left of the size toggle. Phase 2 is permanently disabled (greyed out). Phase 3 is the full current dashboard. Phase 1 is a reduced minimum-viable view.
+Three buttons sit in the header to the left of the size toggle. Phase 2 is permanently disabled (greyed out). **Dashboard defaults to Phase 1 on load.** Phase 1 is the minimum-viable view tied to what the Boom Platform can currently support. Phase 3 is the full aspirational dashboard.
 
 ### Phase 1 restrictions
 - **Nav hidden:** Sales Pipeline, Gateway
@@ -50,11 +50,12 @@ Three buttons sit in the header to the left of the size toggle. Phase 2 is perma
 All sections restored. `applyPhaseSettings()` re-applies `NAV_ACCESS` role checks when restoring nav links so role permissions still hold.
 
 ### Implementation
-- `currentPhase` state variable (1 or 3; Phase 2 button is disabled)
+- `currentPhase` state variable (1 or 3; Phase 2 button is disabled); defaults to `1`
 - `applyPhaseSettings()` runs at the end of `renderAll()` and on every phase button click
 - `applyRolePermissions()` runs first (role-based visibility), then `applyPhaseSettings()` applies phase overrides on top
-- `renderKSB()` rebuilds `<thead>` on every call: 13 columns in Phase 1, 10 columns in Phase 3
+- `renderKSB()` rebuilds `<thead>` on every call: 13 columns in Phase 1 (combined KSB+Curriculum), 10 columns in Phase 3
 - KSB sort uses event delegation on `document` scoped to `#ksb-table .sort-th` (direct binding broke on thead rebuild)
+- Individual `DATA_ORIGINS` fields can carry their own `phases: [3]` to be excluded from Phase 1 views even within a Phase 1+3 section (e.g. ALS Reviews Overdue, BIL Decisions Needed in the Urgent Actions Banner)
 
 ---
 
@@ -82,6 +83,66 @@ A sun/moon icon button sits in the header (between the size toggle and the date 
 | `--text-muted` | `#64748b` | `#888888` | Muted text lightens |
 
 Because `--navy` becomes near-white, any element using `background: var(--navy)` (active toggles, buttons, avatars) must be explicitly overridden in `[data-theme="dark"]` to use a dark gray (`#383838`) with white text instead. See the dark mode block at the top of `style.css` for the full list of targeted overrides (hardcoded pastel row states, gateway metric cards, pipeline pills, ksb-notice, etc.).
+
+---
+
+## Data Origins Panel
+
+A narrow tab (`#data-origin-tab`) on the left edge of every page opens a fixed-position drawer (`#data-origin-panel`) showing the data map for the currently visible page. It slides in from the left and is dismissed by clicking the close button or the overlay.
+
+### How it works
+- `dataOriginOpen` boolean tracks whether the panel is open
+- `renderDataOriginPanel()` re-renders on nav switch, phase toggle (if open), and size toggle
+- Sections filtered by current phase: sections with `phases: [3]` hidden in Phase 1; individual fields within a section can also carry `phases: [3]` to be excluded
+- Each field shows: platform status badge (Yes / Partial / No / Not yet reviewed), source note, and for No/Partial fields an amber "Build required:" callout
+
+### DATA_ORIGINS structure (`app.js`)
+Keyed by page ID (`page-overview`, `page-learners`, `page-gateway`, `page-sales`, `page-reporting`). Each page has `title`, `phases`, and `sections[]`. Each section has `name`, `phases`, `desc`, and `fields[]`. Each field has:
+
+```javascript
+{
+  label:       'Field Name',
+  platform:    'yes' | 'no' | 'partial',  // omit = not yet reviewed
+  phases:      [1, 3],   // optional; inherits section phases if omitted
+  source:      '...',    // where in the Platform the raw data lives
+  calculation: '...',    // how it is derived or computed
+  illustrates: '...',    // how it appears on the dashboard and what it represents
+  rationale:   '...',    // why it matters / what decision it drives
+  build:       '...',    // what needs to be built (No/Partial fields only)
+}
+```
+
+Phase 1 fields (Learner Record, KSB, Curriculum, Compliance, Overview KPI Bar, Urgent Actions) are fully populated. Phase 3 sections carry empty strings for the four new properties and are to be completed in a future pass.
+
+---
+
+## Platform Map Modal
+
+A "Platform Map" button (`#datamap-btn`) in the header (to the left of the Phase toggle) opens a full-screen modal showing all `DATA_ORIGINS` fields across all pages in one view.
+
+### Features
+- **Stats bar** — live counts of Yes / Partial / No / Not yet reviewed / Total fields with descriptions
+- **Status filter** — All · Yes · Partial · No · Not reviewed
+- **Phase filter** — All · Phase 1 · Phase 3 only; defaults to the current dashboard phase on every open
+- **Card layout** — each field renders as a card with labelled rows: Source, Calculation, Illustrates, Rationale, Build Required (amber highlight)
+- **Export CSV** — downloads `BoomTraining_PlatformDataMap.csv` with all 10 columns regardless of active filters: Page, Section, Phase Availability, Field, In Platform?, Source, Calculation / Derivation, Illustrated As, Rationale, Build Required
+
+### Key state variables
+```javascript
+let dataOriginOpen  = false;
+let _dmStatusFilter = 'all';
+let _dmPhaseFilter  = 'all';   // reset to String(currentPhase) on every open
+```
+
+### Key functions
+| Function | Purpose |
+|---|---|
+| `renderDataOriginPanel()` | Renders the per-page sidebar drawer |
+| `openDataOriginPanel()` / `closeDataOriginPanel()` | Open/close drawer, toggle body scroll lock |
+| `renderDataMap()` | Flattens DATA_ORIGINS, applies filters, renders card layout |
+| `openDataMap()` | Syncs `_dmPhaseFilter` to `currentPhase`, then opens modal |
+| `closeDataMap()` | Closes modal |
+| `exportDataMapCSV()` | Exports full unfiltered dataset as CSV |
 
 ---
 
@@ -184,14 +245,14 @@ Old hand-crafted arrays (`TOUCHPOINT_DATA`, `KSB_DATA` etc.) are kept in the fil
 
 #### Compliance
 - LSC filter bar (hidden for LSC, auto-filtered to own coach)
-- 8 KPI cards: Awaiting First Meeting, Outstanding Touchpoints, Progress Reviews (8+ wks), OTJ Compliance in Month, OOF Active, BIL Decisions Needed + (LSC-only) Reviews Due, OTJ Compliance %
+- 8 KPI cards: Awaiting First Meeting, Outstanding Touchpoints, Progress Reviews (10+ wks), OTJ Compliance in Month, OOF Active, BIL Decisions Needed + (LSC-only) Reviews Due, OTJ Compliance %
 - 6 tables (sortable):
   1. **Awaiting First LSC Meeting** — learners where FDOL+checklist not both done; columns: Learner, Employer, Standard, LSC, Planned Start, 30-Day Window, FDOL Entry
-  2. **Outstanding Monthly Touchpoints** — sorted oldest meeting first
-  3. **Progress Reviews** — 8+ weeks, sorted most overdue first; columns: Learner, Employer, LSC, Last Progress Review, Review Due By, Weeks Since, Status
+  2. **Outstanding Monthly Touchpoints** — sorted oldest meeting first; note shown explaining only Progress Reviews are currently on the Platform (Starter Checklist and Interim 121 forms to come)
+  3. **Progress Reviews** — **10+ weeks** (not 8), sorted most overdue first; columns: Learner, Employer, LSC, Last Progress Review, Review Due By, Weeks Since, Status
   4. **OTJ Compliance in Month** — sorted longest since entry first; columns: Learner, Employer, LSC, OTJ Completed, OTJ Expected, Last Entry Date
   5. **Out of Funding (OOF)** — sorted by most overdue planned gateway
-  6. **Break in Learning (BIL)** — null RTL at top, then soonest RTL first
+  6. **Break in Learning (BIL)** — simplified to 5 columns: Employer, Learner, Standard, LSC, BIL Start Date (RTL dates and decision status removed as non-viable for Phase 1)
 
 #### Curriculum
 - LSC filter + Standard filter + Status filter (3-column grid layout)
@@ -279,7 +340,7 @@ All other data sources (`AD.masters`, `AD.ksb`, `AD.sla`, `AD.otj`, `AD.curricul
 
 ```javascript
 let currentSize        = 200;
-let currentPhase       = 1;           // 1 = Phase 1 (MVP), 3 = Phase 3 (full)
+let currentPhase       = 1;           // 1 = Phase 1 (MVP), 3 = Phase 3 (full); defaults to 1
 let pipelineOffset     = 0;           // 0 = May 2026
 let gatewayOffset      = 0;           // 0 = June 2026
 let gwForecastFilter   = 'All';
@@ -294,6 +355,9 @@ let ksbSortAsc         = true;
 let _currentSrType     = '';          // Reporting: selected standard report type
 let _reportPage        = 1;           // Reporting: current page
 let currentUser        = USERS[0];    // Default: Delivery Manager
+let dataOriginOpen     = false;       // Data Origins sidebar panel open state
+let _dmStatusFilter    = 'all';       // Platform Map: status filter
+let _dmPhaseFilter     = 'all';       // Platform Map: phase filter (reset to currentPhase on open)
 ```
 
 ---
@@ -314,6 +378,7 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `SCALE_200` | Generated 200-learner dataset (seed 99) |
 | `SCALE_1000` | Generated 1000-learner dataset (seed 42) |
 | `AD` | Active data accessor — returns SCALE_200 or SCALE_1000 |
+| `DATA_ORIGINS` | Per-page data map; keyed by page ID; each field has `label`, `platform`, `phases`, `source`, `calculation`, `illustrates`, `rationale`, `build` |
 | `REPORT_CONFIGS` | All report definitions (getData, columns) |
 | `REPORT_PRESETS` | Quick report preset definitions |
 | `USERS` | 9 account definitions (role, initials, coach name for LSCs) |
@@ -349,6 +414,12 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `_buildMeetingLookup()` | Last meeting for all masters (TOUCHPOINT_DATA + synthetic) |
 | `_buildOtjLookup()` | OTJ data for all masters (OTJ_DATA + synthetic) |
 | `updateThemeBtn(isDark)` | Swaps button icon (moon↔sun) and `title`/`aria-label` to match current theme |
+| `renderDataOriginPanel()` | Renders the per-page Data Origins sidebar drawer; filters fields by `currentPhase` |
+| `openDataOriginPanel()` / `closeDataOriginPanel()` | Open/close drawer, toggle body scroll lock |
+| `renderDataMap()` | Flattens DATA_ORIGINS, applies status + phase filters, renders card layout in Platform Map modal |
+| `openDataMap()` | Syncs `_dmPhaseFilter` to `String(currentPhase)`, updates active button, opens modal |
+| `closeDataMap()` | Closes Platform Map modal |
+| `exportDataMapCSV()` | Exports full unfiltered DATA_ORIGINS as 10-column CSV |
 
 ---
 
@@ -384,6 +455,22 @@ let currentUser        = USERS[0];    // Default: Delivery Manager
 | `.phase-toggle-sep` | Vertical separator between phase toggle and size toggle |
 | `.theme-btn` | Circular sun/moon icon button for dark mode toggle |
 | `[data-theme="dark"]` | Applied to `<html>` element; overrides CSS variables + targeted hardcoded colours |
+| `#data-origin-tab` / `#data-origin-panel` | Left-edge tab and slide-in drawer for Data Origins |
+| `.dop-section` / `.dop-field` / `.dop-field-header` | Data Origins panel section and field layout |
+| `.dop-platform-badge` + `.dop-platform-yes/no/partial/pending` | Colour-coded platform status badges (shared by sidebar and Platform Map) |
+| `.dop-field-notes` | Source note beneath each field in the sidebar |
+| `.dop-field-build` | Amber left-bordered "Build required:" callout for No/Partial fields in sidebar |
+| `.dop-phase-badge` | Blue "Phase 3" pill on Phase 3-only sections |
+| `.dop-unavailable` | Message shown in sidebar when current page isn't in the active phase |
+| `.datamap-btn` | "Platform Map" header button |
+| `.datamap-overlay` / `.datamap-modal` | Full-screen Platform Map modal overlay and panel |
+| `.datamap-stats` / `.dm-stat-*` | Stats bar in Platform Map modal |
+| `.datamap-filters` / `.dm-filter-btn` / `.dm-phase-btn` | Filter buttons in Platform Map modal |
+| `.dm-page` / `.dm-section` / `.dm-field-cards` | Platform Map modal layout — page → section → cards |
+| `.dm-field-card` / `.dm-field-card-header` / `.dm-field-props` | Individual field card in Platform Map |
+| `.dm-prop` / `.dm-prop-label` / `.dm-prop-value` | Property row within a field card |
+| `.dm-prop-build` | Amber-highlighted Build Required row within a field card |
+| `.curr-progress-overall` | Secondary "X% overall (n/8)" line below the primary sprint progress bar |
 
 ---
 
