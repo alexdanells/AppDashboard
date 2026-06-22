@@ -1977,6 +1977,17 @@ body {
 [data-theme="dark"] .datamap-header { background: #1c1c1c; border-bottom-color: #2e2e2e; }
 .datamap-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; }
 .datamap-subtitle { font-size: 0.78rem; opacity: 0.75; }
+.datamap-export-btn {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-size: 0.74rem; font-weight: 600;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff; cursor: pointer;
+  padding: 0.3rem 0.75rem; border-radius: 6px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.datamap-export-btn:hover { background: rgba(255,255,255,0.28); }
 .datamap-close {
   background: rgba(255,255,255,0.15);
   border: none; cursor: pointer; color: #fff;
