@@ -4,7 +4,6 @@
       "Bash(git init *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "WebFetch(domain:www.turingcollege.com)",
       "Bash(git checkout *)",
       "Bash(git merge *)",
       "Bash(git branch *)",

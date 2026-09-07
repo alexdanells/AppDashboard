@@ -1,5 +1,5 @@
 // =====================================================================
-// Boom Training — Apprenticeship Dashboard  |  app.js
+// The Tess Group — Apprenticeship Dashboard  |  app.js
 // =====================================================================
 
 // ─── Theme toggle icons ───────────────────────────────────────────────
@@ -1140,7 +1140,7 @@ function exportTableCSV(table, filename) {
   const safe = (filename || 'export').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const a = Object.assign(document.createElement('a'), {
     href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
-    download: `boom-${safe}.csv`,
+    download: `tess-${safe}.csv`,
   });
   a.click();
   URL.revokeObjectURL(a.href);
@@ -3292,7 +3292,7 @@ function exportReportCSV() {
   ].join('\n');
   const a = Object.assign(document.createElement('a'), {
     href:     URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
-    download: 'boom-report.csv',
+    download: 'tess-report.csv',
   });
   a.click();
   URL.revokeObjectURL(a.href);
@@ -4186,7 +4186,7 @@ function exportDataMapCSV() {
   const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = 'BoomTraining_PlatformDataMap.csv';
+  a.download = 'TessGroup_PlatformDataMap.csv';
   a.click();
 }
 
@@ -4248,4 +4248,4 @@ document.getElementById('theme-btn').addEventListener('click', function() {
   updateThemeBtn(!isDark);
 });
 
-console.log('Boom Training Dashboard loaded ✅');
+console.log('The Tess Group Dashboard loaded ✅');

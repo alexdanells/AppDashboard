@@ -1,13 +1,13 @@
 # Apprenticeship Business Dashboard
 
 ## Project Overview
-A demo dashboard for **Boom Training**, an apprenticeship training provider. Built with realistic generated dummy data to:
+A demo dashboard for **The Tess Group**, an apprenticeship training provider. Built with realistic generated dummy data to:
 - Provide **visual data** in tabulated format (downloadable as CSV/Google Sheets-compatible)
 - Deliver **actionable data** to drive performance and support daily management
 - Demonstrate the system concept across role-based accounts at two provision scales
 
-**Live URL:** https://alexdanells-boomtraining.github.io/AppDashboard/
-**GitHub repo:** https://github.com/alexdanells-boomtraining/AppDashboard
+**Live URL:** https://alexdanells.github.io/AppDashboard/
+**GitHub repo:** https://github.com/alexdanells/AppDashboard
 
 ---
 
@@ -29,7 +29,7 @@ Open `index.html` directly in a browser — no build step, no server needed.
 - To publish: `git push origin main`
 
 ## Developer Notes
-- The user (**Alex Danells**, Head of Delivery at Boom Training) is not a developer
+- The user (**Alex Danells**, Head of Delivery at The Tess Group) is not a developer
 - Explain all git steps clearly
 - Use feature branches per task; merge to `main` when complete; delete the branch
 
@@ -37,7 +37,7 @@ Open `index.html` directly in a browser — no build step, no server needed.
 
 ## Phase Toggle (Phase 1 / Phase 2 / Phase 3)
 
-Three buttons sit in the header to the left of the size toggle. Phase 2 is permanently disabled (greyed out). **Dashboard defaults to Phase 1 on load.** Phase 1 is the minimum-viable view tied to what the Boom Platform can currently support. Phase 3 is the full aspirational dashboard.
+Three buttons sit in the header to the left of the size toggle. Phase 2 is permanently disabled (greyed out). **Dashboard defaults to Phase 1 on load.** Phase 1 is the minimum-viable view tied to what the Platform can currently support. Phase 3 is the full aspirational dashboard.
 
 ### Phase 1 restrictions
 - **Nav hidden:** Sales Pipeline, Gateway
@@ -125,7 +125,7 @@ A "Platform Map" button (`#datamap-btn`) in the header (to the left of the Phase
 - **Status filter** — All · Yes · Partial · No · Not reviewed
 - **Phase filter** — All · Phase 1 · Phase 3 only; defaults to the current dashboard phase on every open
 - **Card layout** — each field renders as a card with labelled rows: Source, Calculation, Illustrates, Rationale, Build Required (amber highlight)
-- **Export CSV** — downloads `BoomTraining_PlatformDataMap.csv` with all 10 columns regardless of active filters: Page, Section, Phase Availability, Field, In Platform?, Source, Calculation / Derivation, Illustrated As, Rationale, Build Required
+- **Export CSV** — downloads `TessGroup_PlatformDataMap.csv` with all 10 columns regardless of active filters: Page, Section, Phase Availability, Field, In Platform?, Source, Calculation / Derivation, Illustrated As, Rationale, Build Required
 
 ### Key state variables
 ```javascript
